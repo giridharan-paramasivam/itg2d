@@ -94,10 +94,10 @@ def plot_colormesh(dat, dat_bar, title, lab_bar, ax):
 fig, axs = plt.subplots(1, 2, figsize=(16, 9), sharey=True)
 
 # Plot each dataset
-plot_colormesh(Om, vbar, '$\\Omega$', '$\\overline{v}_y$', axs[0])
+plot_colormesh(Om, vbar, r'$\Omega$', r'$\overline{v}_y$', axs[0])
 axs[0].set_ylabel('$y$')
 
-plot_colormesh(P, vbar, '$P$', '$\\overline{v}_y$', axs[1])
+plot_colormesh(P, vbar, '$P$', r'$\overline{v}_y$', axs[1])
 fig.tight_layout(pad=0.5) # Use tight_layout with reduced padding
 
 # Add bbox_inches='tight' to savefig calls
@@ -112,9 +112,9 @@ plt.show()
 fig, ax = plt.subplots(figsize=(16, 9))
 c =ax.pcolormesh(x,y,Om, cmap='seismic', vmin=-np.max(np.abs(Om)), vmax=np.max(np.abs(Om)))
 ax.plot(x[:,0], 0.5*(y[:,-1]+y[:,0])+0.25*(y[:,-1]-y[:,0])*vbar/np.max(np.abs(vbar)),'w',linewidth=5)
-ax.plot(x[:,0], 0.5*(y[:,-1]+y[:,0])+0.25*(y[:,-1]-y[:,0])*vbar/np.max(np.abs(vbar)),'k',label='$\\overline{v}_y$')
+ax.plot(x[:,0], 0.5*(y[:,-1]+y[:,0])+0.25*(y[:,-1]-y[:,0])*vbar/np.max(np.abs(vbar)),'k',label=r'$\overline{v}_y$')
 ax.legend(loc='upper right')
-ax.set_title(f'$\\Omega$ for $\\kappa_T={kapt}$')
+ax.set_title(rf'$\Omega$ for $\kappa_T={kapt}$')
 ax.set_xlabel('$x$')
 ax.set_ylabel('$y$')
 plt.colorbar(c, ax=ax)
@@ -124,7 +124,7 @@ plt.show()
 
 # # Plot P
 # fig, ax = plt.subplots(figsize=(6, 5))
-# plot_colormesh(P, Pbar, '$P$', '$\\overline{P}$', ax)
+# plot_colormesh(P, Pbar, '$P$', r'$\overline{P}$', ax)
 # fig.tight_layout(pad=0.5)
 # plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'fields_P_').replace('.h5', '.pdf'), bbox_inches='tight')
 # plt.show()

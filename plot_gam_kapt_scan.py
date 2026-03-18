@@ -44,9 +44,9 @@ with h5py.File(fname, 'r') as fl:
 
 plt.figure()
 plt.plot(kapt_vals, gammax_kapt)
-plt.xlabel('$\\kappa_T$')
-plt.ylabel('$\\gamma_{max}$')
-plt.title(f"$\\gamma_{{max}}$ for $\\kappa_n$={kapn:.2f} $\\kappa_B$={kapb:.2f}")
+plt.xlabel(r'$\kappa_T$')
+plt.ylabel(r'$\gamma_{max}$')
+plt.title(rf"$\gamma_{{max}}$ for $\kappa_n$={kapn:.2f} $\kappa_B$={kapb:.2f}")
 plt.savefig(fname.replace('gammax_vals_kapt', 'gammax_kapt').replace('.h5', '.png'), dpi=100)
 plt.tight_layout()
 plt.show()

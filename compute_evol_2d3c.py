@@ -52,15 +52,15 @@ irft2 = partial(irft2np, Npx=int(Npx), Npy=int(Npy), Nx=int(Nx), sl=sl)
 def E(Omk, ky, kpsq):
     ''' Returns the total energy of the system'''
     sigk = np.sign(ky)
-    fac = sigk + kpsq
-    Etemp = np.sum(fac*np.abs(Omk)**2/kpsq**2).item()
+    Wk = sigk + kpsq
+    Etemp = np.sum(Wk*np.abs(Omk)**2/kpsq**2).item()
     return np.real(Etemp)
 
 def E_ZF(Omk, ky, kpsq, slbar):
     ''' Returns the zonal energy of the system'''
     sigk = np.sign(ky)
-    fac = sigk + kpsq
-    E_ZFtemp = np.sum(fac[slbar]*np.abs(Omk[slbar])**2/kpsq[slbar]**2).item()
+    Wk = sigk + kpsq
+    E_ZFtemp = np.sum(Wk[slbar]*np.abs(Omk[slbar])**2/kpsq[slbar]**2).item()
     return np.real(E_ZFtemp)
 
 def K(Omk, kpsq):

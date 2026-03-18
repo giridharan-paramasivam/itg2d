@@ -11,12 +11,12 @@ def init_linmats(kx,ky,pars):
     # kpsq = torch.where(kpsq==0, 1e-10, kpsq)
         
     sigk = ky>0
-    fac=sigk+kpsq
+    Wk=sigk+kpsq
     lm=torch.zeros(kx.shape+(2,2),dtype=torch.complex64)
     lm[:,0,0]=-1j*chi*kpsq-1j*sigk*HP/kpsq**3
     lm[:,0,1]=(kapn+kapt)*ky
-    lm[:,1,0]=(-kapb*ky+1j*chi*kpsq**2*b)/fac
-    lm[:,1,1]=(-(kapb-kapn)*ky-(kapn+kapt)*ky*kpsq-1j*chi*kpsq**2*a)/fac-1j*sigk*HPhi/kpsq**3
+    lm[:,1,0]=(-kapb*ky+1j*chi*kpsq**2*b)/Wk
+    lm[:,1,1]=(-(kapb-kapn)*ky-(kapn+kapt)*ky*kpsq-1j*chi*kpsq**2*a)/Wk-1j*sigk*HPhi/kpsq**3
 
     return lm
 

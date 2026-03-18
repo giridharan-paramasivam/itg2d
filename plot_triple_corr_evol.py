@@ -94,9 +94,9 @@ def T2(Omk, Pk, kpsq):
     dyphi=irft2np(1j*ky*Phik)
     dxphi=irft2np(1j*kx*Phik)
     sigk=np.sign(ky)
-    fac=sigk+kpsq
-    dxnOmg=irft2np(1j*kx*fac*Phik)
-    dynOmg=irft2np(1j*ky*fac*Phik)
+    Wk=sigk+kpsq
+    dxnOmg=irft2np(1j*kx*Wk*Phik)
+    dynOmg=irft2np(1j*ky*Wk*Phik)
 
     term = np.sum(1j*ky*rft2np(dxphi*dynOmg-dyphi*dxnOmg)*np.conj(Pk)/(1+kpsq)).item()
     return np.real(term)
@@ -307,10 +307,10 @@ if rank == 0:
 
     # Plot Dchi vs time
     plt.figure(figsize=(16, 9))
-    plt.plot(t[:nt], Dchi_t, label = '$D_\\chi$')
+    plt.plot(t[:nt], Dchi_t, label = r'$D_\chi$')
     plt.xlabel('$t$')
-    plt.ylabel('$D_\\chi$')
-    plt.title('$D_\\chi$ vs t')
+    plt.ylabel(r'$D_\chi$')
+    plt.title(r'$D_\chi$ vs t')
     plt.grid()
     plt.legend()
     plt.tight_layout()
@@ -337,10 +337,10 @@ if rank == 0:
 
     # Plot Dchi + DH vs time
     plt.figure(figsize=(16, 9))
-    plt.plot(t[:nt], Dchi_t + DH_t, label = '$D_\\chi + D_H$')
+    plt.plot(t[:nt], Dchi_t + DH_t, label = r'$D_\chi + D_H$')
     plt.xlabel('$t$')
-    plt.ylabel('$D_\\chi + D_H$')
-    plt.title('$D_\\chi + D_H$ vs t')
+    plt.ylabel(r'$D_\chi + D_H$')
+    plt.title(r'$D_\chi + D_H$ vs t')
     plt.grid()
     plt.legend()
     plt.tight_layout()
@@ -368,10 +368,10 @@ if rank == 0:
     # Plot dQdt vs time
     dQdt = np.gradient(Q_t[:nt], t[:nt])
     plt.figure(figsize=(16, 9))
-    plt.plot(t[:nt], dQdt, '-', label = '$\\frac{d\Q}{dt}$')
+    plt.plot(t[:nt], dQdt, '-', label = r'$\frac{d\Q}{dt}$')
     plt.xlabel('$t$')
-    plt.ylabel('$\\frac{d\Q}{dt}$')
-    plt.title('$\\frac{d\Q}{dt}$')
+    plt.ylabel(r'$\frac{d\Q}{dt}$')
+    plt.title(r'$\frac{d\Q}{dt}$')
     plt.grid()
     plt.legend()
     plt.tight_layout()
@@ -383,10 +383,10 @@ if rank == 0:
 
     # Plot Q vs time
     plt.figure(figsize=(16, 9))
-    plt.semilogy(t[:nt], Q_t, '-', label = '$\Q$')
+    plt.semilogy(t[:nt], Q_t, '-', label = r'$\Q$')
     plt.xlabel('$t$')
-    plt.ylabel('$\Q$')
-    plt.title('$\Q$')
+    plt.ylabel(r'$\Q$')
+    plt.title(r'$\Q$')
     plt.grid()
     plt.legend()
     plt.tight_layout()

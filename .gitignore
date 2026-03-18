@@ -4,6 +4,7 @@
 /_tmpimg_folder
 /modules/__pycache__
 /__pycache__
+/.github
 *.log
 *.lyx~
 *.lyx#

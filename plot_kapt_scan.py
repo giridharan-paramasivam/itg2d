@@ -40,15 +40,15 @@ plt.rcParams.update({
 def E(Omk, ky, kpsq):
     ''' Returns the total energy of the system'''
     sigk=np.sign(ky)
-    fac = sigk+kpsq
-    Etemp = np.sum(fac*np.abs(Omk)**2/kpsq**2).item()
+    Wk = sigk+kpsq
+    Etemp = np.sum(Wk*np.abs(Omk)**2/kpsq**2).item()
     return np.real(Etemp)
 
 def E_ZF(Omk, ky, kpsq, slbar):
     ''' Returns the zonal energy of the system'''
     sigk=np.sign(ky)
-    fac = sigk+kpsq
-    E_ZFtemp = np.sum(fac[slbar]*np.abs(Omk[slbar])**2/kpsq[slbar]**2).item()
+    Wk = sigk+kpsq
+    E_ZFtemp = np.sum(Wk[slbar]*np.abs(Omk[slbar])**2/kpsq[slbar]**2).item()
     return np.real(E_ZFtemp)
 
 def G(Omk, ky, kpsq):
@@ -177,7 +177,7 @@ if rank == 0:
 if rank == 0:
     # Plot P2 fraction vs kapt
     plt.figure(figsize=(16, 9))
-    plt.errorbar(kapt_vals, P2_frac_scan, yerr=P2_frac_scan_err, marker='o', linestyle='-', markersize=10, label = '$P_{\mathrm{ZF}}^2/P^2$',
+    plt.errorbar(kapt_vals, P2_frac_scan, yerr=P2_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$P_{\mathrm{ZF}}^2/P^2$',
                 elinewidth=2, capthick=1, capsize=4)
     plt.fill_between(
         kapt_vals,
@@ -187,9 +187,9 @@ if rank == 0:
         alpha=0.3,
         label='Error band'
     )
-    plt.xlabel('$\\kappa_T$')
-    plt.ylabel('$P_{\mathrm{ZF}}^2/P^2$')
-    plt.title('$P_{\mathrm{ZF}}^2/P^2$ vs $\\kappa_T$')
+    plt.xlabel(r'$\kappa_T$')
+    plt.ylabel(r'$P_{\mathrm{ZF}}^2/P^2$')
+    plt.title(r'$P_{\mathrm{ZF}}^2/P^2$ vs $\kappa_T$')
     plt.grid()
     plt.legend()
     plt.tight_layout()
@@ -198,7 +198,7 @@ if rank == 0:
 
     # Plot total energy fraction vs kapt
     plt.figure(figsize=(16, 9))
-    plt.errorbar(kapt_vals, E_frac_scan, yerr=E_frac_scan_err, marker='o', linestyle='-', markersize=10, label = '$\E_{\mathrm{ZF}}/\E$',
+    plt.errorbar(kapt_vals, E_frac_scan, yerr=E_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\E_{\mathrm{ZF}}/\E$',
                 elinewidth=2, capthick=1, capsize=4)
     plt.fill_between(
         kapt_vals,
@@ -208,9 +208,9 @@ if rank == 0:
         alpha=0.3,
         label='Error band'
     )
-    plt.xlabel('$\\kappa_T$')
-    plt.ylabel('$\E_{\mathrm{ZF}}/\E$')
-    plt.title('$\E_{\mathrm{ZF}}/\E$ vs $\\kappa_T$')
+    plt.xlabel(r'$\kappa_T$')
+    plt.ylabel(r'$\E_{\mathrm{ZF}}/\E$')
+    plt.title(r'$\E_{\mathrm{ZF}}/\E$ vs $\kappa_T$')
     plt.grid()
     plt.legend()
     plt.tight_layout()
@@ -219,7 +219,7 @@ if rank == 0:
 
     # Plot generalized energy fraction vs kapt
     plt.figure(figsize=(16, 9))
-    plt.errorbar(kapt_vals, G_frac_scan, yerr=G_frac_scan_err, marker='o', linestyle='-', markersize=10, label = '$\G_{\mathrm{ZF}}/\G$',
+    plt.errorbar(kapt_vals, G_frac_scan, yerr=G_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\G_{\mathrm{ZF}}/\G$',
                 elinewidth=2, capthick=1, capsize=4)
     plt.fill_between(
         kapt_vals,
@@ -229,9 +229,9 @@ if rank == 0:
         alpha=0.3,
         label='Error band'
     )
-    plt.xlabel('$\\kappa_T$')
-    plt.ylabel('$\G_{\mathrm{ZF}}/\G$')
-    plt.title('$\G_{\mathrm{ZF}}/\G$ fraction vs $\\kappa_T$')
+    plt.xlabel(r'$\kappa_T$')
+    plt.ylabel(r'$\G_{\mathrm{ZF}}/\G$')
+    plt.title(r'$\G_{\mathrm{ZF}}/\G$ fraction vs $\kappa_T$')
     plt.grid()
     plt.legend()
     plt.tight_layout()
@@ -240,7 +240,7 @@ if rank == 0:
 
     # Plot Q vs kapt
     plt.figure(figsize=(16, 9))
-    plt.errorbar(kapt_vals, Q_scan, yerr=Q_scan_err, marker='o', linestyle='-', markersize=10, label = '$\Q$',
+    plt.errorbar(kapt_vals, Q_scan, yerr=Q_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\Q$',
                 elinewidth=2, capthick=1, capsize=4)
     plt.fill_between(
         kapt_vals,
@@ -250,9 +250,9 @@ if rank == 0:
         alpha=0.3,
         label='Error band'
     )
-    plt.xlabel('$\\kappa_T$')
-    plt.ylabel('$\Q$')
-    plt.title('$\Q$ vs $\\kappa_T$')
+    plt.xlabel(r'$\kappa_T$')
+    plt.ylabel(r'$\Q$')
+    plt.title(r'$\Q$ vs $\kappa_T$')
     plt.grid()
     plt.legend()
     plt.tight_layout()

@@ -89,147 +89,147 @@ if rank == 0:
 
 #%% Functions for energy and enstrophy
 
-def Phi2S(phik, kp, k, dk):
+def Phi2S(phik, q, k, dk):
     ''' Returns the var(phi) spectrum'''
     phi2k = np.abs(phik)**2
     
     Phi2k = np.zeros(len(k))
     for i in range(len(k)):
-        Phi2k[i] = np.sum(phi2k[np.where(np.logical_and(kp>=k[i]-dk/2, kp<k[i]+dk/2))])*dk
+        Phi2k[i] = np.sum(phi2k[np.where(np.logical_and(q>=k[i]-dk/2, q<k[i]+dk/2))])*dk
     return Phi2k
 
-def Phi2S_ZF(phik, kp, k, dk, slbar):
+def Phi2S_ZF(phik, q, k, dk, slbar):
     ''' Returns the zonal var(phi) spectrum'''   
     phi2k_ZF = np.abs(phik[slbar])**2
     
     Phi2k_ZF = np.zeros(len(k))
     for i in range(len(k)):
-        Phi2k_ZF[i] = np.sum(phi2k_ZF[np.where(np.logical_and(kp[slbar]>=k[i]-dk/2, kp[slbar]<k[i]+dk/2))])*dk
+        Phi2k_ZF[i] = np.sum(phi2k_ZF[np.where(np.logical_and(q[slbar]>=k[i]-dk/2, q[slbar]<k[i]+dk/2))])*dk
     return Phi2k_ZF
 
-def P2S(pk, kp, k, dk):
+def P2S(pk, q, k, dk):
     ''' Returns the var(P) spectrum'''
     p2k = np.abs(pk)**2
     
     P2k = np.zeros(len(k))
     for i in range(len(k)):
-        P2k[i] = np.sum(p2k[np.where(np.logical_and(kp>=k[i]-dk/2, kp<k[i]+dk/2))])*dk
+        P2k[i] = np.sum(p2k[np.where(np.logical_and(q>=k[i]-dk/2, q<k[i]+dk/2))])*dk
     return P2k
 
-def P2S_ZF(pk, kp, k, dk, slbar):
+def P2S_ZF(pk, q, k, dk, slbar):
     ''' Returns the zonal var(P) spectrum'''   
     pk_ZF = np.abs(pk[slbar])**2
     
     P2k_ZF = np.zeros(len(k))
     for i in range(len(k)):
-        P2k_ZF[i] = np.sum(pk_ZF[np.where(np.logical_and(kp[slbar]>=k[i]-dk/2, kp[slbar]<k[i]+dk/2))])*dk
+        P2k_ZF[i] = np.sum(pk_ZF[np.where(np.logical_and(q[slbar]>=k[i]-dk/2, q[slbar]<k[i]+dk/2))])*dk
     return P2k_ZF
 
-def ES(omk, kp, k, dk):
+def ES(omk, q, k, dk):
     ''' Returns the total energy spectrum'''
     sigk=np.sign(ky)
-    fac = sigk+kp**2
-    ek = fac*np.abs(omk)**2/kp**4
+    Wk = sigk+q**2
+    ek = Wk*np.abs(omk)**2/q**4
 
     Ek = np.zeros(len(k))
     for i in range(len(k)):
-        Ek[i] = np.sum(ek[np.where(np.logical_and(kp>k[i]-dk/2,kp<k[i]+dk/2))])*dk
+        Ek[i] = np.sum(ek[np.where(np.logical_and(q>k[i]-dk/2,q<k[i]+dk/2))])*dk
     return Ek
 
-def ES_ZF(omk, kp, k, dk, slbar):
+def ES_ZF(omk, q, k, dk, slbar):
     ''' Returns the zonal total energy spectrum'''  
     sigk=np.sign(ky[slbar])
-    fac = sigk+kp[slbar]**2 
-    ek_ZF = fac*np.abs(omk[slbar])**2/kp[slbar]**4
+    Wk = sigk+q[slbar]**2 
+    ek_ZF = Wk*np.abs(omk[slbar])**2/q[slbar]**4
     
     Ek_ZF = np.zeros(len(k))
     for i in range(len(k)):
-        Ek_ZF[i] = np.sum(ek_ZF[np.where(np.logical_and(kp[slbar]>=k[i]-dk/2, kp[slbar]<k[i]+dk/2))])*dk
+        Ek_ZF[i] = np.sum(ek_ZF[np.where(np.logical_and(q[slbar]>=k[i]-dk/2, q[slbar]<k[i]+dk/2))])*dk
     return Ek_ZF
 
-def KS(omk, kp, k, dk):
+def KS(omk, q, k, dk):
     ''' Returns the kinetic energy spectrum'''
-    ek = np.abs(omk)**2/kp**2
+    ek = np.abs(omk)**2/q**2
 
     Ek = np.zeros(len(k))
     for i in range(len(k)):
-        Ek[i] = np.sum(ek[np.where(np.logical_and(kp>k[i]-dk/2,kp<k[i]+dk/2))])*dk
+        Ek[i] = np.sum(ek[np.where(np.logical_and(q>k[i]-dk/2,q<k[i]+dk/2))])*dk
     return Ek
 
-def KS_ZF(omk, kp, k, dk, slbar):
+def KS_ZF(omk, q, k, dk, slbar):
     ''' Returns the zonal kinetic energy spectrum'''  
-    ek_ZF = np.abs(omk[slbar])**2/kp[slbar]**2
+    ek_ZF = np.abs(omk[slbar])**2/q[slbar]**2
     
     Ek_ZF = np.zeros(len(k))
     for i in range(len(k)):
-        Ek_ZF[i] = np.sum(ek_ZF[np.where(np.logical_and(kp[slbar]>=k[i]-dk/2, kp[slbar]<k[i]+dk/2))])*dk
+        Ek_ZF[i] = np.sum(ek_ZF[np.where(np.logical_and(q[slbar]>=k[i]-dk/2, q[slbar]<k[i]+dk/2))])*dk
     return Ek_ZF
 
-def WS(omk, kp, k , dk):
+def WS(omk, q, k , dk):
     ''' Returns the enstrophy spectrum'''    
     wk = np.abs(omk)**2 
 
     Wk = np.zeros(len(k))
     for i in range(len(k)):
-        Wk[i] = np.sum(wk[np.where(np.logical_and(kp>=k[i]-dk/2, kp<k[i]+dk/2))])*dk
+        Wk[i] = np.sum(wk[np.where(np.logical_and(q>=k[i]-dk/2, q<k[i]+dk/2))])*dk
     return Wk
     
-def WS_ZF(omk, kp, k, dk, slbar):
+def WS_ZF(omk, q, k, dk, slbar):
     ''' Returns the zonal enstrophy spectrum'''    
     wk_ZF = np.abs(omk[slbar])**2
 
     Wk_ZF = np.zeros(len(k))
     for i in range(len(k)):
-        Wk_ZF[i] = np.sum(wk_ZF[np.where(np.logical_and(kp[slbar]>=k[i]-dk/2, kp[slbar]<k[i]+dk/2))])*dk
+        Wk_ZF[i] = np.sum(wk_ZF[np.where(np.logical_and(q[slbar]>=k[i]-dk/2, q[slbar]<k[i]+dk/2))])*dk
     return Wk_ZF
 
-def GS(omk, pk, kp, k, dk):
+def GS(omk, pk, q, k, dk):
     ''' Returns the generalized energy spectrum'''
     sigk=np.sign(ky)
-    phik=omk/kp**2
-    ek = np.abs(sigk*phik+pk)**2+kp**2*np.abs(phik+pk)**2
+    phik=omk/q**2
+    ek = np.abs(sigk*phik+pk)**2+q**2*np.abs(phik+pk)**2
 
     Ek = np.zeros(len(k))
     for i in range(len(k)):
-        Ek[i] = np.sum(ek[np.where(np.logical_and(kp>k[i]-dk/2,kp<k[i]+dk/2))])*dk
+        Ek[i] = np.sum(ek[np.where(np.logical_and(q>k[i]-dk/2,q<k[i]+dk/2))])*dk
     return Ek
 
-def GS_ZF(omk, pk, kp, k, dk, slbar):
+def GS_ZF(omk, pk, q, k, dk, slbar):
     ''' Returns the zonal generalized energy spectrum'''  
     sigk=np.sign(ky)
-    phik=omk/kp**2
-    ek_ZF = np.abs(sigk[slbar]*phik[slbar]+pk[slbar])**2+kp[slbar]**2*np.abs(phik[slbar]+pk[slbar])**2
+    phik=omk/q**2
+    ek_ZF = np.abs(sigk[slbar]*phik[slbar]+pk[slbar])**2+q[slbar]**2*np.abs(phik[slbar]+pk[slbar])**2
     
     Ek_ZF = np.zeros(len(k))
     for i in range(len(k)):
-        Ek_ZF[i] = np.sum(ek_ZF[np.where(np.logical_and(kp[slbar]>=k[i]-dk/2, kp[slbar]<k[i]+dk/2))])*dk
+        Ek_ZF[i] = np.sum(ek_ZF[np.where(np.logical_and(q[slbar]>=k[i]-dk/2, q[slbar]<k[i]+dk/2))])*dk
     return Ek_ZF
 
-def GKS(omk, pk, kp, k, dk):
+def GKS(omk, pk, q, k, dk):
     ''' Returns the generalized kinetic energy spectrum'''
-    phik=omk/kp**2
-    ek = kp**2*np.abs(phik+pk)**2
+    phik=omk/q**2
+    ek = q**2*np.abs(phik+pk)**2
 
     Ek = np.zeros(len(k))
     for i in range(len(k)):
-        Ek[i] = np.sum(ek[np.where(np.logical_and(kp>k[i]-dk/2,kp<k[i]+dk/2))])*dk
+        Ek[i] = np.sum(ek[np.where(np.logical_and(q>k[i]-dk/2,q<k[i]+dk/2))])*dk
     return Ek
 
-def GKS_ZF(omk, pk, kp, k, dk, slbar):
+def GKS_ZF(omk, pk, q, k, dk, slbar):
     ''' Returns the zonal generalized kinetic energy spectrum'''  
-    phik=omk/kp**2
-    ek_ZF = kp[slbar]**2*np.abs(phik[slbar]+pk[slbar])**2
+    phik=omk/q**2
+    ek_ZF = q[slbar]**2*np.abs(phik[slbar]+pk[slbar])**2
     
     Ek_ZF = np.zeros(len(k))
     for i in range(len(k)):
-        Ek_ZF[i] = np.sum(ek_ZF[np.where(np.logical_and(kp[slbar]>=k[i]-dk/2, kp[slbar]<k[i]+dk/2))])*dk
+        Ek_ZF[i] = np.sum(ek_ZF[np.where(np.logical_and(q[slbar]>=k[i]-dk/2, q[slbar]<k[i]+dk/2))])*dk
     return Ek_ZF
 
 #%% compute quantities
 
 dk = ky[1]-ky[0]
-kp = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
-# k = np.linspace(np.min(kp), np.max(kp), num=int(np.max(kp)/dk))
+q = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
+# k = np.linspace(np.min(q), np.max(q), num=int(np.max(q)/dk))
 k = np.linspace(np.min(ky), np.max(ky), num=int(np.max(ky)/dk))
 
 # Kx,Ky = np.meshgrid(k,k,indexing='ij')
@@ -262,22 +262,23 @@ GKk_ZF_local = np.zeros((len(local_indices), len(k)))
 
 with h5.File(fname, 'r', swmr=True) as fl:
     for idx, it in enumerate(local_indices):
+        print(f"Rank {rank} processing time step {it}")
         Omk = fl['fields/Omk'][it+nt//2]
         Pk = fl['fields/Pk'][it+nt//2]
-        Phi2k_local[idx,:] = Phi2S(Pk, kp, k, dk)
-        Phi2k_ZF_local[idx,:] = Phi2S_ZF(Pk, kp, k, dk, slbar)
-        P2k_local[idx,:] = P2S(Pk, kp, k, dk)
-        P2k_ZF_local[idx,:] = P2S_ZF(Pk, kp, k, dk, slbar)
-        Ek_local[idx,:] = ES(Omk, kp, k, dk)
-        Ek_ZF_local[idx,:] = ES_ZF(Omk, kp, k, dk, slbar)
-        Kk_local[idx,:] = KS(Omk, kp, k, dk)
-        Kk_ZF_local[idx,:] = KS_ZF(Omk, kp, k, dk, slbar)
-        Wk_local[idx,:] = WS(Omk, kp, k, dk)
-        Wk_ZF_local[idx,:] = WS_ZF(Omk, kp, k, dk, slbar)
-        Gk_local[idx,:] = GS(Omk, Pk, kp, k, dk)
-        Gk_ZF_local[idx,:] = GS_ZF(Omk, Pk, kp, k, dk, slbar)
-        GKk_local[idx,:] = GKS(Omk, Pk, kp, k, dk)
-        GKk_ZF_local[idx,:] = GKS_ZF(Omk, Pk, kp, k, dk, slbar)
+        Phi2k_local[idx,:] = Phi2S(Pk, q, k, dk)
+        Phi2k_ZF_local[idx,:] = Phi2S_ZF(Pk, q, k, dk, slbar)
+        P2k_local[idx,:] = P2S(Pk, q, k, dk)
+        P2k_ZF_local[idx,:] = P2S_ZF(Pk, q, k, dk, slbar)
+        Ek_local[idx,:] = ES(Omk, q, k, dk)
+        Ek_ZF_local[idx,:] = ES_ZF(Omk, q, k, dk, slbar)
+        Kk_local[idx,:] = KS(Omk, q, k, dk)
+        Kk_ZF_local[idx,:] = KS_ZF(Omk, q, k, dk, slbar)
+        Wk_local[idx,:] = WS(Omk, q, k, dk)
+        Wk_ZF_local[idx,:] = WS_ZF(Omk, q, k, dk, slbar)
+        Gk_local[idx,:] = GS(Omk, Pk, q, k, dk)
+        Gk_ZF_local[idx,:] = GS_ZF(Omk, Pk, q, k, dk, slbar)
+        GKk_local[idx,:] = GKS(Omk, Pk, q, k, dk)
+        GKk_ZF_local[idx,:] = GKS_ZF(Omk, Pk, q, k, dk, slbar)
 
 # Gather results from all processes
 Phi2k_t = Phi2k_ZF_t = P2k_t = P2k_ZF_t = Ek_t = Ek_ZF_t = Kk_t = Kk_ZF_t = Wk_t = Wk_ZF_t = Gk_t = Gk_ZF_t = GKk_t = GKk_ZF_t = None

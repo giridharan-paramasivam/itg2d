@@ -66,12 +66,12 @@ data = negdiscmax_kapn_kapt.T
 vmax = float(np.nanmax(np.abs(data))) if np.isfinite(data).all() else 1.0
 vmin = -vmax
 pcm = plt.pcolormesh(Kapn, Kapt, data, vmax=vmax, vmin=vmin, cmap='seismic', rasterized=True, shading='auto')
-plt.xlabel('$\\kappa_n$')
-plt.ylabel('$\\kappa_T$')
-plt.title(f"$\\max(-\\Delta)$ for $\\kappa_B$={kapb:.2f}")
+plt.xlabel(r'$\kappa_n$')
+plt.ylabel(r'$\kappa_T$')
+plt.title(rf"$\max(-\Delta)$ for $\kappa_B$={kapb:.2f}")
 plt.axhline(y=0, color='black', linewidth=1, linestyle='-')
 plt.axvline(x=0, color='black', linewidth=1, linestyle='-')
-plt.colorbar(pcm, label='$\\max(-\\Delta)$')
+plt.colorbar(pcm, label=r'$\max(-\Delta)$')
 try:
     CS = plt.contour(Kapn, Kapt, data, levels=[0.0], colors='k', linewidths=2, linestyles='--')
     proxy = Line2D([0], [0], color='k', lw=2, ls='--', label='max(-Δ)=0')

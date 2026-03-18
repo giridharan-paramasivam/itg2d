@@ -65,7 +65,7 @@ rft2np = partial(original_rft2np, sl=sl)
 irftnp = partial(original_irftnp, Npx=Npx, Nx=Nx)
 rftnp = partial(original_rftnp, Nx=Nx)
 
-def spectrum(Omk, Pk, kx, ky, k, delk, flag='Pik'):
+def Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik'):
     ''' Returns the RHS of the model equations'''
     kpsq = kx**2 + ky**2
     Phik = -Omk/kpsq
@@ -74,9 +74,9 @@ def spectrum(Omk, Pk, kx, ky, k, delk, flag='Pik'):
     dyP = irft2np(1j*ky*Pk)
     dxP = irft2np(1j*kx*Pk)
     sigk = np.sign(ky)
-    fac = sigk + kpsq
-    dxnOmg = irft2np(1j*kx*fac*Phik)
-    dynOmg = irft2np(1j*ky*fac*Phik)
+    Wk = sigk + kpsq
+    dxnOmg = irft2np(1j*kx*Wk*Phik)
+    dynOmg = irft2np(1j*ky*Wk*Phik)
 
     nltermOmg = rft2np(dxphi*dynOmg - dyphi*dxnOmg)
     nltermP = -kx**2*(rft2np(dxphi*dyP)) + kx*ky*(rft2np(dxphi*dxP)) - kx*ky*(rft2np(dyphi*dyP)) + ky**2*(rft2np(dyphi*dxP))
@@ -86,26 +86,68 @@ def spectrum(Omk, Pk, kx, ky, k, delk, flag='Pik'):
     if flag == 'Pik_phi':
         ak = np.real(np.conj(Phik)*nltermOmg)
         for i in range(len(k)):
-            Ak[i] = np.sum(ak[np.where(kp <= k[i])])
+            Ak[i] = np.sum(ak[np.where(q <= k[i])])
     elif flag == 'Pik_d':
         ak = np.real(np.conj(Phik)*nltermP)
         for i in range(len(k)):
-            Ak[i] = np.sum(ak[np.where(kp <= k[i])])
+            Ak[i] = np.sum(ak[np.where(q <= k[i])])
     elif flag == 'fk':
         ak = np.real(np.conj(Phik)*kapb*1j*ky*Pk)
         for i in range(len(k)):
-            Ak[i] = np.sum(ak[np.where(np.logical_and(kp > k[i], kp <= k[i]+delk))])/delk
+            Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     elif flag == 'dk':
-        ak = np.real(np.conj(Phik)*(D*kpsq*Phik + H*kpsq**(-2)*(1+kpsq)*Phik))
+        ak = np.real(np.conj(Phik)*(D*kpsq*Phik + H*kpsq**(-2)*(1+kpsq)*sigk*Phik))
         for i in range(len(k)):
-            Ak[i] = np.sum(ak[np.where(np.logical_and(kp > k[i], kp <= k[i]+delk))])/delk
+            Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
+    return Ak
+
+def Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P'):
+    ''' Returns spectral fluxes for the generalized energy G '''
+    kpsq = kx**2 + ky**2
+    Phik = -Omk/kpsq
+    dyphi = irft2np(1j*ky*Phik)
+    dxphi = irft2np(1j*kx*Phik)
+    dyP = irft2np(1j*ky*Pk)
+    dxP = irft2np(1j*kx*Pk)
+    sigk = np.sign(ky)
+    Wk = sigk + kpsq
+    dxnOmg = irft2np(1j*kx*Wk*Phik)
+    dynOmg = irft2np(1j*ky*Wk*Phik)
+
+    nltermOmg = rft2np(dxphi*dynOmg - dyphi*dxnOmg)
+    nltermP = -kx**2*(rft2np(dxphi*dyP)) + kx*ky*(rft2np(dxphi*dxP)) - kx*ky*(rft2np(dyphi*dyP)) + ky**2*(rft2np(dyphi*dxP))
+    nltermP_pb = rft2np(dxphi*dyP - dyphi*dxP)
+
+    ak = np.zeros_like(Omk)
+    Ak = np.zeros(len(k))
+    if flag == 'PiGk_P':
+        ak = np.real((1 + kpsq)*np.conj(Pk)*nltermP_pb + Wk*np.conj(Phik)*nltermP_pb)
+        for i in range(len(k)):
+            Ak[i] = np.sum(ak[np.where(q <= k[i])])
+    elif flag == 'PiGk_phi':
+        ak = np.real((np.conj(Phik) + np.conj(Pk))*nltermOmg)
+        for i in range(len(k)):
+            Ak[i] = np.sum(ak[np.where(q <= k[i])])
+    elif flag == 'PiGk_d':
+        ak = np.real((np.conj(Phik) + np.conj(Pk))*nltermP)
+        for i in range(len(k)):
+            Ak[i] = np.sum(ak[np.where(q <= k[i])])
+    elif flag == 'fGk':
+        ak = np.real(np.conj(Phik)*(kapb + 2*kapn + kapt)*1j*ky*Pk)
+        for i in range(len(k)):
+            Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
+    elif flag == 'dGk':
+        ak = (D*kpsq * ((sigk + kpsq)*np.abs(Phik + Pk)**2 + (1 - sigk)*np.abs(Pk)**2)
+              + H*kpsq**(-2)*(1 + kpsq)*sigk*np.abs(Phik + Pk)**2)
+        for i in range(len(k)):
+            Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     return Ak
 
 #%% Calculate quantities
 
 delk = ky[1] - ky[0]
-kp = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
-k = np.linspace(np.min(kp), np.max(kp), num=int(np.max(kp)/delk))
+q = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
+k = np.linspace(np.min(q), np.max(q), num=int(np.max(q)/delk))
 
 # MPI parallelization
 
@@ -123,32 +165,57 @@ Pik_phi_t_local = np.zeros((count_local, len(k)))
 Pik_d_t_local = np.zeros((count_local, len(k)))
 fk_t_local = np.zeros((count_local, len(k)))
 dk_t_local = np.zeros((count_local, len(k)))
+PiGk_P_t_local = np.zeros((count_local, len(k)))
+PiGk_phi_t_local = np.zeros((count_local, len(k)))
+PiGk_d_t_local = np.zeros((count_local, len(k)))
+fGk_t_local = np.zeros((count_local, len(k)))
+dGk_t_local = np.zeros((count_local, len(k)))
 
 with h5.File(fname, 'r', swmr=True) as fl:
     for idx, it in enumerate(local_indices):
         print(f"Rank {rank} processing time step {it}")
         Omk = fl['fields/Omk'][it+nt//2]
         Pk = fl['fields/Pk'][it+nt//2]
-        Pik_phi_t_local[idx, :] = spectrum(Omk, Pk, kx, ky, k, delk, flag='Pik_phi')
-        Pik_d_t_local[idx, :] = spectrum(Omk, Pk, kx, ky, k, delk, flag='Pik_d')
-        fk_t_local[idx, :] = spectrum(Omk, Pk, kx, ky, k, delk, flag='fk')
-        dk_t_local[idx, :] = spectrum(Omk, Pk, kx, ky, k, delk, flag='dk')
+        Pik_phi_t_local[idx, :] = Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik_phi')
+        Pik_d_t_local[idx, :] = Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik_d')
+        fk_t_local[idx, :] = Eflux(Omk, Pk, kx, ky, k, delk, flag='fk')
+        dk_t_local[idx, :] = Eflux(Omk, Pk, kx, ky, k, delk, flag='dk')
+        PiGk_P_t_local[idx, :] = Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P')
+        PiGk_phi_t_local[idx, :] = Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_phi')
+        PiGk_d_t_local[idx, :] = Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_d')
+        fGk_t_local[idx, :] = Gflux(Omk, Pk, kx, ky, k, delk, flag='fGk')
+        dGk_t_local[idx, :] = Gflux(Omk, Pk, kx, ky, k, delk, flag='dGk')
 
 # Gather results at root
 Pik_phi_t = None
 Pik_d_t = None
 fk_t = None
 dk_t = None
+PiGk_P_t = None
+PiGk_phi_t = None
+PiGk_d_t = None
+fGk_t = None
+dGk_t = None
 if rank == 0:
     Pik_phi_t = np.zeros((nt2, len(k)))
     Pik_d_t = np.zeros((nt2, len(k)))
     fk_t = np.zeros((nt2, len(k)))
     dk_t = np.zeros((nt2, len(k)))
+    PiGk_P_t = np.zeros((nt2, len(k)))
+    PiGk_phi_t = np.zeros((nt2, len(k)))
+    PiGk_d_t = np.zeros((nt2, len(k)))
+    fGk_t = np.zeros((nt2, len(k)))
+    dGk_t = np.zeros((nt2, len(k)))
 
 comm.Gather(Pik_phi_t_local, Pik_phi_t, root=0)
 comm.Gather(Pik_d_t_local, Pik_d_t, root=0)
 comm.Gather(fk_t_local, fk_t, root=0)
 comm.Gather(dk_t_local, dk_t, root=0)
+comm.Gather(PiGk_P_t_local, PiGk_P_t, root=0)
+comm.Gather(PiGk_phi_t_local, PiGk_phi_t, root=0)
+comm.Gather(PiGk_d_t_local, PiGk_d_t, root=0)
+comm.Gather(fGk_t_local, fGk_t, root=0)
+comm.Gather(dGk_t_local, dGk_t, root=0)
 
 if rank == 0:
     Pik_phi = np.mean(Pik_phi_t, axis=0)
@@ -158,6 +225,12 @@ if rank == 0:
     Pik = Pik_phi + Pik_d
     idx_k = np.argmax(fk)
     k_f = k[idx_k]
+    PiGk_P = np.mean(PiGk_P_t, axis=0)
+    PiGk_phi = np.mean(PiGk_phi_t, axis=0)
+    PiGk_d = np.mean(PiGk_d_t, axis=0)
+    fGk = np.mean(fGk_t, axis=0)
+    dGk = np.mean(dGk_t, axis=0)
+    PiGk = PiGk_P + PiGk_phi + PiGk_d
 
     out_file = fname.replace('out_', 'energy_flux_')
     with h5.File(out_file, 'w') as fl:
@@ -171,4 +244,13 @@ if rank == 0:
         fl.create_dataset('dk', data=dk)
         fl.create_dataset('Pik_phi_t', data=Pik_phi_t)
         fl.create_dataset('Pik_d_t', data=Pik_d_t)
+        fl.create_dataset('PiGk', data=PiGk)
+        fl.create_dataset('PiGk_P', data=PiGk_P)
+        fl.create_dataset('PiGk_phi', data=PiGk_phi)
+        fl.create_dataset('PiGk_d', data=PiGk_d)
+        fl.create_dataset('fGk', data=fGk)
+        fl.create_dataset('dGk', data=dGk)
+        fl.create_dataset('PiGk_P_t', data=PiGk_P_t)
+        fl.create_dataset('PiGk_phi_t', data=PiGk_phi_t)
+        fl.create_dataset('PiGk_d_t', data=PiGk_d_t)
     print(f"Saved to {out_file}")

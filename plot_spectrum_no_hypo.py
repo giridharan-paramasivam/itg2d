@@ -102,8 +102,8 @@ def PS_ZF(pk, kp, k, dk, slbar):
 def ES(omk, kp, k, dk):
     ''' Returns the total energy spectrum'''
     sigk=np.sign(ky)
-    fac = sigk+kp**2
-    ek = fac*np.abs(omk)**2/kp**4
+    Wk = sigk+kp**2
+    ek = Wk*np.abs(omk)**2/kp**4
 
     Ek = np.zeros(len(k))
     for i in range(len(k)):
@@ -113,8 +113,8 @@ def ES(omk, kp, k, dk):
 def ES_ZF(omk, kp, k, dk, slbar):
     ''' Returns the zonal total energy spectrum'''  
     sigk=np.sign(ky[slbar])
-    fac = sigk+kp[slbar]**2 
-    ek_ZF = fac*np.abs(omk[slbar])**2/kp[slbar]**4
+    Wk = sigk+kp[slbar]**2 
+    ek_ZF = Wk*np.abs(omk[slbar])**2/kp[slbar]**4
     
     Ek_ZF = np.zeros(len(k))
     for i in range(len(k)):
