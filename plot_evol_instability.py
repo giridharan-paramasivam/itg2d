@@ -7,24 +7,8 @@ if os.environ.get("DISPLAY", "") == "":
     matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({
-    'lines.linewidth': 4,
-    'axes.linewidth': 3,
-    'xtick.major.width': 3,
-    'ytick.major.width': 3,
-    'xtick.minor.visible': True,
-    'ytick.minor.visible': True,
-    'xtick.minor.width': 1.5,
-    'ytick.minor.width': 1.5,
-    'savefig.dpi': 100,
-    'font.size': 20,
-    'axes.titlesize': 22,
-    'axes.labelsize': 20,
-    'xtick.labelsize': 16,
-    'ytick.labelsize': 16,
-    'legend.fontsize': 16,
-    'legend.edgecolor': 'black'
-})
+from modules.plot_basics import apply_style
+apply_style()
 
 def mode_label(i: int, kx: float, ky: float) -> str:
     mode_name = ("q", "k", "p")[i] if i < 3 else f"m{i}"

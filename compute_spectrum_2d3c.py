@@ -205,6 +205,7 @@ else:
 local_indices = comm.scatter(indices, root=0)
 
 # Local arrays for each process
+reynolds_power_local = np.zeros(len(local_indices), dtype=np.float64)
 P2k_local = np.zeros((len(local_indices), len(k)))
 P2k_ZF_local = np.zeros((len(local_indices), len(k)))
 V2k_local = np.zeros((len(local_indices), len(k)))
@@ -225,6 +226,16 @@ with h5.File(fname, 'r', swmr=True) as fl:
         Omk = fl['fields/Omk'][it+nt//2]
         Pk = fl['fields/Pk'][it+nt//2]
         Vk = fl['fields/Vk'][it+nt//2]
+        kpsq_loc  = kx**2 + ky**2
+        Phik_loc  = -Omk / kpsq_loc
+        Om_loc    = irft2np(Omk, Npx=Npx, Npy=Npy, Nx=Nx, sl=sl)
+        vx_loc    = irft2np(-1j*ky*Phik_loc, Npx=Npx, Npy=Npy, Nx=Nx, sl=sl)
+        vy_loc    = irft2np(1j*kx*Phik_loc, Npx=Npx, Npy=Npy, Nx=Nx, sl=sl)
+        wx_loc    = irft2np(-1j*ky*Pk, Npx=Npx, Npy=Npy, Nx=Nx, sl=sl)
+        Ombar_loc = np.mean(Om_loc, axis=1)
+        RPhi_loc  = np.mean(vy_loc*vx_loc, axis=1)
+        RP_loc    = np.mean(vy_loc*wx_loc, axis=1)
+        reynolds_power_local[idx] = np.mean((RPhi_loc + RP_loc) * Ombar_loc)
         P2k_local[idx,:] = PS(Pk, q, k, dk)
         P2k_ZF_local[idx,:] = PS_ZF(Pk, q, k, dk, slbar)
         V2k_local[idx,:] = VS(Vk, q, k, dk)
@@ -242,7 +253,9 @@ with h5.File(fname, 'r', swmr=True) as fl:
 
 # Gather results from all processes
 P2k_t = P2k_ZF_t = V2k_t = V2k_ZF_t = Ek_t = Ek_ZF_t = Kk_t = Kk_ZF_t = Wk_t = Wk_ZF_t = Gk_t = Gk_ZF_t = GKk_t = GKk_ZF_t = None
+reynolds_power_gathered = None
 if rank == 0:
+    reynolds_power_gathered = np.zeros(nt2)
     P2k_t = np.zeros((nt2, len(k)))
     P2k_ZF_t = np.zeros((nt2, len(k)))
     V2k_t = np.zeros((nt2, len(k)))
@@ -272,9 +285,15 @@ comm.Gather(Gk_local, Gk_t, root=0)
 comm.Gather(Gk_ZF_local, Gk_ZF_t, root=0)
 comm.Gather(GKk_local, GKk_t, root=0)
 comm.Gather(GKk_ZF_local, GKk_ZF_t, root=0)
+comm.Gather(reynolds_power_local, reynolds_power_gathered, root=0)
 
 if rank == 0:
     print("Gathered")
+
+    median = np.median(reynolds_power_gathered)
+    mad    = np.median(np.abs(reynolds_power_gathered - median))
+    mask   = np.abs(reynolds_power_gathered - median) <= 24 * mad
+    print(f"Outlier filter: {np.sum(~mask)}/{nt2} time steps excluded (|P_R - median| > 24·MAD)")
 
     P2k_turb_t = P2k_t - P2k_ZF_t
     V2k_turb_t = V2k_t - V2k_ZF_t
@@ -284,26 +303,26 @@ if rank == 0:
     Gk_turb_t = Gk_t - Gk_ZF_t
     GKk_turb_t = GKk_t - GKk_ZF_t
 
-    P2k = np.mean(P2k_t, axis=0)
-    P2k_ZF = np.mean(P2k_ZF_t, axis=0)
+    P2k = np.mean(P2k_t[mask, :], axis=0)
+    P2k_ZF = np.mean(P2k_ZF_t[mask, :], axis=0)
     P2k_turb = P2k - P2k_ZF
-    V2k = np.mean(V2k_t, axis=0)
-    V2k_ZF = np.mean(V2k_ZF_t, axis=0)
+    V2k = np.mean(V2k_t[mask, :], axis=0)
+    V2k_ZF = np.mean(V2k_ZF_t[mask, :], axis=0)
     V2k_turb = V2k - V2k_ZF
-    Ek = np.mean(Ek_t, axis=0)
-    Ek_ZF = np.mean(Ek_ZF_t, axis=0)
+    Ek = np.mean(Ek_t[mask, :], axis=0)
+    Ek_ZF = np.mean(Ek_ZF_t[mask, :], axis=0)
     Ek_turb = Ek - Ek_ZF
-    Kk = np.mean(Kk_t, axis=0)
-    Kk_ZF = np.mean(Kk_ZF_t, axis=0)
+    Kk = np.mean(Kk_t[mask, :], axis=0)
+    Kk_ZF = np.mean(Kk_ZF_t[mask, :], axis=0)
     Kk_turb = Kk - Kk_ZF
-    Wk = np.mean(Wk_t, axis=0)
-    Wk_ZF = np.mean(Wk_ZF_t, axis=0)
+    Wk = np.mean(Wk_t[mask, :], axis=0)
+    Wk_ZF = np.mean(Wk_ZF_t[mask, :], axis=0)
     Wk_turb = Wk - Wk_ZF
-    Gk = np.mean(Gk_t, axis=0)
-    Gk_ZF = np.mean(Gk_ZF_t, axis=0)
+    Gk = np.mean(Gk_t[mask, :], axis=0)
+    Gk_ZF = np.mean(Gk_ZF_t[mask, :], axis=0)
     Gk_turb = Gk - Gk_ZF
-    GKk = np.mean(GKk_t, axis=0)
-    GKk_ZF = np.mean(GKk_ZF_t, axis=0)
+    GKk = np.mean(GKk_t[mask, :], axis=0)
+    GKk_ZF = np.mean(GKk_ZF_t[mask, :], axis=0)
     GKk_turb = GKk - GKk_ZF
 
     #%% Save computed spectra

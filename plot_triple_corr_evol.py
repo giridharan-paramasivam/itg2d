@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from modules.mlsarray import MLSarray,Slicelist
 from modules.mlsarray import irft2np as original_irft2np, rft2np as original_rft2np, irftnp as original_irftnp, rftnp as original_rftnp
 import os
-from functools import partial
 from mpi4py import MPI
 
 # Initialize MPI
@@ -16,24 +15,8 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
-plt.rcParams.update({
-    'lines.linewidth': 4,
-    'axes.linewidth': 3,
-    'xtick.major.width': 3,
-    'ytick.major.width': 3,
-    'xtick.minor.visible': True,
-    'ytick.minor.visible': True,
-    'xtick.minor.width': 1.5,
-    'ytick.minor.width': 1.5,
-    'savefig.dpi': 100,
-    'font.size': 20,
-    'axes.titlesize': 22,
-    'axes.labelsize': 20,
-    'xtick.labelsize': 16,
-    'ytick.labelsize': 16,
-    'legend.fontsize': 16,
-    'legend.edgecolor': 'black'
-})
+from modules.plot_basics import apply_style
+apply_style()
 
 #%% Load the HDF5 file
 datadir = 'data/'

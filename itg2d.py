@@ -86,9 +86,9 @@ def fsavecb(t,y,flag):
         wx=irft2(-1j*ky*Pk) #diamagnetic flow: x comp
         Q=cp.mean(P*vx,1)
         Qbox=cp.mean(Q)
-        RPhi=cp.mean(vy*vx,1)
-        RP=cp.mean(vy*wx,1)
-        save_data(fl,'fluxes',ext_flag=True,Q=Q.get(),Qbox=Qbox.get(),RPhi=RPhi.get(),RP=RP.get(),t=t)
+        Rphi=cp.mean(vy*vx,1)
+        Rd=cp.mean(vy*wx,1)
+        save_data(fl,'fluxes',ext_flag=True,Q=Q.get(),Qbox=Qbox.get(),Rphi=Rphi.get(),Rd=Rd.get(),t=t)
     save_data(fl,'last',ext_flag=False,zk=zk.get(),t=t)
 
 def fshowcb(t,y):

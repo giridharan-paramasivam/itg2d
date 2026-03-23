@@ -151,6 +151,7 @@ else:
 local_indices = comm.scatter(indices, root=0)
 count_local = len(local_indices)
 
+reynolds_power_local = np.zeros(count_local, dtype=np.float64)
 Pik_phi_t_local = np.zeros((count_local, len(k)))
 Pik_d_t_local = np.zeros((count_local, len(k)))
 fk_t_local = np.zeros((count_local, len(k)))
@@ -166,6 +167,16 @@ with h5.File(fname, 'r', swmr=True) as fl:
         print(f"Rank {rank} processing time step {it}")
         Omk = fl['fields/Omk'][it+nt//2]
         Pk = fl['fields/Pk'][it+nt//2]
+        kpsq_loc = kx**2 + ky**2
+        Phik_loc = -Omk / kpsq_loc
+        Om_loc   = irft2np(Omk)
+        vx_loc   = irft2np(-1j*ky*Phik_loc)
+        vy_loc   = irft2np(1j*kx*Phik_loc)
+        wx_loc   = irft2np(-1j*ky*Pk)
+        Ombar_loc = np.mean(Om_loc, axis=1)
+        RPhi_loc  = np.mean(vy_loc*vx_loc, axis=1)
+        RP_loc    = np.mean(vy_loc*wx_loc, axis=1)
+        reynolds_power_local[idx] = np.mean((RPhi_loc + RP_loc) * Ombar_loc)
         Pik_phi_t_local[idx, :] = Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik_phi')
         Pik_d_t_local[idx, :] = Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik_d')
         fk_t_local[idx, :] = Eflux(Omk, Pk, kx, ky, k, delk, flag='fk')
@@ -186,7 +197,9 @@ PiGk_phi_t = None
 PiGk_d_t = None
 fGk_t = None
 dGk_t = None
+reynolds_power_gathered = None
 if rank == 0:
+    reynolds_power_gathered = np.zeros(nt2)
     Pik_phi_t = np.zeros((nt2, len(k)))
     Pik_d_t = np.zeros((nt2, len(k)))
     fk_t = np.zeros((nt2, len(k)))
@@ -206,20 +219,26 @@ comm.Gather(PiGk_phi_t_local, PiGk_phi_t, root=0)
 comm.Gather(PiGk_d_t_local, PiGk_d_t, root=0)
 comm.Gather(fGk_t_local, fGk_t, root=0)
 comm.Gather(dGk_t_local, dGk_t, root=0)
+comm.Gather(reynolds_power_local, reynolds_power_gathered, root=0)
 
 if rank == 0:
-    Pik_phi = np.mean(Pik_phi_t, axis=0)
-    Pik_d = np.mean(Pik_d_t, axis=0)
-    fk = np.mean(fk_t, axis=0)
-    dk = np.mean(dk_t, axis=0)
+    median = np.median(reynolds_power_gathered)
+    mad    = np.median(np.abs(reynolds_power_gathered - median))
+    mask   = np.abs(reynolds_power_gathered - median) <= 24 * mad
+    print(f"Outlier filter: {np.sum(~mask)}/{nt2} time steps excluded (|P_R - median| > 24·MAD)")
+
+    Pik_phi = np.mean(Pik_phi_t[mask, :], axis=0)
+    Pik_d = np.mean(Pik_d_t[mask, :], axis=0)
+    fk = np.mean(fk_t[mask, :], axis=0)
+    dk = np.mean(dk_t[mask, :], axis=0)
     Pik = Pik_phi + Pik_d
     idx_k = np.argmax(fk)
     k_f = k[idx_k]
-    PiGk_P = np.mean(PiGk_P_t, axis=0)
-    PiGk_phi = np.mean(PiGk_phi_t, axis=0)
-    PiGk_d = np.mean(PiGk_d_t, axis=0)
-    fGk = np.mean(fGk_t, axis=0)
-    dGk = np.mean(dGk_t, axis=0)
+    PiGk_P = np.mean(PiGk_P_t[mask, :], axis=0)
+    PiGk_phi = np.mean(PiGk_phi_t[mask, :], axis=0)
+    PiGk_d = np.mean(PiGk_d_t[mask, :], axis=0)
+    fGk = np.mean(fGk_t[mask, :], axis=0)
+    dGk = np.mean(dGk_t[mask, :], axis=0)
     PiGk = PiGk_P + PiGk_phi + PiGk_d
 
     out_file = fname.replace('out_', 'energy_flux_')

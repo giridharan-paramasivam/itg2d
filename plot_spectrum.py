@@ -5,32 +5,17 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({
-    'lines.linewidth': 4,
-    'axes.linewidth': 3,
-    'xtick.major.width': 3,
-    'ytick.major.width': 3,
-    'xtick.minor.visible': True,
-    'ytick.minor.visible': True,
-    'xtick.minor.width': 1.5,
-    'ytick.minor.width': 1.5,
-    'savefig.dpi': 100,
-    'font.size': 20,
-    'axes.titlesize': 22,
-    'axes.labelsize': 20,
-    'xtick.labelsize': 16,
-    'ytick.labelsize': 16,
-    'legend.fontsize': 16,
-    'legend.edgecolor': 'black'
-})
+from modules.plot_basics import apply_style, savename as _savename
+from functools import partial
+apply_style()
 
 #%% Load computed spectra
 # Npx=512
 Npx=1024
 datadir=f'data/{Npx}/'
 
-fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
-# fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+# fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
+fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 # fname = datadir + 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
 
 savefile = fname.replace('out_', 'spectrum_')
@@ -48,6 +33,8 @@ flux_file = fname.replace('out_', 'energy_flux_')
 with h5.File(flux_file, 'r') as fl:
     k_f       = float(fl['k_f'][()])
     k_lin     = float(fl['k_lin'][()])
+
+savename = partial(_savename, datadir, fname)
 
 #%% Plots
 
@@ -82,16 +69,13 @@ plt.ylabel(r'$\left|P_k\right|^2$')
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-if fname.endswith('out.h5'):
-    plt.savefig(datadir+'pressure_spectrum.pdf', dpi=100)
-else:
-    plt.savefig(datadir+"pressure_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+plt.savefig(savename('pressure_spectrum'), dpi=100)
 plt.show()
 
 plt.figure(figsize=(16, 9))
 plt.loglog(k[1:-1], Ek[1:-1], label = '$E_{k}$')
-plt.loglog(k[Ek_ZF>0][1:-1], Ek_ZF[Ek_ZF>0][1:-1], label = '$E_{k,\mathrm{ZF}}$')
-plt.loglog(k[1:-1], Ek_turb[1:-1], label = '$E_{k,\mathrm{turb}}$')
+plt.loglog(k[Ek_ZF>0][1:-1], Ek_ZF[Ek_ZF>0][1:-1], label = r'$E_{k,\mathrm{ZF}}$')
+plt.loglog(k[1:-1], Ek_turb[1:-1], label = r'$E_{k,\mathrm{turb}}$')
 plt.loglog(k[1:-1], Ek[k1]*k[1:-1]**(-5/3), 'r--', label = '$k^{-5/3}$')
 plt.loglog(k[1:-1], Ek[k1]*k[1:-1]**(-3), 'r--', label = '$k^{-3}$')
 plt.loglog(k[1:-1], Ek[k1]*k[1:-1]**(-5), 'k--', label = '$k^{-5}$')
@@ -101,10 +85,7 @@ plt.ylabel('$E_k$')
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-if fname.endswith('out.h5'):
-    plt.savefig(datadir+'energy_spectrum.pdf', dpi=100)
-else:
-    plt.savefig(datadir+"energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+plt.savefig(savename('energy_spectrum'), dpi=100)
 plt.show()
 
 # plt.figure(figsize=(16, 9))
@@ -143,8 +124,8 @@ plt.show()
 
 plt.figure(figsize=(16, 9))
 plt.loglog(k[1:-1], Gk[1:-1], label = '$G_{k}$')
-plt.loglog(k[Gk_ZF>0][1:-1], Gk_ZF[Gk_ZF>0][1:-1], label = '$G_{k,\mathrm{ZF}}$')
-plt.loglog(k[1:-1], Gk_turb[1:-1], label = '$G_{k,\mathrm{turb}}$')
+plt.loglog(k[Gk_ZF>0][1:-1], Gk_ZF[Gk_ZF>0][1:-1], label = r'$G_{k,\mathrm{ZF}}$')
+plt.loglog(k[1:-1], Gk_turb[1:-1], label = r'$G_{k,\mathrm{turb}}$')
 plt.loglog(k[1:-1], Gk[k1]*k[1:-1]**(-3), 'r--', label = '$k^{-3}$')
 plt.loglog(k[1:-1], Gk[k1]*k[1:-1]**(-5), 'k--', label = '$k^{-5}$')
 plt.xlabel('$k$')
@@ -152,10 +133,7 @@ plt.ylabel('$G_{k}$')
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-if fname.endswith('out.h5'):
-    plt.savefig(datadir+'generalized_energy_spectrum.pdf', dpi=100)
-else:
-    plt.savefig(datadir+"generalized_energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+plt.savefig(savename('generalized_energy_spectrum'), dpi=100)
 plt.show()
 
 # plt.figure(figsize=(16, 9))

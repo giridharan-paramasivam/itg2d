@@ -14,24 +14,8 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
-plt.rcParams.update({
-    'lines.linewidth': 4,
-    'axes.linewidth': 3,
-    'xtick.major.width': 3,
-    'ytick.major.width': 3,
-    'xtick.minor.visible': True,
-    'ytick.minor.visible': True,
-    'xtick.minor.width': 1.5,
-    'ytick.minor.width': 1.5,
-    'savefig.dpi': 100,
-    'font.size': 20,
-    'axes.titlesize': 22,
-    'axes.labelsize': 20,
-    'xtick.labelsize': 16,
-    'ytick.labelsize': 16,
-    'legend.fontsize': 16,
-    'legend.edgecolor': 'black'
-})
+from modules.plot_basics import apply_style
+apply_style()
 
 #%% Load the HDF5 file
 comm.Barrier()

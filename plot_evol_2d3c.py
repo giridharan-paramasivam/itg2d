@@ -5,24 +5,8 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({
-    'lines.linewidth': 4,
-    'axes.linewidth': 3,
-    'xtick.major.width': 3,
-    'ytick.major.width': 3,
-    'xtick.minor.visible': True,
-    'ytick.minor.visible': True,
-    'xtick.minor.width': 1.5,
-    'ytick.minor.width': 1.5,
-    'savefig.dpi': 100,
-    'font.size': 20,
-    'axes.titlesize': 22,
-    'axes.labelsize': 20,
-    'xtick.labelsize': 16,
-    'ytick.labelsize': 16,
-    'legend.fontsize': 16,
-    'legend.edgecolor': 'black'
-})
+from modules.plot_basics import apply_style
+apply_style()
 
 #%% Load the computed HDF5 file (produced by compute_evol_2d3c.py)
 
@@ -48,6 +32,9 @@ with h5.File(evol_fname, 'r') as fl:
     gen_energy_ZF_t = fl['gen_energy_ZF_t'][:]
     entropy_t       = fl['entropy_t'][:]
     Q_t             = fl['Q_t'][:]
+    electric_reynolds_power_t    = fl['electric_reynolds_power_t'][:]
+    diamagnetic_reynolds_power_t = fl['diamagnetic_reynolds_power_t'][:]
+    reynolds_power_t             = fl['reynolds_power_t'][:]
 
 nt = len(t)
 
@@ -198,4 +185,26 @@ if fname.endswith('out.h5'):
     plt.savefig(datadir+'Q_vs_t.pdf')
 else:
     plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'Q_vs_t_').replace('.h5', '.png'), dpi=100)
+plt.show()
+
+# Plot Reynolds power vs time
+rp_half   = reynolds_power_t[nt//2:]
+rp_median = np.median(rp_half)
+rp_mad    = np.median(np.abs(rp_half - rp_median))
+
+plt.figure(figsize=(16, 9))
+plt.plot(t, electric_reynolds_power_t, '-', label=r'$\langle R_{\phi} \partial_x \bar{v}_y \rangle$')
+plt.plot(t, diamagnetic_reynolds_power_t, '-', label=r'$\langle R_{\mathrm{d}} \partial_x \bar{v}_y \rangle$')
+plt.plot(t, reynolds_power_t, '-', label=r'$\langle R \partial_x \bar{v}_y \rangle$')
+plt.axhline(rp_median + 24*rp_mad, color='k', lw=1.5, ls='--', label=r'$\mathrm{median} \pm 24\,\mathrm{MAD}$')
+plt.axhline(rp_median - 24*rp_mad, color='k', lw=1.5, ls='--')
+plt.xlabel(r'$\gamma t$')
+plt.ylabel('Reynolds power')
+plt.grid()
+plt.legend()
+plt.tight_layout()
+if fname.endswith('out.h5'):
+    plt.savefig(datadir+'reynolds_power_vs_t.pdf')
+else:
+    plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'reynolds_power_vs_t_').replace('.h5', '.png'), dpi=100)
 plt.show()

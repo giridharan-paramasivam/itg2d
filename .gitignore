@@ -5,6 +5,7 @@
 /modules/__pycache__
 /__pycache__
 /.github
+/.vscode
 *.log
 *.lyx~
 *.lyx#

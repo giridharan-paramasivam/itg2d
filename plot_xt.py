@@ -10,24 +10,9 @@ from modules.gamma import gam_max
 import os
 import glob 
 
-plt.rcParams.update({
-    'lines.linewidth': 4,
-    'axes.linewidth': 3,
-    'xtick.major.width': 3,
-    'ytick.major.width': 3,
-    'xtick.minor.visible': True,
-    'ytick.minor.visible': True,
-    'xtick.minor.width': 1.5,
-    'ytick.minor.width': 1.5,
-    'savefig.dpi': 100,
-    'font.size': 20,
-    'axes.titlesize': 22,
-    'axes.labelsize': 20,
-    'xtick.labelsize': 16,
-    'ytick.labelsize': 16,
-    'legend.fontsize': 16,
-    'legend.edgecolor': 'black'
-})
+from modules.plot_basics import apply_style, savename as _savename
+from functools import partial
+apply_style()
 
 #%% Load the HDF5 file
 
@@ -52,8 +37,8 @@ fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 stride = 4
 
 with h5.File(fname, 'r', swmr=True) as fl:
-    RPhi_t = fl['fluxes/RPhi'][::stride].astype(np.float32)
-    RP_t = fl['fluxes/RP'][::stride].astype(np.float32)
+    Rphi_t = fl['fluxes/RPhi'][::stride].astype(np.float32)
+    Rd_t = fl['fluxes/RP'][::stride].astype(np.float32)
     vbar_t = fl['zonal/vbar'][::stride].astype(np.float32)
     dxvbar_t = fl['zonal/Ombar'][::stride].astype(np.float32)
     t = fl['fluxes/t'][::stride].astype(np.float32)
@@ -88,13 +73,15 @@ x,y=np.meshgrid(np.array(xl),np.array(yl),indexing='ij')
 nt_data = min(nt, vbar_t.shape[0])
 xm, tm = np.meshgrid(x[:, 0], t[:nt_data])
 
-R_t = RPhi_t + RP_t
-del RPhi_t, RP_t
+R_t = Rphi_t + Rd_t
+del Rphi_t, Rd_t
 
 vbar_lim   = float(np.percentile(np.abs(vbar_t),75))
 dxvbar_lim = float(np.percentile(np.abs(dxvbar_t),75))
 R_lim      = float(np.percentile(np.abs(R_t),75))
 P_lim      = float(np.percentile(np.abs(R_t[:nt_data] * dxvbar_t[:nt_data]),75))
+
+savename = partial(_savename, datadir, fname)
 
 #%% Overview 2x2
 
@@ -121,10 +108,7 @@ del P_t
 
 fig.suptitle(rf'$\kappa_T={kapt}$, $D={D}$', fontsize=20, y=1.03)
 plt.tight_layout()
-if fname.endswith('out.h5'):
-    plt.savefig(datadir+'R_and_P_xt_plots.pdf', dpi=300, bbox_inches='tight')
-else:
-    plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'R_and_P_xt_plots_').replace('.h5', '.pdf'), dpi=100, bbox_inches='tight')
+plt.savefig(savename('R_and_P_xt_plots'), dpi=100, bbox_inches='tight')
 plt.show()
 plt.close()
 
@@ -137,41 +121,38 @@ plt.ylabel(r'$\gamma t$')
 plt.title(r'Zonal flow: $\partial_x\overline{\phi}$')
 plt.colorbar()
 plt.tight_layout(pad=0.5)
-if fname.endswith('out.h5'):
-    plt.savefig(datadir+'vbar_xt.pdf', dpi=300, bbox_inches='tight')
-else:
-    plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'vbar_xt_').replace('.h5', '.pdf'), dpi=100, bbox_inches='tight')
+plt.savefig(savename('vbar_xt'), dpi=100, bbox_inches='tight')
 plt.show()
 plt.close()
 del vbar_t
 
 #%% Reynolds stresses
-# Reload RPhi_t and RP_t from disk (freed earlier to save memory)
+# Reload Rphi_t and Rd_t from disk (freed earlier to save memory)
 with h5.File(fname, 'r', swmr=True) as fl:
-    RPhi_t = fl['fluxes/RPhi'][::stride].astype(np.float32)
-    RP_t   = fl['fluxes/RP'][::stride].astype(np.float32)
+    Rphi_t = fl['fluxes/RPhi'][::stride].astype(np.float32)
+    Rd_t   = fl['fluxes/RP'][::stride].astype(np.float32)
 
-RPhi_lim = float(np.percentile(np.abs(RPhi_t),75))
-RP_lim   = float(np.percentile(np.abs(RP_t),75))
+RPhi_lim = float(np.percentile(np.abs(Rphi_t),75))
+RP_lim   = float(np.percentile(np.abs(Rd_t),75))
 
 fig, axs = plt.subplots(1, 3, figsize=(16, 9), sharey=True)
 
-axs[0].pcolormesh(xm, tm, RPhi_t[:nt_data,:], vmin=-RPhi_lim, vmax=RPhi_lim, cmap='seismic')
+axs[0].pcolormesh(xm, tm, Rphi_t[:nt_data,:], vmin=-RPhi_lim, vmax=RPhi_lim, cmap='seismic')
 axs[0].set_title(r'$R_{\mathrm{\phi}}$')
 axs[0].set_xlabel('x')
 axs[0].set_ylabel(r'$\gamma t$')
 fig.colorbar(axs[0].collections[0], ax=axs[0])
-PPhi_t = RPhi_t[:nt_data] * dxvbar_t[:nt_data]
+PPhi_t = Rphi_t[:nt_data] * dxvbar_t[:nt_data]
 PPhi_lim = float(np.percentile(np.abs(PPhi_t),75))
-del RPhi_t
+del Rphi_t
 
-axs[1].pcolormesh(xm, tm, RP_t[:nt_data,:], vmin=-RP_lim, vmax=RP_lim, cmap='seismic')
+axs[1].pcolormesh(xm, tm, Rd_t[:nt_data,:], vmin=-RP_lim, vmax=RP_lim, cmap='seismic')
 axs[1].set_title(r'$R_{\mathrm{d}}$')
 axs[1].set_xlabel('x')
 fig.colorbar(axs[1].collections[0], ax=axs[1])
-PP_t = RP_t[:nt_data] * dxvbar_t[:nt_data]
+PP_t = Rd_t[:nt_data] * dxvbar_t[:nt_data]
 PP_lim = float(np.percentile(np.abs(PP_t),75))
-del RP_t, dxvbar_t
+del Rd_t, dxvbar_t
 
 axs[2].pcolormesh(xm, tm, R_t[:nt_data,:], vmin=-R_lim, vmax=R_lim, cmap='seismic')
 axs[2].set_title(r'$R=R_{\mathrm{\phi}} + R_{\mathrm{d}}$')
@@ -181,10 +162,7 @@ del R_t
 
 fig.suptitle('Reynolds Stress', fontsize=20)
 plt.tight_layout()
-if fname.endswith('out.h5'):
-    plt.savefig(datadir+'R_xt.pdf', dpi=300, bbox_inches='tight')
-else:
-    plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'R_xt_').replace('.h5', '.pdf'), dpi=100, bbox_inches='tight')
+plt.savefig(savename('R_xt'), dpi=100, bbox_inches='tight')
 plt.show()
 plt.close()
 
@@ -213,10 +191,7 @@ del P_t
 
 fig.suptitle('Reynolds stress production', fontsize=20)
 plt.tight_layout()
-if fname.endswith('out.h5'):
-    plt.savefig(datadir+'P_xt.pdf', dpi=300, bbox_inches='tight')
-else:
-    plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'P_xt_').replace('.h5', '.pdf'), dpi=100, bbox_inches='tight')
+plt.savefig(savename('P_xt'), dpi=100, bbox_inches='tight')
 plt.show()
 plt.close()
 
@@ -233,10 +208,7 @@ plt.ylabel(r'$\gamma t$')
 plt.title('Heat flux: $Q$')
 plt.colorbar()
 plt.tight_layout(pad=0.5)
-if fname.endswith('out.h5'):
-    plt.savefig(datadir+'Q_xt.pdf', dpi=300, bbox_inches='tight')
-else:
-    plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'Q_xt_').replace('.h5', '.pdf'), dpi=100, bbox_inches='tight')
+plt.savefig(savename('Q_xt'), dpi=100, bbox_inches='tight')
 plt.show()
 plt.close()
 del Q_t, xm, tm

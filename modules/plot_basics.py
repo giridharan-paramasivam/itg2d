@@ -2,6 +2,37 @@ import numpy as np
 # from modules.mlsarray import slicelist
 import matplotlib.pyplot as plt
 
+def apply_style():
+    plt.rcParams.update({
+        'lines.linewidth': 4,
+        'axes.linewidth': 3,
+        'xtick.major.width': 3,
+        'ytick.major.width': 3,
+        'xtick.major.size': 6,
+        'ytick.major.size': 6,
+        'xtick.minor.visible': True,
+        'ytick.minor.visible': True,
+        'xtick.minor.width': 1.5,
+        'ytick.minor.width': 1.5,
+        'xtick.minor.size': 3,
+        'ytick.minor.size': 3,
+        'xtick.direction': 'in',
+        'ytick.direction': 'in',
+        'savefig.dpi': 300,
+        'font.size': 20,
+        'axes.titlesize': 22,
+        'axes.labelsize': 20,
+        'xtick.labelsize': 16,
+        'ytick.labelsize': 16,
+        'legend.fontsize': 16,
+        'legend.edgecolor': 'black'
+    })
+
+def savename(datadir, fname, prefix):
+    if fname.endswith('out.h5'):
+        return datadir + prefix + '_.pdf'
+    return datadir + prefix + '_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf')
+
 def symmetrize_y_axis(axes):
     y_max = np.abs(axes.get_ylim()).max()
     axes.set_ylim(ymin=-y_max, ymax=y_max)

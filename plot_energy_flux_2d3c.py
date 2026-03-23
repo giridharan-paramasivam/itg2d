@@ -6,26 +6,11 @@ matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde, skew, kurtosis
 
-plt.rcParams.update({
-    'lines.linewidth': 4,
-    'axes.linewidth': 3,
-    'xtick.major.width': 3,
-    'ytick.major.width': 3,
-    'xtick.minor.visible': True,
-    'ytick.minor.visible': True,
-    'xtick.minor.width': 1.5,
-    'ytick.minor.width': 1.5,
-    'savefig.dpi': 100,
-    'font.size': 20,
-    'axes.titlesize': 22,
-    'axes.labelsize': 20,
-    'xtick.labelsize': 16,
-    'ytick.labelsize': 16,
-    'legend.fontsize': 16,
-    'legend.edgecolor': 'black'
-})
+from modules.plot_basics import apply_style
+apply_style()
 
 #%% Load computed flux data
+# Time-averaged fluxes are MAD-filtered (24 MAD threshold on Reynolds power) by compute_energy_flux_2d3c.py
 
 Npx=1024
 datadir=f'data_2d3c/{Npx}/'
@@ -132,9 +117,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'energy_flux.pdf', dpi=100)
+    plt.savefig(datadir+'E_flux.pdf', dpi=100)
 else:
-    plt.savefig(datadir+"energy_flux_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_flux_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 plt.figure(figsize=(16, 9))
@@ -149,9 +134,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'energy_injection.pdf', dpi=100)
+    plt.savefig(datadir+'E_injection.pdf', dpi=100)
 else:
-    plt.savefig(datadir+"energy_injection_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_injection_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 plt.figure(figsize=(16, 9))
@@ -166,24 +151,26 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'dissipation.pdf', dpi=100)
+    plt.savefig(datadir+'E_dissipation.pdf', dpi=100)
 else:
-    plt.savefig(datadir+"dissipation_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_dissipation_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 # PDF of fluxes at k_f
 plt.figure(figsize=(16, 9))
+xlim = max(np.percentile(np.abs(s), 99) for s in [Pik_series_norm, Pik_phi_series_norm, Pik_d_series_norm])
 for series, label, color in zip([Pik_series_norm, Pik_phi_series_norm, Pik_d_series_norm],
                         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
                         ['C0', 'C1', 'C2']):
     s = skew(series)
     f = kurtosis(series, fisher=False)  # Gaussian = 3
     kde = gaussian_kde(series)
-    x_range = np.linspace(series.min(), series.max(), 200)
-    plt.hist(series, bins=50, density=True, alpha=0.3, color=color)
+    x_range = np.linspace(-xlim, xlim, 200)
+    plt.hist(series, bins=50, density=True, alpha=0.3, color=color, range=(-xlim, xlim))
     plt.plot(x_range, kde(x_range), label=rf'{label}  $S={s:.2f},\ F={f:.2f}$', color=color)
 plt.xlabel(r'$\frac{\Pi_k-<\Pi_k>}{\sigma}$')
 plt.ylabel('PDF')
+plt.xlim(-xlim, xlim)
 plt.gca().text(0.97, 0.97, rf'$k_f={k_f:.2f}$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
@@ -191,24 +178,26 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'energy_flux_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'E_flux_pdf_.pdf', dpi=100)
 else:
-    plt.savefig(datadir+"energy_flux_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_flux_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 # PDF of fluxes at k=kymax
 plt.figure(figsize=(16, 9))
+xlim = max(np.percentile(np.abs(s), 99) for s in [Pik_series_max_norm, Pik_phi_series_max_norm, Pik_d_series_max_norm])
 for series, label, color in zip([Pik_series_max_norm, Pik_phi_series_max_norm, Pik_d_series_max_norm],
                         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
                         ['C0', 'C1', 'C2']):
     s = skew(series)
     f = kurtosis(series, fisher=False)  # Gaussian = 3
     kde = gaussian_kde(series)
-    x_range = np.linspace(series.min(), series.max(), 200)
-    plt.hist(series, bins=50, density=True, alpha=0.3, color=color)
+    x_range = np.linspace(-xlim, xlim, 200)
+    plt.hist(series, bins=50, density=True, alpha=0.3, color=color, range=(-xlim, xlim))
     plt.plot(x_range, kde(x_range), label=rf'{label}  $S={s:.2f},\ F={f:.2f}$', color=color)
 plt.xlabel(r'$\frac{\Pi_k-<\Pi_k>}{\sigma}$')
 plt.ylabel('PDF')
+plt.xlim(-xlim, xlim)
 plt.gca().text(0.97, 0.97, rf'$k_{{lin}}={k_lin:.2f}$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
@@ -216,24 +205,26 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'energy_flux_kymax_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'E_flux_kymax_pdf_.pdf', dpi=100)
 else:
-    plt.savefig(datadir+"energy_flux_kymax_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_flux_kymax_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 # PDF of fluxes at k=1
 plt.figure(figsize=(16, 9))
+xlim = max(np.percentile(np.abs(s), 99) for s in [Pik_series_1_norm, Pik_phi_series_1_norm, Pik_d_series_1_norm])
 for series, label, color in zip([Pik_series_1_norm, Pik_phi_series_1_norm, Pik_d_series_1_norm],
                         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
                         ['C0', 'C1', 'C2']):
     s = skew(series)
     f = kurtosis(series, fisher=False)  # Gaussian = 3
     kde = gaussian_kde(series)
-    x_range = np.linspace(series.min(), series.max(), 200)
-    plt.hist(series, bins=50, density=True, alpha=0.3, color=color)
+    x_range = np.linspace(-xlim, xlim, 200)
+    plt.hist(series, bins=50, density=True, alpha=0.3, color=color, range=(-xlim, xlim))
     plt.plot(x_range, kde(x_range), label=rf'{label}  $S={s:.2f},\ F={f:.2f}$', color=color)
 plt.xlabel(r'$\frac{\Pi_k-<\Pi_k>}{\sigma}$')
 plt.ylabel('PDF')
+plt.xlim(-xlim, xlim)
 plt.gca().text(0.97, 0.97, r'$k=1$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
@@ -241,9 +232,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'energy_flux_k1_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'E_flux_k1_pdf_.pdf', dpi=100)
 else:
-    plt.savefig(datadir+"energy_flux_k1_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_flux_k1_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 # G-flux: PiGk components
@@ -263,9 +254,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'Gflux.pdf', dpi=100)
+    plt.savefig(datadir+'G_flux.pdf', dpi=100)
 else:
-    plt.savefig(datadir+'Gflux_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_flux_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 # G-flux: fGk
@@ -281,9 +272,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'Ginjection.pdf', dpi=100)
+    plt.savefig(datadir+'G_injection.pdf', dpi=100)
 else:
-    plt.savefig(datadir+'Ginjection_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_injection_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 # G-flux: dGk
@@ -299,13 +290,14 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'Gdissipation.pdf', dpi=100)
+    plt.savefig(datadir+'G_dissipation.pdf', dpi=100)
 else:
-    plt.savefig(datadir+'Gdissipation_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_dissipation_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 # G-flux PDF at k_f
 plt.figure(figsize=(16, 9))
+xlim = max(np.percentile(np.abs(s), 99) for s in [PiGk_series_norm, PiGk_P_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm])
 for series, label, color in zip(
         [PiGk_series_norm, PiGk_P_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm],
         [r'$\Pi_{G,k}$', r'$\Pi_{G,k,P}$', r'$\Pi_{G,k,\phi}$', r'$\Pi_{G,k,d}$'],
@@ -313,11 +305,12 @@ for series, label, color in zip(
     s = skew(series)
     f = kurtosis(series, fisher=False)
     kde = gaussian_kde(series)
-    x_range = np.linspace(series.min(), series.max(), 200)
-    plt.hist(series, bins=50, density=True, alpha=0.3, color=color)
+    x_range = np.linspace(-xlim, xlim, 200)
+    plt.hist(series, bins=50, density=True, alpha=0.3, color=color, range=(-xlim, xlim))
     plt.plot(x_range, kde(x_range), label=rf'{label}  $S={s:.2f},\ F={f:.2f}$', color=color)
 plt.xlabel(r'$\frac{\Pi_{G,k}-<\Pi_{G,k}>}{\sigma}$')
 plt.ylabel('PDF')
+plt.xlim(-xlim, xlim)
 plt.gca().text(0.97, 0.97, rf'$k_f={k_f:.2f}$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
@@ -325,13 +318,14 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'Gflux_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'G_flux_pdf_.pdf', dpi=100)
 else:
-    plt.savefig(datadir+'Gflux_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_flux_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 # G-flux PDF at k_lin
 plt.figure(figsize=(16, 9))
+xlim = max(np.percentile(np.abs(s), 99) for s in [PiGk_series_max_norm, PiGk_P_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm])
 for series, label, color in zip(
         [PiGk_series_max_norm, PiGk_P_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm],
         [r'$\Pi_{G,k}$', r'$\Pi_{G,k,P}$', r'$\Pi_{G,k,\phi}$', r'$\Pi_{G,k,d}$'],
@@ -339,11 +333,12 @@ for series, label, color in zip(
     s = skew(series)
     f = kurtosis(series, fisher=False)
     kde = gaussian_kde(series)
-    x_range = np.linspace(series.min(), series.max(), 200)
-    plt.hist(series, bins=50, density=True, alpha=0.3, color=color)
+    x_range = np.linspace(-xlim, xlim, 200)
+    plt.hist(series, bins=50, density=True, alpha=0.3, color=color, range=(-xlim, xlim))
     plt.plot(x_range, kde(x_range), label=rf'{label}  $S={s:.2f},\ F={f:.2f}$', color=color)
 plt.xlabel(r'$\frac{\Pi_{G,k}-<\Pi_{G,k}>}{\sigma}$')
 plt.ylabel('PDF')
+plt.xlim(-xlim, xlim)
 plt.gca().text(0.97, 0.97, rf'$k_{{lin}}={k_lin:.2f}$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
@@ -351,13 +346,14 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'Gflux_kymax_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'G_flux_kymax_pdf_.pdf', dpi=100)
 else:
-    plt.savefig(datadir+'Gflux_kymax_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_flux_kymax_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
 # G-flux PDF at k=1
 plt.figure(figsize=(16, 9))
+xlim = max(np.percentile(np.abs(s), 99) for s in [PiGk_series_1_norm, PiGk_P_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm])
 for series, label, color in zip(
         [PiGk_series_1_norm, PiGk_P_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm],
         [r'$\Pi_{G,k}$', r'$\Pi_{G,k,P}$', r'$\Pi_{G,k,\phi}$', r'$\Pi_{G,k,d}$'],
@@ -365,11 +361,12 @@ for series, label, color in zip(
     s = skew(series)
     f = kurtosis(series, fisher=False)
     kde = gaussian_kde(series)
-    x_range = np.linspace(series.min(), series.max(), 200)
-    plt.hist(series, bins=50, density=True, alpha=0.3, color=color)
+    x_range = np.linspace(-xlim, xlim, 200)
+    plt.hist(series, bins=50, density=True, alpha=0.3, color=color, range=(-xlim, xlim))
     plt.plot(x_range, kde(x_range), label=rf'{label}  $S={s:.2f},\ F={f:.2f}$', color=color)
 plt.xlabel(r'$\frac{\Pi_{G,k}-<\Pi_{G,k}>}{\sigma}$')
 plt.ylabel('PDF')
+plt.xlim(-xlim, xlim)
 plt.gca().text(0.97, 0.97, r'$k=1$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
@@ -377,7 +374,7 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'Gflux_k1_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'G_flux_k1_pdf_.pdf', dpi=100)
 else:
-    plt.savefig(datadir+'Gflux_k1_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_flux_k1_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
