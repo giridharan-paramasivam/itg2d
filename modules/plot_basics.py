@@ -2,6 +2,9 @@ import numpy as np
 # from modules.mlsarray import slicelist
 import matplotlib.pyplot as plt
 
+FIGSIZE_SINGLE = (16, 9)   # full-width single figure
+FIGSIZE_DOUBLE = (10, 8)   # half-width panel in a two-panel layout
+
 def apply_style():
     plt.rcParams.update({
         'lines.linewidth': 4,
@@ -19,12 +22,12 @@ def apply_style():
         'xtick.direction': 'in',
         'ytick.direction': 'in',
         'savefig.dpi': 300,
-        'font.size': 22,
-        'axes.titlesize': 22,
-        'axes.labelsize': 20,
-        'xtick.labelsize': 20,
-        'ytick.labelsize': 20,
-        'legend.fontsize': 20,
+        'font.size': 32,
+        'axes.titlesize': 32,
+        'axes.labelsize': 32,
+        'xtick.labelsize': 28,
+        'ytick.labelsize': 28,
+        'legend.fontsize': 28,
         'legend.edgecolor': 'black'
     })
 
@@ -37,7 +40,7 @@ def symmetrize_y_axis(axes):
     y_max = np.abs(axes.get_ylim()).max()
     axes.set_ylim(ymin=-y_max, ymax=y_max)
 
-def irft2_g(uk, Nx, Ny):
+def irft2_g(uk, Nx, Npx, Npy):
     Nxh = int(Nx/2)
     u = np.zeros((Npx, int(Npy/2)+1), dtype=complex)
     u[:Nxh,:Nxh] = uk[:Nxh,:Nxh]

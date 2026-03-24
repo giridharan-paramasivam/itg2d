@@ -39,8 +39,8 @@ def scatter_with_fit(ax, x, y):
 Npx=1024
 datadir=f'data/{Npx}/'
 
-# fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
-fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
+# fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 # fname = datadir + 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
 
 stride = 10

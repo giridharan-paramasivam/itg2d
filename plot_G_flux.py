@@ -89,7 +89,7 @@ plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_flux'), dpi=100)
+plt.savefig(savename('G_flux'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% G-flux: injection
@@ -105,7 +105,7 @@ plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_injection'), dpi=100)
+plt.savefig(savename('G_injection'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% G-flux: dissipation
@@ -121,7 +121,7 @@ plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_dissipation'), dpi=100)
+plt.savefig(savename('G_dissipation'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% G-flux PDF at k_Gf
@@ -149,7 +149,7 @@ plt.gca().text(0.97, 0.97, rf'$k_{{Gf}}={k_Gf:.2f}$', transform=plt.gca().transA
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_flux_pdf'), dpi=100)
+plt.savefig(savename('G_flux_pdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% G-flux: PDF at k_lin
@@ -177,7 +177,7 @@ plt.gca().text(0.97, 0.97, rf'$k_{{lin}}={k_lin:.2f}$', transform=plt.gca().tran
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_flux_kymax_pdf'), dpi=100)
+plt.savefig(savename('G_flux_kymax_pdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% G-flux: PDF at k=1
@@ -205,7 +205,7 @@ plt.gca().text(0.97, 0.97, r'$k=1$', transform=plt.gca().transAxes,
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_flux_k1_pdf'), dpi=100)
+plt.savefig(savename('G_flux_k1_pdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% G-flux CCDF at k_Gf
@@ -227,7 +227,7 @@ plt.gca().text(0.97, 0.97, rf'$k_{{Gf}}={k_Gf:.2f}$', transform=plt.gca().transA
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_flux_ccdf'), dpi=100)
+plt.savefig(savename('G_flux_ccdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% G-flux CCDF at k_lin
@@ -249,7 +249,7 @@ plt.gca().text(0.97, 0.97, rf'$k_{{lin}}={k_lin:.2f}$', transform=plt.gca().tran
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_flux_kymax_ccdf'), dpi=100)
+plt.savefig(savename('G_flux_kymax_ccdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% G-flux CCDF at k=1
@@ -271,5 +271,5 @@ plt.gca().text(0.97, 0.97, r'$k=1$', transform=plt.gca().transAxes,
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_flux_k1_ccdf'), dpi=100)
+plt.savefig(savename('G_flux_k1_ccdf'), dpi=100, bbox_inches='tight')
 plt.show()

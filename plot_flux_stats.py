@@ -74,7 +74,7 @@ plt.ylabel(r'$S(\Pi_k)$')
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_flux_skewness'), dpi=100)
+plt.savefig(savename('E_flux_skewness'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # E-flux flatness
@@ -92,7 +92,7 @@ plt.ylabel(r'$F(\Pi_k)$')
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_flux_flatness'), dpi=100)
+plt.savefig(savename('E_flux_flatness'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # G-flux skewness
@@ -111,7 +111,7 @@ plt.ylabel(r'$S(\Pi_{G,k})$')
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_flux_skewness'), dpi=100)
+plt.savefig(savename('G_flux_skewness'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # G-flux flatness
@@ -130,5 +130,5 @@ plt.ylabel(r'$F(\Pi_{G,k})$')
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('G_flux_flatness'), dpi=100)
+plt.savefig(savename('G_flux_flatness'), dpi=100, bbox_inches='tight')
 plt.show()

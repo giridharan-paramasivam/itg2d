@@ -2,6 +2,7 @@
 import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
+from modules.plot_basics import FIGSIZE_DOUBLE
 import torch 
 
 plt.rcParams['lines.linewidth'] = 4
@@ -125,7 +126,7 @@ gam_wo_FLR_shifted = np.fft.fftshift(gam_wo_FLR, axes=0)
 #%% Plot
 
 slky = slice(0, int(Ny/10))
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(ky[0,slky].T,gam_kxmax[slky].T,'.-',label='$k_x= \\arg\\max_{k_x} \\left(\\gamma\\right)$')
 plt.plot(ky[0,slky].T,gam_kx0[slky].T,'.-',label='$k_x=0$')
 plt.plot(ky[0,slky].T,gam_wo_FLR_kxmax[slky].T,'.-',label='$k_x= \\arg\\max_{k_x} \\left(\\gamma\\right)$, no FLR')

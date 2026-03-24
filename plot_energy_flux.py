@@ -6,7 +6,7 @@ matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import skew, kurtosis
 
-from modules.plot_basics import apply_style, savename as _savename
+from modules.plot_basics import apply_style, savename as _savename, FIGSIZE_DOUBLE
 from functools import partial
 apply_style()
 
@@ -66,7 +66,7 @@ savename = partial(_savename, datadir, fname)
 
 #%% E-flux
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], Pik[1:-1], label = r'$\Pi_{k}$')
 plt.plot(k[1:-1], Pik_phi[1:-1], label = r'$\Pi_{k,\mathrm{\phi}}$')
 plt.plot(k[1:-1], Pik_d[1:-1], label = r'$\Pi_{k,\mathrm{d}}$')
@@ -80,12 +80,12 @@ plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_flux'), dpi=100)
+plt.savefig(savename('E_flux'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% E-flux: injection
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], fk[1:-1], label = r'$f_{k,\mathrm{total}}$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
 plt.axvline(x=k_f, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f:.2f}$')
@@ -96,12 +96,12 @@ plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_injection'), dpi=100)
+plt.savefig(savename('E_injection'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% E-flux: dissipation
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], dk[1:-1], label = r'$d_{k,\mathrm{total}}$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
 plt.axvline(x=k_f, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f:.2f}$')
@@ -112,12 +112,12 @@ plt.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_dissipation'), dpi=100)
+plt.savefig(savename('E_dissipation'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% E-flux PDF at k_f
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 95) for s in [Pik_series_norm, Pik_phi_series_norm, Pik_d_series_norm])
 for series, label, color in zip([Pik_series_norm, Pik_phi_series_norm, Pik_d_series_norm],
                         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
@@ -139,12 +139,12 @@ plt.gca().text(0.97, 0.97, rf'$k_f={k_f:.2f}$', transform=plt.gca().transAxes,
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_flux_pdf'), dpi=100)
+plt.savefig(savename('E_flux_pdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% E-flux PDF at k=kymax
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 95) for s in [Pik_series_max_norm, Pik_phi_series_max_norm, Pik_d_series_max_norm])
 for series, label, color in zip([Pik_series_max_norm, Pik_phi_series_max_norm, Pik_d_series_max_norm],
                         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
@@ -166,12 +166,12 @@ plt.gca().text(0.97, 0.97, rf'$k_{{lin}}={k_lin:.2f}$', transform=plt.gca().tran
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_flux_kymax_pdf'), dpi=100)
+plt.savefig(savename('E_flux_kymax_pdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% E-flux PDF at k=1
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 95) for s in [Pik_series_1_norm, Pik_phi_series_1_norm, Pik_d_series_1_norm])
 for series, label, color in zip([Pik_series_1_norm, Pik_phi_series_1_norm, Pik_d_series_1_norm],
                         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
@@ -193,12 +193,12 @@ plt.gca().text(0.97, 0.97, r'$k=1$', transform=plt.gca().transAxes,
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_flux_k1_pdf'), dpi=100)
+plt.savefig(savename('E_flux_k1_pdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% E-flux CCDF at k_f
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 for series, label, color in zip(
         [Pik_series_norm, Pik_phi_series_norm, Pik_d_series_norm],
         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
@@ -215,12 +215,12 @@ plt.gca().text(0.97, 0.97, rf'$k_f={k_f:.2f}$', transform=plt.gca().transAxes,
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_flux_ccdf'), dpi=100)
+plt.savefig(savename('E_flux_ccdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% E-flux CCDF at k_lin
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 for series, label, color in zip(
         [Pik_series_max_norm, Pik_phi_series_max_norm, Pik_d_series_max_norm],
         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
@@ -237,12 +237,12 @@ plt.gca().text(0.97, 0.97, rf'$k_{{lin}}={k_lin:.2f}$', transform=plt.gca().tran
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_flux_kymax_ccdf'), dpi=100)
+plt.savefig(savename('E_flux_kymax_ccdf'), dpi=100, bbox_inches='tight')
 plt.show()
 
 #%% E-flux CCDF at k=1
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 for series, label, color in zip(
         [Pik_series_1_norm, Pik_phi_series_1_norm, Pik_d_series_1_norm],
         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
@@ -259,5 +259,5 @@ plt.gca().text(0.97, 0.97, r'$k=1$', transform=plt.gca().transAxes,
 plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
-plt.savefig(savename('E_flux_k1_ccdf'), dpi=100)
+plt.savefig(savename('E_flux_k1_ccdf'), dpi=100, bbox_inches='tight')
 plt.show()

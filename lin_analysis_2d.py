@@ -2,6 +2,7 @@
 import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
+from modules.plot_basics import FIGSIZE_DOUBLE
 import torch 
 
 plt.rcParams['lines.linewidth'] = 4
@@ -123,7 +124,7 @@ gam_shifted = np.fft.fftshift(gam, axes=0)
 
 #%% Plots
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(ky[0,:int(Ny/8)].T,gam_kxmax[:int(Ny/8)].T,'.-',label='$k_x= \\arg\\max_{k_x} \\left(\\gamma\\right)$')
 plt.plot(ky[0,:int(Ny/8)].T,gam_kx0[:int(Ny/8)].T,'.-',label='$k_x=0$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
@@ -136,7 +137,7 @@ plt.tight_layout()
 plt.savefig(f'data_linear/gam_vs_ky_kapt_{str(kapt).replace(".", "_")}_itg2d.pdf',dpi=100)
 plt.show()
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 # slx=slice(None,int(Nx/32),1) 
 slx=slice(None,int(Nx/8),int((Nx/8)/5)) #7 kx points
 plt.plot(ky[slx,:int(Ny/4)].T,gam[slx,:int(Ny/4)].T,'.-')
@@ -150,7 +151,7 @@ plt.tight_layout()
 plt.savefig(f'data_linear/gam_vs_ky_kxvals_kapt_{str(kapt).replace(".", "_")}_itg2d.pdf',dpi=100)
 plt.show()
 
-# plt.figure(figsize=(16, 9))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.plot(ky[0,:int(Ny/4)],kxmax_ky[:int(Ny/4)],'.-')
 # plt.xlabel('$k_y$')
 # plt.ylabel('$k_{x,max}$')
@@ -159,7 +160,7 @@ plt.show()
 # plt.show()
 
 # kymax_kx= np.take_along_axis(ky[:int(Nx/4),:],np.argmax(gam[:int(Nx/4),:],axis=1,keepdims=True),axis=1).squeeze(axis=1)
-# plt.figure(figsize=(16, 9))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.plot(kx[:int(Nx/4),0],kymax_kx,'.-')
 # plt.xlabel('$k_x$')
 # plt.ylabel('$k_{y,max}$')
@@ -167,7 +168,7 @@ plt.show()
 # plt.savefig(f'data_linear/ky_vs_kx_kapt_{str(kapt).replace(".", "_")}_itg2d.pdf',dpi=100)
 # plt.show()
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(ky[0,1:int(Ny/8)].T,Dturb_kxmax[1:int(Ny/8)].T,'.-',label='$k_x= \\arg\\max_{k_x} \\left(\\frac{\\gamma}{k_\\perp^2}\\right)$')
 plt.plot(ky[0,1:int(Ny/8)].T,Dturb_kx0[1:int(Ny/8)].T,'.-',label='$k_x=0$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
@@ -187,20 +188,20 @@ kx_central = kx_shifted[int(3*Nx/8):int(5*Nx/8), :int(Ny/8)]
 ky_central = ky_shifted[int(3*Nx/8):int(5*Nx/8), :int(Ny/8)]
 gam_central = gam_shifted[int(3*Nx/8):int(5*Nx/8), :int(Ny/8)]
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.pcolormesh(kx_central, ky_central, gam_central,vmax=gammax,vmin=-gammax,cmap='seismic', rasterized=True)
 plt.xlabel('$k_x$')
 plt.ylabel('$k_y$')
 plt.colorbar()
 plt.tight_layout()
-plt.savefig(f'data_linear/gamkxky_kapt_{str(kapt).replace(".", "_")}_itg2d.pdf',dpi=100)
+plt.savefig(f'data_linear/gamkxky_kapt_{str(kapt).replace(".", "_")}_itg2d.pdf', bbox_inches='tight',dpi=100)
 plt.show()
 
-# plt.figure(figsize=(16, 9))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.pcolormesh(kx_shifted, ky_shifted, np.fft.fftshift(omr, axes=0),vmax=0.2,vmin=-0.2,cmap='seismic', rasterized=True)
 # plt.xlabel('$k_x$')
 # plt.ylabel('$k_y$')
 # plt.colorbar()
 # plt.tight_layout()
-# plt.savefig(f'data_linear/omrkxky_kapt_{str(kapt).replace(".", "_")}_itg2d.pdf',dpi=100)
+# plt.savefig(f'data_linear/omrkxky_kapt_{str(kapt).replace(".", "_")}_itg2d.pdf', bbox_inches='tight',dpi=100)
 # plt.show()

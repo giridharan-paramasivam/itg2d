@@ -238,9 +238,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'P2_vs_t.png',dpi=100)
+        plt.savefig(datadir+'P2_vs_t.png',dpi=100, bbox_inches='tight')
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'P2_vs_t_').replace('.h5', '.png'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'P2_vs_t_').replace('.h5', '.png'),dpi=100, bbox_inches='tight')
     plt.show()
 
     # Plot total energy vs time
@@ -255,9 +255,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'energy_vs_t.png',dpi=100)
+        plt.savefig(datadir+'energy_vs_t.png',dpi=100, bbox_inches='tight')
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'energy_vs_t_').replace('.h5', '.png'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'energy_vs_t_').replace('.h5', '.png'),dpi=100, bbox_inches='tight')
     plt.show()
 
     # Plot zonal energy fraction vs time
@@ -270,9 +270,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'zonal_energy_fraction_vs_t.png',dpi=100)
+        plt.savefig(datadir+'zonal_energy_fraction_vs_t.png',dpi=100, bbox_inches='tight')
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'zonal_energy_fraction_vs_t_').replace('.h5', '.png'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'zonal_energy_fraction_vs_t_').replace('.h5', '.png'),dpi=100, bbox_inches='tight')
     plt.show()
 
     # Plot generalized energy vs time
@@ -287,9 +287,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'generalized_energy_vs_t.png',dpi=100)
+        plt.savefig(datadir+'generalized_energy_vs_t.png',dpi=100, bbox_inches='tight')
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'generalized_energy_vs_t_').replace('.h5', '.png'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'generalized_energy_vs_t_').replace('.h5', '.png'),dpi=100, bbox_inches='tight')
     plt.show()
 
     # # Plot hyd. entropy vs time

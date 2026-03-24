@@ -5,7 +5,7 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 
-from modules.plot_basics import apply_style, savename as _savename
+from modules.plot_basics import FIGSIZE_DOUBLE, apply_style, savename as _savename
 from functools import partial
 apply_style()
 
@@ -51,8 +51,8 @@ gen_energy_turb_t = gen_energy_t - gen_energy_ZF_t
 
 savename = partial(_savename, datadir, fname)
 
-# Plot variance(P) vs time
-plt.figure(figsize=(16, 9))
+#%% Plot variance(P) vs time
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.semilogy(t, P2_t, label = r'$P_{\mathrm{total}}^2$')
 plt.semilogy(t, P2_ZF_t, label = r'$P_{\mathrm{ZF}}^2$')
 plt.semilogy(t, P2_turb_t, label = r'$P_{\mathrm{turb}}^2$')
@@ -61,11 +61,11 @@ plt.ylabel(r'$\langle P^2\rangle$')
 plt.grid()
 plt.legend()
 plt.tight_layout()
-plt.savefig(savename('P2_vs_t'), dpi=100)
+plt.savefig(savename('P2_vs_t'), dpi=100, bbox_inches='tight')
 plt.show()
 
-# Plot total energy vs time
-plt.figure(figsize=(16, 9))
+#%% Plot total energy vs time
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.semilogy(t, energy_t, label = r'$E_{\mathrm{total}}$')
 plt.semilogy(t, energy_ZF_t, label = r'$E_{\mathrm{ZF}}$')
 plt.semilogy(t, energy_turb_t, label = r'$E_{\mathrm{turb}}$')
@@ -74,18 +74,21 @@ plt.ylabel(r'$E$')
 plt.grid()
 plt.legend()
 plt.tight_layout()
-plt.savefig(savename('energy_vs_t'), dpi=100)
+plt.savefig(savename('energy_vs_t'), dpi=100, bbox_inches='tight')
 plt.show()
 
-# Plot zonal energy fraction vs time
-plt.figure(figsize=(16, 9))
-plt.semilogy(t, energy_ZF_t/energy_t, label = r'$E_{\mathrm{ZF}}/E$')
+#%% Plot zonal energy fraction vs time
+zonal_frac = energy_ZF_t / energy_t
+zonal_frac_mean = np.mean(zonal_frac[nt//2:])
+plt.figure(figsize=FIGSIZE_DOUBLE)
+plt.semilogy(t, zonal_frac)
+plt.axhline(zonal_frac_mean, color='k', linestyle='--', linewidth=2.5, label=rf'$\langle E_{{\mathrm{{ZF}}}}/E \rangle_t = {zonal_frac_mean:.3f}$')
 plt.xlabel(r'$\gamma t$')
 plt.ylabel(r'$E_{\mathrm{ZF}}/E$')
 plt.grid()
 plt.legend()
 plt.tight_layout()
-plt.savefig(savename('zonal_energy_fraction_vs_t'), dpi=100)
+plt.savefig(savename('zonal_energy_fraction_vs_t'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # # Plot kinetic energy vs time
@@ -105,7 +108,7 @@ plt.show()
 # plt.show()
 
 # Plot generalized energy vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.semilogy(t, gen_energy_t, label = r'$G$')
 plt.semilogy(t, gen_energy_ZF_t, label = r'$G_{\mathrm{ZF}}$')
 plt.semilogy(t, gen_energy_turb_t, label = r'$G_{\mathrm{turb}}$')
@@ -114,7 +117,7 @@ plt.ylabel(r'$G$')
 plt.grid()
 plt.legend()
 plt.tight_layout()
-plt.savefig(savename('generalized_energy_vs_t'), dpi=100)
+plt.savefig(savename('generalized_energy_vs_t'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # # Plot hyd. entropy vs time
@@ -132,18 +135,18 @@ plt.show()
 # plt.show()
 
 # Plot Q vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(t, Qbox_t, '-', label = r'$Q_{\mathrm{box}}$')
 plt.xlabel(r'$\gamma t$')
 plt.ylabel(r'$Q_{\mathrm{box}}$')
 plt.grid()
 plt.legend()
 plt.tight_layout()
-plt.savefig(savename('Qbox_vs_t'), dpi=100)
+plt.savefig(savename('Qbox_vs_t'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # Plot Reynolds power vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(t, electric_reynolds_power_t, '-', label = r'$<R_{\mathrm{\phi}} \partial_x \bar{v}_y>$')
 plt.plot(t, diamagnetic_reynolds_power_t, '-', label = r'$<R_{\mathrm{d}}  \partial_x \bar{v}_y>$')
 plt.plot(t, reynolds_power_t, '-', label = r'$<R \partial_x \bar{v}_y>$')
@@ -152,11 +155,11 @@ plt.ylabel('Reynolds power')
 plt.grid()
 plt.legend()
 plt.tight_layout()
-plt.savefig(savename('reynolds_power_vs_t'), dpi=100)
+plt.savefig(savename('reynolds_power_vs_t'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # Plot Cumulative Reynolds power vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(t, np.cumsum(electric_reynolds_power_t), '-', label = r'$<R_{\mathrm{\phi}} \partial_x \bar{v}_y>$')
 plt.plot(t, np.cumsum(diamagnetic_reynolds_power_t), '-', label = r'$<R_{\mathrm{d}}  \partial_x \bar{v}_y>$')
 plt.plot(t, np.cumsum(reynolds_power_t), '-', label = r'$<R \partial_x \bar{v}_y>$')
@@ -165,5 +168,6 @@ plt.ylabel('Cumulative Reynolds power')
 plt.grid()
 plt.legend()
 plt.tight_layout()
-plt.savefig(savename('cum_reynolds_power_vs_t'), dpi=100)
+plt.savefig(savename('cum_reynolds_power_vs_t'), dpi=100, bbox_inches='tight')
 plt.show()
+# %%

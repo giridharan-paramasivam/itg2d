@@ -20,8 +20,8 @@ apply_style()
 Npx=1024
 datadir=f'data/{Npx}/'
 
-# fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
-fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
+# fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 # fname = datadir + 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
 
 # kapt=0.2
@@ -34,7 +34,7 @@ fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 #     fname = files[0]
 
 # Downsample time axis to reduce memory usage
-stride = 4
+stride = 10
 with h5.File(fname, 'r', swmr=True) as fl:
     t = fl['fluxes/t'][::stride].astype(np.float32)
     kx = fl['data/kx'][:]
@@ -74,7 +74,7 @@ with h5.File(fname, 'r', swmr=True) as fl:
 
 vbar_lim = float(np.percentile(np.abs(vbar_t), 75))
 plt.figure(figsize=(16, 9))
-plt.pcolormesh(xm, tm, vbar_t[:nt_data,:], vmin=-vbar_lim, vmax=vbar_lim, cmap='seismic')
+plt.pcolormesh(xm, tm, vbar_t[:nt_data,:], vmin=-vbar_lim, vmax=vbar_lim, cmap='seismic',rasterized=True)
 plt.xlabel('x')
 plt.ylabel(r'$\gamma t$')
 plt.title(r'Zonal flow: $\partial_x\overline{\phi}$')
@@ -92,7 +92,7 @@ with h5.File(fname, 'r', swmr=True) as fl:
 
 dxvbar_lim = float(np.percentile(np.abs(dxvbar_t), 75))
 plt.figure(figsize=(16, 9))
-plt.pcolormesh(xm, tm, dxvbar_t[:nt_data,:], vmin=-dxvbar_lim, vmax=dxvbar_lim, cmap='seismic')
+plt.pcolormesh(xm, tm, dxvbar_t[:nt_data,:], vmin=-dxvbar_lim, vmax=dxvbar_lim, cmap='seismic', rasterized=True)
 plt.xlabel('x')
 plt.ylabel(r'$\gamma t$')
 plt.title(r'Zonal shear: $\partial_x^2\overline{\phi}$')
@@ -110,7 +110,7 @@ with h5.File(fname, 'r', swmr=True) as fl:
 
 RPhi_lim = float(np.percentile(np.abs(Rphi_t), 75))
 plt.figure(figsize=(16, 9))
-plt.pcolormesh(xm, tm, Rphi_t[:nt_data,:], vmin=-RPhi_lim, vmax=RPhi_lim, cmap='seismic')
+plt.pcolormesh(xm, tm, Rphi_t[:nt_data,:], vmin=-RPhi_lim, vmax=RPhi_lim, cmap='seismic',rasterized=True)
 plt.xlabel('x')
 plt.ylabel(r'$\gamma t$')
 plt.title(r'$R_{\mathrm{\phi}}$')
@@ -128,7 +128,7 @@ with h5.File(fname, 'r', swmr=True) as fl:
 
 RP_lim = float(np.percentile(np.abs(Rd_t), 75))
 plt.figure(figsize=(16, 9))
-plt.pcolormesh(xm, tm, Rd_t[:nt_data,:], vmin=-RP_lim, vmax=RP_lim, cmap='seismic')
+plt.pcolormesh(xm, tm, Rd_t[:nt_data,:], vmin=-RP_lim, vmax=RP_lim, cmap='seismic',rasterized=True)
 plt.xlabel('x')
 plt.ylabel(r'$\gamma t$')
 plt.title(r'$R_{\mathrm{d}}$')
@@ -149,7 +149,7 @@ R_t = Rphi_t + Rd_t
 del Rphi_t, Rd_t
 R_lim = float(np.percentile(np.abs(R_t), 75))
 plt.figure(figsize=(16, 9))
-plt.pcolormesh(xm, tm, R_t[:nt_data,:], vmin=-R_lim, vmax=R_lim, cmap='seismic')
+plt.pcolormesh(xm, tm, R_t[:nt_data,:], vmin=-R_lim, vmax=R_lim, cmap='seismic',rasterized=True)
 plt.xlabel('x')
 plt.ylabel(r'$\gamma t$')
 plt.title(r'$R = R_{\mathrm{\phi}} + R_{\mathrm{d}}$')
@@ -170,7 +170,7 @@ PPhi_t   = Rphi_t[:nt_data] * dxvbar_t[:nt_data]
 del Rphi_t, dxvbar_t
 PPhi_lim = float(np.percentile(np.abs(PPhi_t), 75))
 plt.figure(figsize=(16, 9))
-plt.pcolormesh(xm, tm, PPhi_t[:nt_data,:], vmin=-PPhi_lim, vmax=PPhi_lim, cmap='seismic')
+plt.pcolormesh(xm, tm, PPhi_t[:nt_data,:], vmin=-PPhi_lim, vmax=PPhi_lim, cmap='seismic',rasterized=True)
 plt.xlabel('x')
 plt.ylabel(r'$\gamma t$')
 plt.title(r'$P_{\mathrm{\phi}}$')
@@ -191,7 +191,7 @@ PP_t   = Rd_t[:nt_data] * dxvbar_t[:nt_data]
 del Rd_t, dxvbar_t
 PP_lim = float(np.percentile(np.abs(PP_t), 75))
 plt.figure(figsize=(16, 9))
-plt.pcolormesh(xm, tm, PP_t[:nt_data,:], vmin=-PP_lim, vmax=PP_lim, cmap='seismic')
+plt.pcolormesh(xm, tm, PP_t[:nt_data,:], vmin=-PP_lim, vmax=PP_lim, cmap='seismic', rasterized=True)
 plt.xlabel('x')
 plt.ylabel(r'$\gamma t$')
 plt.title(r'$P_{\mathrm{d}}$')
@@ -213,7 +213,7 @@ P_t   = (Rphi_t[:nt_data] + Rd_t[:nt_data]) * dxvbar_t[:nt_data]
 del Rphi_t, Rd_t, dxvbar_t
 P_lim = float(np.percentile(np.abs(P_t), 75))
 plt.figure(figsize=(16, 9))
-plt.pcolormesh(xm, tm, P_t[:nt_data,:], vmin=-P_lim, vmax=P_lim, cmap='seismic')
+plt.pcolormesh(xm, tm, P_t[:nt_data,:], vmin=-P_lim, vmax=P_lim, cmap='seismic', rasterized=True)
 plt.xlabel('x')
 plt.ylabel(r'$\gamma t$')
 plt.title(r'$P = P_{\mathrm{\phi}} + P_{\mathrm{d}}$')
@@ -231,7 +231,7 @@ with h5.File(fname, 'r', swmr=True) as fl:
 
 Q_lim = float(np.percentile(np.abs(Q_t), 90))
 plt.figure(figsize=(16, 9))
-plt.pcolormesh(xm, tm, Q_t[:nt_data,:], vmin=-Q_lim, vmax=Q_lim, cmap='seismic')
+plt.pcolormesh(xm, tm, Q_t[:nt_data,:], vmin=-Q_lim, vmax=Q_lim, cmap='seismic', rasterized=True)
 plt.xlabel('x')
 plt.ylabel(r'$\gamma t$')
 plt.title('Heat flux: $Q$')
