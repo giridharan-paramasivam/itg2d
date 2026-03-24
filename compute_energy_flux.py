@@ -232,29 +232,26 @@ comm.Gather(dGk_t_local, dGk_t, root=0)
 comm.Gather(reynolds_power_local, reynolds_power_gathered, root=0)
 
 if rank == 0:
-    median = np.median(reynolds_power_gathered)
-    mad    = np.median(np.abs(reynolds_power_gathered - median))
-    mask   = np.abs(reynolds_power_gathered - median) <= 24 * mad
-    print(f"Outlier filter: {np.sum(~mask)}/{nt2} time steps excluded (|P_R - median| > 24·MAD)")
-
-    Pik_phi = np.mean(Pik_phi_t[mask, :], axis=0)
-    Pik_d = np.mean(Pik_d_t[mask, :], axis=0)
-    fk = np.mean(fk_t[mask, :], axis=0)
-    dk = np.mean(dk_t[mask, :], axis=0)
+    Pik_phi = np.mean(Pik_phi_t, axis=0)
+    Pik_d = np.mean(Pik_d_t, axis=0)
+    fk = np.mean(fk_t, axis=0)
+    dk = np.mean(dk_t, axis=0)
     Pik = Pik_phi + Pik_d
     idx_k = np.argmax(fk)
     k_f = k[idx_k]
-    PiGk_P = np.mean(PiGk_P_t[mask, :], axis=0)
-    PiGk_phi = np.mean(PiGk_phi_t[mask, :], axis=0)
-    PiGk_d = np.mean(PiGk_d_t[mask, :], axis=0)
-    fGk = np.mean(fGk_t[mask, :], axis=0)
-    dGk = np.mean(dGk_t[mask, :], axis=0)
+    PiGk_P = np.mean(PiGk_P_t, axis=0)
+    PiGk_phi = np.mean(PiGk_phi_t, axis=0)
+    PiGk_d = np.mean(PiGk_d_t, axis=0)
+    fGk = np.mean(fGk_t, axis=0)
+    dGk = np.mean(dGk_t, axis=0)
     PiGk = PiGk_P + PiGk_phi + PiGk_d
+    k_Gf = k[np.argmax(fGk)]
 
     out_file = fname.replace('out_', 'energy_flux_')
     with h5.File(out_file, 'w') as fl:
         fl.create_dataset('k', data=k)
         fl.create_dataset('k_f', data=k_f)
+        fl.create_dataset('k_Gf', data=k_Gf)
         fl.create_dataset('k_lin', data=k_lin)
         fl.create_dataset('Pik', data=Pik)
         fl.create_dataset('Pik_phi', data=Pik_phi)

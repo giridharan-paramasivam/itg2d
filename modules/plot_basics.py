@@ -19,12 +19,12 @@ def apply_style():
         'xtick.direction': 'in',
         'ytick.direction': 'in',
         'savefig.dpi': 300,
-        'font.size': 20,
+        'font.size': 22,
         'axes.titlesize': 22,
         'axes.labelsize': 20,
-        'xtick.labelsize': 16,
-        'ytick.labelsize': 16,
-        'legend.fontsize': 16,
+        'xtick.labelsize': 20,
+        'ytick.labelsize': 20,
+        'legend.fontsize': 20,
         'legend.edgecolor': 'black'
     })
 

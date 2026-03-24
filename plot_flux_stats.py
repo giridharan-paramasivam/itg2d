@@ -15,14 +15,15 @@ apply_style()
 Npx=1024
 datadir=f'data/{Npx}/'
 
-fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
-# fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+# fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
+fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 # fname = datadir + 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
 
 flux_file = fname.replace('out_', 'energy_flux_')
 with h5.File(flux_file, 'r') as fl:
     k          = fl['k'][:]
     k_f        = float(fl['k_f'][()])
+    k_Gf       = float(fl['k_Gf'][()])
     k_lin      = float(fl['k_lin'][()])
     fk         = fl['fk'][:]
     Pik_phi_t  = fl['Pik_phi_t'][:]
@@ -101,8 +102,8 @@ plt.plot(k[1:-1], PiGk_P_skew[1:-1],   label=r'$\Pi_{G,k,P}$')
 plt.plot(k[1:-1], PiGk_phi_skew[1:-1], label=r'$\Pi_{G,k,\phi}$')
 plt.plot(k[1:-1], PiGk_d_skew[1:-1],   label=r'$\Pi_{G,k,d}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
-plt.axvline(x=1,     color='k', linestyle='--', linewidth=2, label='$k=1$')
-plt.axvline(x=k_f,   color='k', linestyle=':',  linewidth=2, label=f'$k_f={k_f:.2f}$')
+plt.axvline(x=1,      color='k', linestyle='--', linewidth=2, label='$k=1$')
+plt.axvline(x=k_Gf,  color='k', linestyle=':',  linewidth=2, label=f'$k_{{Gf}}={k_Gf:.2f}$')
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2, label=f'$k_{{lin}}={k_lin:.2f}$')
 plt.xscale('log')
 plt.xlabel('$k$')
@@ -120,8 +121,8 @@ plt.plot(k[1:-1], PiGk_P_flat[1:-1],   label=r'$\Pi_{G,k,P}$')
 plt.plot(k[1:-1], PiGk_phi_flat[1:-1], label=r'$\Pi_{G,k,\phi}$')
 plt.plot(k[1:-1], PiGk_d_flat[1:-1],   label=r'$\Pi_{G,k,d}$')
 plt.axhline(3, color='k', linestyle='--', linewidth=1, label='Gaussian ($F=3$)')
-plt.axvline(x=1,     color='k', linestyle='--', linewidth=2, label='$k=1$')
-plt.axvline(x=k_f,   color='k', linestyle=':',  linewidth=2, label=f'$k_f={k_f:.2f}$')
+plt.axvline(x=1,      color='k', linestyle='--', linewidth=2, label='$k=1$')
+plt.axvline(x=k_Gf,  color='k', linestyle=':',  linewidth=2, label=f'$k_{{Gf}}={k_Gf:.2f}$')
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2, label=f'$k_{{lin}}={k_lin:.2f}$')
 plt.xscale('log')
 plt.xlabel('$k$')

@@ -36,7 +36,7 @@ gammax=gam_max(kx,ky,kapn,kapt,kapb,D,kz)
 dtstep,dtsavecb=round_to_nsig(0.002/gammax,1),round_to_nsig(0.02/gammax,1)
 t0,t1=0.0,round(600/gammax,0) #100, 600
 rtol,atol=1e-8,1e-10
-wecontinue=True
+wecontinue=False
 
 output_dir = f"data_2d3c/{Npx}/"
 os.makedirs(output_dir, exist_ok=True)

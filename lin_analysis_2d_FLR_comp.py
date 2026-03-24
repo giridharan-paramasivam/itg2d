@@ -122,7 +122,7 @@ ky_shifted = np.fft.fftshift(ky, axes=0)
 gam_shifted = np.fft.fftshift(gam, axes=0)
 gam_wo_FLR_shifted = np.fft.fftshift(gam_wo_FLR, axes=0)
 
-#%% Plots
+#%% Plot
 
 slky = slice(0, int(Ny/10))
 plt.figure(figsize=(16, 9))
@@ -136,7 +136,6 @@ plt.legend()
 plt.grid(which='major', linestyle='--', linewidth=0.5)
 plt.xlabel('$k_y$')
 plt.ylabel('$\\gamma(k_y)$')
-plt.title('$\\gamma(k_y)$ vs $k_y$')
 plt.tight_layout()
 plt.savefig(f'data_linear/gam_vs_ky_FLR_comp_kapt_{str(kapt).replace(".", "_")}_itg2d.pdf',dpi=100)
 plt.show()

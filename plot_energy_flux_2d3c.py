@@ -10,7 +10,6 @@ from modules.plot_basics import apply_style
 apply_style()
 
 #%% Load computed flux data
-# Time-averaged fluxes are MAD-filtered (24 MAD threshold on Reynolds power) by compute_energy_flux_2d3c.py
 
 Npx=1024
 datadir=f'data_2d3c/{Npx}/'

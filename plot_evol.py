@@ -143,16 +143,10 @@ plt.savefig(savename('Qbox_vs_t'), dpi=100)
 plt.show()
 
 # Plot Reynolds power vs time
-rp_half   = reynolds_power_t[nt//2:]
-rp_median = np.median(rp_half)
-rp_mad    = np.median(np.abs(rp_half - rp_median))
-
 plt.figure(figsize=(16, 9))
 plt.plot(t, electric_reynolds_power_t, '-', label = r'$<R_{\mathrm{\phi}} \partial_x \bar{v}_y>$')
 plt.plot(t, diamagnetic_reynolds_power_t, '-', label = r'$<R_{\mathrm{d}}  \partial_x \bar{v}_y>$')
 plt.plot(t, reynolds_power_t, '-', label = r'$<R \partial_x \bar{v}_y>$')
-plt.axhline(rp_median + 24*rp_mad, color='k', lw=1.5, ls='--', label=r'$\mathrm{median} \pm 24\,\mathrm{MAD}$')
-plt.axhline(rp_median - 24*rp_mad, color='k', lw=1.5, ls='--')
 plt.xlabel(r'$\gamma t$')
 plt.ylabel('Reynolds power')
 plt.grid()
