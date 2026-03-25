@@ -11,7 +11,7 @@ import os
 import glob
 from mpi4py import MPI
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 # Initialize MPI
@@ -295,7 +295,7 @@ if rank == 0:
 #%% Plots
 
 if rank == 0:
-    plt.figure()
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.loglog(k[1:-1], P2k[1:-1], label = '$P_{k}^2$')
     plt.loglog(k[P2k_ZF>0][1:-1], P2k_ZF[P2k_ZF>0][1:-1], label = '$P_{k,\mathrm{ZF}}^2$')
     plt.loglog(k[1:-1], P2k_turb[1:-1], label = '$P_{k,\mathrm{turb}}^2$')
@@ -313,7 +313,7 @@ if rank == 0:
         plt.savefig(datadir+"pressure_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
     plt.show()
 
-    plt.figure()
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.loglog(k[1:-1], Ek[1:-1], label = '$\E_{k}$')
     plt.loglog(k[Ek_ZF>0][1:-1], Ek_ZF[Ek_ZF>0][1:-1], label = '$\E_{k,\mathrm{ZF}}$')
     plt.loglog(k[1:-1], Ek_turb[1:-1], label = '$\E_{k,\mathrm{turb}}$')
@@ -331,7 +331,7 @@ if rank == 0:
         plt.savefig(datadir+"energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
     plt.show()
 
-    plt.figure()
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.loglog(k[1:-1], Kk[1:-1], label = '$\E_{kin,k}$')
     plt.loglog(k[Kk_ZF>0][1:-1], Kk_ZF[Kk_ZF>0][1:-1], label = '$\E_{kin,k,\mathrm{ZF}}$')
     plt.loglog(k[1:-1], Kk_turb[1:-1], label = '$\E_{kin,k,\mathrm{turb}}$')
@@ -349,7 +349,7 @@ if rank == 0:
         plt.savefig(datadir+"kinetic_energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
     plt.show()
 
-    plt.figure()
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.loglog(k[1:-1], Wk[1:-1], label = '$\W_{k}$')
     plt.loglog(k[Wk_ZF>0][1:-1], Wk_ZF[Wk_ZF>0][1:-1], label = '$\W_{k,\mathrm{ZF}}$')
     plt.loglog(k[1:-1], Wk_turb[1:-1], label = '$\W_{k,\mathrm{turb}}$')
@@ -367,7 +367,7 @@ if rank == 0:
         plt.savefig(datadir+"enstrophy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
     plt.show()
 
-    plt.figure()
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.loglog(k[1:-1], Gk[1:-1], label = '$\G_{k}$')
     plt.loglog(k[Gk_ZF>0][1:-1], Gk_ZF[Gk_ZF>0][1:-1], label = '$\G_{k,\mathrm{ZF}}$')
     plt.loglog(k[1:-1], Gk_turb[1:-1], label = '$\G_{k,\mathrm{turb}}$')
@@ -385,7 +385,7 @@ if rank == 0:
         plt.savefig(datadir+"generalized_energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
     plt.show()
 
-    plt.figure()
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.loglog(k[1:-1], GKk[1:-1], label = '$\G_{kin,k}$')
     plt.loglog(k[GKk_ZF>0][1:-1], GKk_ZF[GKk_ZF>0][1:-1], label = '$\G_{kin,k,\mathrm{ZF}}$')
     plt.loglog(k[1:-1], GKk_turb[1:-1], label = '$\G_{kin,k,\mathrm{turb}}$')

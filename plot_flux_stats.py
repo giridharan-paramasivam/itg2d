@@ -6,7 +6,7 @@ matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import skew, kurtosis
 
-from modules.plot_basics import apply_style, savename as _savename
+from modules.plot_basics import apply_style, savename as _savename, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 from functools import partial
 apply_style()
 
@@ -60,7 +60,7 @@ PiGk_d_flat    = kurtosis(PiGk_d_t, axis=0, fisher=False)
 savename = partial(_savename, datadir, fname)
 
 # E-flux skewness
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], Pik_skew[1:-1],     label=r'$\Pi_{k}$')
 plt.plot(k[1:-1], Pik_phi_skew[1:-1], label=r'$\Pi_{k,\phi}$')
 plt.plot(k[1:-1], Pik_d_skew[1:-1],   label=r'$\Pi_{k,d}$')
@@ -78,7 +78,7 @@ plt.savefig(savename('E_flux_skewness'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # E-flux flatness
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], Pik_flat[1:-1],     label=r'$\Pi_{k}$')
 plt.plot(k[1:-1], Pik_phi_flat[1:-1], label=r'$\Pi_{k,\phi}$')
 plt.plot(k[1:-1], Pik_d_flat[1:-1],   label=r'$\Pi_{k,d}$')
@@ -96,7 +96,7 @@ plt.savefig(savename('E_flux_flatness'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # G-flux skewness
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], PiGk_skew[1:-1],     label=r'$\Pi_{G,k}$')
 plt.plot(k[1:-1], PiGk_P_skew[1:-1],   label=r'$\Pi_{G,k,P}$')
 plt.plot(k[1:-1], PiGk_phi_skew[1:-1], label=r'$\Pi_{G,k,\phi}$')
@@ -115,7 +115,7 @@ plt.savefig(savename('G_flux_skewness'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # G-flux flatness
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], PiGk_flat[1:-1],     label=r'$\Pi_{G,k}$')
 plt.plot(k[1:-1], PiGk_P_flat[1:-1],   label=r'$\Pi_{G,k,P}$')
 plt.plot(k[1:-1], PiGk_phi_flat[1:-1], label=r'$\Pi_{G,k,\phi}$')

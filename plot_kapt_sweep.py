@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from modules.mlsarray import MLSarray,Slicelist,irft2np,rft2np
 import glob
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 #%% Functions for energy, enstrophy and entropy
@@ -142,7 +142,7 @@ for i,kapt in enumerate(kapt_vals):
 #%% Calculate and plot quantities vs time
 
 # Plot kinetic energy vs kapt
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.errorbar(kapt_vals, E_frac_scan, yerr=E_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\E_{\mathrm{ZF}}/\E$',
              elinewidth=2, capthick=1, capsize=4)
 plt.xlabel(r'$\kappa_T$')
@@ -155,7 +155,7 @@ plt.savefig(datadir+'zonal_energy_frac_vs_kapt_sweep.pdf',dpi=100)
 plt.show()
 
 # # Plot enstrophy vs kapt
-# plt.figure(figsize=(8,6))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.errorbar(kapt_vals, W_frac_scan, yerr=W_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\W_{\mathrm{ZF}}/\W$',
 #              elinewidth=2, capthick=1, capsize=4)
 # plt.xlabel(r'$\kappa_T$')
@@ -168,7 +168,7 @@ plt.show()
 # plt.show()
 
 # Plot Q vs kapt
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.errorbar(kapt_vals, Q_scan, yerr=Q_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\Q$',
              elinewidth=2, capthick=1, capsize=4)
 plt.xlabel(r'$\kappa_T$')

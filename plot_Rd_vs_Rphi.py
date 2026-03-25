@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 from modules.gamma import gam_max
 
-from modules.plot_basics import apply_style, savename as _savename
+from modules.plot_basics import apply_style, savename as _savename, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 from functools import partial
 apply_style()
 
@@ -104,7 +104,7 @@ Rd_all   = Rd_t[nt//2:].ravel()
 
 #%% Plot: selected x locations
 
-fig, axs = plt.subplots(2, 2, figsize=(14, 10))
+fig, axs = plt.subplots(2, 2, figsize=FIGSIZE_SINGLE)
 
 scatter_with_fit(axs[0, 0], Rphi_vmax_t,  Rd_vmax_t)
 axs[0, 0].set_xlabel(r'$R_\phi$')
@@ -133,7 +133,7 @@ plt.close()
 
 #%% Plot: all (x, t) points vectorized
 
-fig2, ax2 = plt.subplots(figsize=(7, 6))
+fig2, ax2 = plt.subplots(figsize=FIGSIZE_SINGLE)
 scatter_with_fit(ax2, Rphi_all, Rd_all)
 ax2.set_xlabel(r'$R_\phi$')
 ax2.set_ylabel(r'$R_d$')

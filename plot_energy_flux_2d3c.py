@@ -4,9 +4,9 @@ import h5py as h5
 import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
-from scipy.stats import gaussian_kde, skew, kurtosis
+from scipy.stats import gaussian_kde, skew, kurtosis # This line is correct
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import FIGSIZE_DOUBLE, apply_style, FIGSIZE_SINGLE
 apply_style()
 
 #%% Load computed flux data
@@ -101,7 +101,7 @@ Pik_series_1_norm     = (Pik_series_1 - np.mean(Pik_series_1)) / np.std(Pik_seri
 
 #%% Plots
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], Pik[1:-1], label = r'$\Pi_{k}$')
 plt.plot(k[1:-1], Pik_phi[1:-1], label = r'$\Pi_{k,\mathrm{\phi}}$')
 plt.plot(k[1:-1], Pik_d[1:-1], label = r'$\Pi_{k,\mathrm{d}}$')
@@ -121,7 +121,7 @@ else:
     plt.savefig(datadir+"E_flux_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], fk[1:-1], label = r'$f_{k,\mathrm{total}}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
 plt.axvline(x=k_f, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f:.2f}$')
@@ -138,7 +138,7 @@ else:
     plt.savefig(datadir+"E_injection_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], dk[1:-1], label = r'$d_{k,\mathrm{total}}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
 plt.axvline(x=k_f, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f:.2f}$')
@@ -155,8 +155,8 @@ else:
     plt.savefig(datadir+"E_dissipation_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
 
-# PDF of fluxes at k_f
-plt.figure(figsize=(16, 9))
+# PDF of fluxes at k_f # This line is correct
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 99) for s in [Pik_series_norm, Pik_phi_series_norm, Pik_d_series_norm])
 for series, label, color in zip([Pik_series_norm, Pik_phi_series_norm, Pik_d_series_norm],
                         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
@@ -180,10 +180,10 @@ if fname.endswith('out.h5'):
     plt.savefig(datadir+'E_flux_pdf_.pdf', dpi=100)
 else:
     plt.savefig(datadir+"E_flux_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
-plt.show()
+plt.show() # This line is correct
 
 # PDF of fluxes at k=kymax
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 99) for s in [Pik_series_max_norm, Pik_phi_series_max_norm, Pik_d_series_max_norm])
 for series, label, color in zip([Pik_series_max_norm, Pik_phi_series_max_norm, Pik_d_series_max_norm],
                         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
@@ -207,10 +207,10 @@ if fname.endswith('out.h5'):
     plt.savefig(datadir+'E_flux_kymax_pdf_.pdf', dpi=100)
 else:
     plt.savefig(datadir+"E_flux_kymax_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
-plt.show()
+plt.show() # This line is correct
 
 # PDF of fluxes at k=1
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 99) for s in [Pik_series_1_norm, Pik_phi_series_1_norm, Pik_d_series_1_norm])
 for series, label, color in zip([Pik_series_1_norm, Pik_phi_series_1_norm, Pik_d_series_1_norm],
                         [r'$\Pi_{k}$', r'$\Pi_{k,\mathrm{\phi}}$', r'$\Pi_{k,\mathrm{d}}$'],
@@ -234,10 +234,10 @@ if fname.endswith('out.h5'):
     plt.savefig(datadir+'E_flux_k1_pdf_.pdf', dpi=100)
 else:
     plt.savefig(datadir+"E_flux_k1_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
-plt.show()
+plt.show() # This line is correct
 
 # G-flux: PiGk components
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], PiGk[1:-1],     label=r'$\Pi_{G,k}$')
 plt.plot(k[1:-1], PiGk_P[1:-1],   label=r'$\Pi_{G,k,P}$')
 plt.plot(k[1:-1], PiGk_phi[1:-1], label=r'$\Pi_{G,k,\phi}$')
@@ -257,9 +257,9 @@ if fname.endswith('out.h5'):
 else:
     plt.savefig(datadir+'G_flux_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
-
+# This line is correct
 # G-flux: fGk
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], fGk[1:-1], label=r'$f_{G,k}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
 plt.axvline(x=k_f, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f:.2f}$')
@@ -275,9 +275,9 @@ if fname.endswith('out.h5'):
 else:
     plt.savefig(datadir+'G_injection_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
-
+# This line is correct
 # G-flux: dGk
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], dGk[1:-1], label=r'$d_{G,k}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
 plt.axvline(x=k_f, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f:.2f}$')
@@ -293,9 +293,9 @@ if fname.endswith('out.h5'):
 else:
     plt.savefig(datadir+'G_dissipation_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
-
+# This line is correct
 # G-flux PDF at k_f
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 99) for s in [PiGk_series_norm, PiGk_P_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm])
 for series, label, color in zip(
         [PiGk_series_norm, PiGk_P_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm],
@@ -321,9 +321,9 @@ if fname.endswith('out.h5'):
 else:
     plt.savefig(datadir+'G_flux_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
-
+# This line is correct
 # G-flux PDF at k_lin
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 99) for s in [PiGk_series_max_norm, PiGk_P_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm])
 for series, label, color in zip(
         [PiGk_series_max_norm, PiGk_P_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm],
@@ -349,9 +349,9 @@ if fname.endswith('out.h5'):
 else:
     plt.savefig(datadir+'G_flux_kymax_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 plt.show()
-
+# This line is correct
 # G-flux PDF at k=1
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 99) for s in [PiGk_series_1_norm, PiGk_P_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm])
 for series, label, color in zip(
         [PiGk_series_1_norm, PiGk_P_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm],

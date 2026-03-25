@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import torch 
 import h5py
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 #%% Initialize
@@ -25,7 +25,7 @@ with h5py.File(datadir + 'gammax_vals_kapt_kz_scan_itg2d3c.h5', 'r') as fl:
 #%% Colormesh of gam(kapt,kz)
 
 Kapt, Kz = np.meshgrid(kapt_vals, kz_vals)
-plt.figure()
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.pcolormesh(Kapt, Kz, gammax_kapt_kz.T, vmax=1.0, vmin=-1.0, cmap='seismic', rasterized=True, shading='auto')
 plt.xlabel(r'$\kappa_T$')
 plt.ylabel('$k_z$')

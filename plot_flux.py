@@ -3,10 +3,10 @@ import h5py as h5
 import numpy as np
 import matplotlib.pyplot as plt
 from modules.mlsarray import MLSarray,Slicelist,irft2np,rft2np
-from modules.plot_basics import symmetrize_y_axis
+from modules.plot_basics import symmetrize_y_axis, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 import os
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style() 
 
 #%% Load the HDF5 file
@@ -40,7 +40,7 @@ x,y=np.meshgrid(np.array(xl),np.array(yl),indexing='ij')
 
 #%% Plots
 
-plt.figure(figsize=(16, 9))  # Set specific figure size
+plt.figure(figsize=FIGSIZE_DOUBLE)  # Set specific figure size
 plt.plot(x[:,0],R,label=r'$\Pi_{\mathrm{\phi}}$')
 plt.plot(x[:,0],PiP,label=r'$\Pi_{\mathrm{P}}$')
 plt.plot(x[:,0],R+PiP,label=r'$\Pi_{\mathrm{t}}=\Pi_{\mathrm{P}}+\Pi_{\mathrm{\phi}}$')
@@ -57,7 +57,7 @@ if fname.endswith('out.h5'):
 else:
     plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'Pi_').replace('.h5', '.png'), dpi=100, bbox_inches='tight')
 
-plt.figure(figsize=(16, 9))  # Set specific figure size
+plt.figure(figsize=FIGSIZE_DOUBLE)  # Set specific figure size
 plt.plot(x[:,0],Q,label='$Q$')
 plt.plot(x[:,0],np.mean(Q)+0.05*np.max(np.abs(Q))*vbar/np.max(np.abs(vbar)),'k',label=r'$\overline{v}_y$')
 # plt.plot(x[:,0],np.mean(Q)+0.05*np.max(np.abs(Q))*Ombar/np.max(Ombar),label=r'$\partial_x\overline{v}_y$')

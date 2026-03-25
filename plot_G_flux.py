@@ -4,9 +4,9 @@ import h5py as h5
 import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
-from scipy.stats import skew, kurtosis
+from scipy.stats import skew, kurtosis # This line is correct
 
-from modules.plot_basics import apply_style, savename as _savename
+from modules.plot_basics import FIGSIZE_DOUBLE, apply_style, savename as _savename, FIGSIZE_SINGLE
 from functools import partial
 apply_style()
 
@@ -74,7 +74,7 @@ savename = partial(_savename, datadir, fname)
 
 #%% G-flux
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], PiGk[1:-1],     label=r'$\Pi_{G,k}$')
 plt.plot(k[1:-1], PiGk_P[1:-1],   label=r'$\Pi_{G,k,P}$')
 plt.plot(k[1:-1], PiGk_phi[1:-1], label=r'$\Pi_{G,k,\phi}$')
@@ -94,7 +94,7 @@ plt.show()
 
 #%% G-flux: injection
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], fGk[1:-1], label=r'$f_{G,k}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
 plt.axvline(x=k_Gf, color='k', linestyle=':', linewidth=2, label=f'$k_{{Gf}}={k_Gf:.2f}$')
@@ -110,7 +110,7 @@ plt.show()
 
 #%% G-flux: dissipation
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], dGk[1:-1], label=r'$d_{G,k}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
 plt.axvline(x=k_Gf, color='k', linestyle=':', linewidth=2, label=f'$k_{{Gf}}={k_Gf:.2f}$')
@@ -126,7 +126,7 @@ plt.show()
 
 #%% G-flux PDF at k_Gf
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 95) for s in [PiGk_series_norm, PiGk_P_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm])
 for series, label, color in zip(
         [PiGk_series_norm, PiGk_P_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm],
@@ -154,7 +154,7 @@ plt.show()
 
 #%% G-flux: PDF at k_lin
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 95) for s in [PiGk_series_max_norm, PiGk_P_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm])
 for series, label, color in zip(
         [PiGk_series_max_norm, PiGk_P_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm],
@@ -182,7 +182,7 @@ plt.show()
 
 #%% G-flux: PDF at k=1
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 xlim = max(np.percentile(np.abs(s), 95) for s in [PiGk_series_1_norm, PiGk_P_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm])
 for series, label, color in zip(
         [PiGk_series_1_norm, PiGk_P_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm],
@@ -210,7 +210,7 @@ plt.show()
 
 #%% G-flux CCDF at k_Gf
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 for series, label, color in zip(
         [PiGk_series_norm, PiGk_P_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm],
         [r'$\Pi_{G,k}$', r'$\Pi_{G,k,P}$', r'$\Pi_{G,k,\phi}$', r'$\Pi_{G,k,d}$'],
@@ -232,7 +232,7 @@ plt.show()
 
 #%% G-flux CCDF at k_lin
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 for series, label, color in zip(
         [PiGk_series_max_norm, PiGk_P_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm],
         [r'$\Pi_{G,k}$', r'$\Pi_{G,k,P}$', r'$\Pi_{G,k,\phi}$', r'$\Pi_{G,k,d}$'],
@@ -254,7 +254,7 @@ plt.show()
 
 #%% G-flux CCDF at k=1
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 for series, label, color in zip(
         [PiGk_series_1_norm, PiGk_P_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm],
         [r'$\Pi_{G,k}$', r'$\Pi_{G,k,P}$', r'$\Pi_{G,k,\phi}$', r'$\Pi_{G,k,d}$'],

@@ -9,8 +9,9 @@ from modules.mlsarray import irft2np as original_irft2np, rft2np as original_rft
 from modules.mlsarray import Slicelist
 import cupy as cp
 import glob
+from functools import partial
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 #%% Load the HDF5 file
@@ -74,7 +75,7 @@ def plot_colormesh(dat, dat_bar, title, lab_bar, ax):
     plt.colorbar(c, ax=ax)
 
 # Create subplots for Om and T
-fig, axs = plt.subplots(1, 2, figsize=(16, 9), sharey=True)
+fig, axs = plt.subplots(1, 2, figsize=FIGSIZE_SINGLE, sharey=True)
 
 # Plot each dataset
 plot_colormesh(Om, vbar, r'$\Omega$', r'$\overline{v}_y$', axs[0])
@@ -91,8 +92,7 @@ else:
 plt.show()
 
 # %%
-# Plot Om
-fig, ax = plt.subplots(figsize=(16, 9))
+fig, ax = plt.subplots(figsize=FIGSIZE_SINGLE)
 c =ax.pcolormesh(x,y,Om, cmap='seismic', vmin=-np.max(np.abs(Om)), vmax=np.max(np.abs(Om)))
 ax.plot(x[:,0], 0.5*(y[:,-1]+y[:,0])+0.25*(y[:,-1]-y[:,0])*vbar/np.max(np.abs(vbar)),'w',linewidth=5)
 ax.plot(x[:,0], 0.5*(y[:,-1]+y[:,0])+0.25*(y[:,-1]-y[:,0])*vbar/np.max(np.abs(vbar)),'k',label=r'$\overline{v}_y$')
@@ -106,7 +106,7 @@ plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'fields_Om_').replace('
 plt.show()
 
 # # Plot P
-# fig, ax = plt.subplots(figsize=(6, 5))
+# fig, ax = plt.subplots(figsize=FIGSIZE_SINGLE)
 # plot_colormesh(P, Pbar, '$P$', r'$\overline{P}$', ax)
 # fig.tight_layout(pad=0.5)
 # plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'fields_P_').replace('.h5', '.pdf'), bbox_inches='tight')

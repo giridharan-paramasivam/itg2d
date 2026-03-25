@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import torch 
 import h5py
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 #%% Initialize
@@ -26,7 +26,7 @@ with h5py.File(fname, 'r') as fl:
 
 #%% Colormesh of gam(kapt,kz)
 
-plt.figure()
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(kapt_vals, gammax_kapt)
 plt.xlabel(r'$\kappa_T$')
 plt.ylabel(r'$\gamma_{max}$')

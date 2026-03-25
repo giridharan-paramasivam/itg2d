@@ -5,7 +5,7 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 
-from modules.plot_basics import FIGSIZE_DOUBLE, apply_style, savename as _savename
+from modules.plot_basics import FIGSIZE_DOUBLE, apply_style, savename as _savename, FIGSIZE_SINGLE
 from functools import partial
 apply_style()
 
@@ -92,7 +92,7 @@ plt.savefig(savename('zonal_energy_fraction_vs_t'), dpi=100, bbox_inches='tight'
 plt.show()
 
 # # Plot kinetic energy vs time
-# plt.figure(figsize=(8,6))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.semilogy(t, kin_energy_t, label = r'$E_{\mathrm{kin,\mathrm{total}}}$')
 # plt.semilogy(t, kin_energy_ZF_t, label = r'$E_{\mathrm{kin,\mathrm{ZF}}}$')
 # plt.semilogy(t, kin_energy_turb_t, label = r'$E_{\mathrm{kin,\mathrm{turb}}}$')
@@ -121,7 +121,7 @@ plt.savefig(savename('generalized_energy_vs_t'), dpi=100, bbox_inches='tight')
 plt.show()
 
 # # Plot hyd. entropy vs time
-# plt.figure(figsize=(8,6))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.semilogy(t, entropy_t, label = r'$S$')
 # plt.xlabel(r'$\gamma t$')
 # plt.ylabel(r'$S=-\sum_{\mathbf{k}}p_{\mathbf{k}}\log p_{\mathbf{k}}$')

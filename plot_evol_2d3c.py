@@ -4,8 +4,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
-
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 #%% Load the computed HDF5 file (produced by compute_evol_2d3c.py)
@@ -50,7 +49,7 @@ gen_energy_turb_t = gen_energy_t - gen_energy_ZF_t
 #%% Plots
 
 # Plot variance(P) vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.semilogy(t, P2_t, label = r'$\left<P_{\mathrm{total}}^2\right>$')
 plt.semilogy(t, P2_ZF_t, label = r'$\left<P_{\mathrm{ZF}}^2\right>$')
 plt.semilogy(t, P2_turb_t, label = r'$\left<P_{\mathrm{turb}}^2\right>$')
@@ -66,7 +65,7 @@ else:
 plt.show()
 
 # Plot variance(V) vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.semilogy(t, V2_t, label = r'$\left<V_{\mathrm{total}}^2\right>$')
 plt.semilogy(t, V2_ZF_t, label = r'$\left<V_{\mathrm{ZF}}^2\right>$')
 plt.semilogy(t, V2_turb_t, label = r'$\left<V_{\mathrm{turb}}^2\right>$')
@@ -82,7 +81,7 @@ else:
 plt.show()
 
 # Plot energy vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.semilogy(t, energy_t, label = r'$E_{\mathrm{total}}$')
 plt.semilogy(t, energy_ZF_t, label = r'$E_{\mathrm{ZF}}$')
 plt.semilogy(t, energy_turb_t, label = r'$E_{\mathrm{turb}}$')
@@ -98,7 +97,7 @@ else:
 plt.show()
 
 # Plot zonal energy fraction vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.semilogy(t, energy_ZF_t/energy_t, label = r'$E_{\mathrm{ZF}}/E$')
 plt.xlabel(r'$\gamma t$')
 plt.ylabel(r'$E_{\mathrm{ZF}}/E$')
@@ -112,7 +111,7 @@ else:
 plt.show()
 
 # # Plot kinetic energy vs time
-# plt.figure(figsize=(8,6))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.semilogy(t, kin_energy_t, label = '$E_{\\mathrm{kin,\mathrm{total}}}$')
 # plt.semilogy(t, kin_energy_ZF_t, label = '$E_{\\mathrm{kin,\mathrm{ZF}}}$')
 # plt.semilogy(t, kin_energy_turb_t, label = '$E_{\\mathrm{kin,\mathrm{turb}}}$')
@@ -128,7 +127,7 @@ plt.show()
 # plt.show()
 
 # # Plot enstrophy vs time
-# plt.figure(figsize=(8,6))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.semilogy(t, enstrophy_t, label = '$W_{\\mathrm{total}}$')
 # plt.semilogy(t, enstrophy_ZF_t, label = '$W_{\\mathrm{ZF}}$')
 # plt.semilogy(t, enstrophy_turb_t, label = '$W_{\\mathrm{turb}}$')
@@ -144,7 +143,7 @@ plt.show()
 # plt.show()
 
 # Plot generalized energy vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.semilogy(t, gen_energy_t, label = r'$G_{\mathrm{total}}$')
 plt.semilogy(t, gen_energy_ZF_t, label = r'$G_{\mathrm{ZF}}$')
 plt.semilogy(t, gen_energy_turb_t, label = r'$G_{\mathrm{turb}}$')
@@ -160,7 +159,7 @@ else:
 plt.show()
 
 # # Plot hyd. entropy vs time
-# plt.figure(figsize=(8,6))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.semilogy(t, entropy_t, label = '$\S$')
 # plt.xlabel('$\\gamma t$')
 # plt.ylabel('$\S=-\\sum_{\\mathbf{k}}p_{\\mathbf{k}}\\log p_{\\mathbf{k}}$')
@@ -174,7 +173,7 @@ plt.show()
 # plt.show()
 
 # Plot Q vs time
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(t, Q_t, '-', label = r'$Q$')
 plt.xlabel(r'$\gamma t$')
 plt.ylabel(r'$Q$')
@@ -191,8 +190,8 @@ plt.show()
 rp_half   = reynolds_power_t[nt//2:]
 rp_median = np.median(rp_half)
 rp_mad    = np.median(np.abs(rp_half - rp_median))
-
-plt.figure(figsize=(16, 9))
+ 
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(t, electric_reynolds_power_t, '-', label=r'$\langle R_{\phi} \partial_x \bar{v}_y \rangle$')
 plt.plot(t, diamagnetic_reynolds_power_t, '-', label=r'$\langle R_{\mathrm{d}} \partial_x \bar{v}_y \rangle$')
 plt.plot(t, reynolds_power_t, '-', label=r'$\langle R \partial_x \bar{v}_y \rangle$')

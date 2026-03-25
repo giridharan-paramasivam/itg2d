@@ -14,7 +14,7 @@ plt.rcParams['ytick.minor.visible'] = True
 plt.rcParams['xtick.minor.width'] = 1.5 
 plt.rcParams['ytick.minor.width'] = 1.5 
 plt.rcParams['savefig.dpi'] = 100
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 #%% Initialize
@@ -44,7 +44,7 @@ kapt_pos = kapt_vals[positive_any.any(axis=1)]
 #%% Colormesh of discriminant max over (kapn, kapt)
 
 Kapn, Kapt = np.meshgrid(kapn_vals, kapt_vals)
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 # max(-Δ): negative (stable everywhere), positive (Δ<0 somewhere)
 data = negdiscmax_kapn_kapt.T
 vmax = float(np.nanmax(np.abs(data))) if np.isfinite(data).all() else 1.0

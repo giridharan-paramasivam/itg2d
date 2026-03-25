@@ -7,7 +7,7 @@ if os.environ.get("DISPLAY", "") == "":
     matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 def mode_label(i: int, kx: float, ky: float) -> str:
@@ -72,7 +72,7 @@ consv3 = (1.0 + q2) * np.abs(Phik[0, :] + Pk[0, :]) ** 2 + (1.0 + k2) * np.abs(P
 #%% Plotting
 
 # |Phi_k| vs t
-fig = plt.figure(figsize=(16, 9))
+fig = plt.figure(figsize=FIGSIZE_DOUBLE)
 for i in range(Nk):
     kx_i, ky_i = modes[i]
     plt.plot(t, np.abs(Phik)[i, :], label=mode_label(i, kx_i, ky_i))
@@ -88,7 +88,7 @@ plt.show()
 plt.close(fig)
 
 # growth rate fit
-fig = plt.figure(figsize=(16, 9))
+fig = plt.figure(figsize=FIGSIZE_DOUBLE)
 for i in [0,2]:
     kx_i, ky_i = modes[i]
     plt.semilogy(t[:int(nt/2)], np.abs(Phik)[i, :int(nt/2)], label=mode_label(i, kx_i, ky_i))
@@ -105,7 +105,7 @@ plt.show()
 plt.close(fig)
 
 # |P_k| vs t
-fig = plt.figure(figsize=(16, 9))
+fig = plt.figure(figsize=FIGSIZE_DOUBLE)
 for i in range(Nk):
     kx_i, ky_i = modes[i]
     plt.plot(t, np.abs(Pk)[i, :], label=mode_label(i, kx_i, ky_i))
@@ -121,7 +121,7 @@ plt.show()
 plt.close(fig)
 
 # |np.conj(Phi_p)*np.conj(P_q) - np.conj(Phi_q)*np.conj(P_p)| vs t
-fig = plt.figure(figsize=(16, 9))
+fig = plt.figure(figsize=FIGSIZE_DOUBLE)
 triad_product = np.conj(Phik[2, :]) * np.conj(Pk[0, :]) - np.conj(Phik[0, :]) * np.conj(Pk[2, :])
 plt.plot(t, np.abs(triad_product), label="Triad product")
 plt.xlabel("t")
@@ -136,7 +136,7 @@ plt.show()
 plt.close(fig)
 
 # Conserved quantities vs time
-fig = plt.figure(figsize=(16, 9))
+fig = plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(t, consv1, label=r"$|P_q|^2 + |P_k|^2 + |P_p|^2$")
 plt.plot(t, consv2, label=r"$(1+q^2)|\phi_q|^2 + (1+k^2)|\phi_k|^2 + (1+p^2)|\phi_p|^2$")
 plt.plot(t, consv3, label=r"$(1+q^2)|\phi_q+P_q|^2 + (1+k^2)|\phi_k+P_k|^2 + (1+p^2)|\phi_p+P_p|^2$")
@@ -153,7 +153,7 @@ plt.show()
 plt.close(fig)
 
 # cos(delta) for q,k,p
-fig = plt.figure(figsize=(16, 9))
+fig = plt.figure(figsize=FIGSIZE_DOUBLE)
 for i in range(min(3, Nk)):
     kx_i, ky_i = modes[i]
     plt.plot(t, np.cos(delta[i, :]), label=mode_label(i, kx_i, ky_i))

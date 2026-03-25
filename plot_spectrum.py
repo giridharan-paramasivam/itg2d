@@ -5,7 +5,7 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 
-from modules.plot_basics import apply_style, savename as _savename
+from modules.plot_basics import apply_style, savename as _savename, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 from functools import partial
 apply_style()
 
@@ -40,7 +40,7 @@ savename = partial(_savename, datadir, fname)
 
 k1 = np.argmin(np.abs(k - 1))
 
-# plt.figure(figsize=(16, 9))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.loglog(k[1:-1], Phi2k[1:-1], label = r'$\left|\phi_{k}\right|^2$')
 # plt.loglog(k[Phi2k_ZF>0][1:-1], Phi2k_ZF[Phi2k_ZF>0][1:-1], label = r'$\left|\phi_{k,\mathrm{ZF}}\right|^2$')
 # plt.loglog(k[1:-1], Phi2k_turb[1:-1], label = r'$\left|\phi_{k,\mathrm{turb}}\right|^2$')
@@ -57,7 +57,7 @@ k1 = np.argmin(np.abs(k - 1))
 #     plt.savefig(datadir+"potential_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 # plt.show()
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.loglog(k[1:-1], P2k[1:-1], label = r'$\left|P_{k}\right|^2$')
 plt.loglog(k[P2k_ZF>0][1:-1], P2k_ZF[P2k_ZF>0][1:-1], label = r'$\left|P_{k,\mathrm{ZF}}\right|^2$')
 plt.loglog(k[1:-1], P2k_turb[1:-1], label = r'$\left|P_{k,\mathrm{turb}}\right|^2$')
@@ -72,7 +72,7 @@ plt.tight_layout()
 plt.savefig(savename('pressure_spectrum'), dpi=100, bbox_inches='tight')
 plt.show()
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.loglog(k[1:-1], Ek[1:-1], label = '$E_{k}$')
 plt.loglog(k[Ek_ZF>0][1:-1], Ek_ZF[Ek_ZF>0][1:-1], label = r'$E_{k,\mathrm{ZF}}$')
 plt.loglog(k[1:-1], Ek_turb[1:-1], label = r'$E_{k,\mathrm{turb}}$')
@@ -88,7 +88,7 @@ plt.tight_layout()
 plt.savefig(savename('energy_spectrum'), dpi=100, bbox_inches='tight')
 plt.show()
 
-# plt.figure(figsize=(16, 9))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.loglog(k[1:-1], Kk[1:-1], label = '$E_{kin,k}$')
 # plt.loglog(k[Kk_ZF>0][1:-1], Kk_ZF[Kk_ZF>0][1:-1], label = '$E_{kin,k,\mathrm{ZF}}$')
 # plt.loglog(k[1:-1], Kk_turb[1:-1], label = '$E_{kin,k,\mathrm{turb}}$')
@@ -105,7 +105,7 @@ plt.show()
 #     plt.savefig(datadir+"kinetic_energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 # plt.show()
 
-# plt.figure(figsize=(16, 9))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.loglog(k[1:-1], Wk[1:-1], label = '$\W_{k}$')
 # plt.loglog(k[Wk_ZF>0][1:-1], Wk_ZF[Wk_ZF>0][1:-1], label = '$\W_{k,\mathrm{ZF}}$')
 # plt.loglog(k[1:-1], Wk_turb[1:-1], label = '$\W_{k,\mathrm{turb}}$')
@@ -122,7 +122,7 @@ plt.show()
 #     plt.savefig(datadir+"enstrophy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
 # plt.show()
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.loglog(k[1:-1], Gk[1:-1], label = '$G_{k}$')
 plt.loglog(k[Gk_ZF>0][1:-1], Gk_ZF[Gk_ZF>0][1:-1], label = r'$G_{k,\mathrm{ZF}}$')
 plt.loglog(k[1:-1], Gk_turb[1:-1], label = r'$G_{k,\mathrm{turb}}$')
@@ -136,7 +136,7 @@ plt.tight_layout()
 plt.savefig(savename('generalized_energy_spectrum'), dpi=100, bbox_inches='tight')
 plt.show()
 
-# plt.figure(figsize=(16, 9))
+# plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.loglog(k[1:-1], GKk[1:-1], label = '$G_{kin,k}$')
 # plt.loglog(k[GKk_ZF>0][1:-1], GKk_ZF[GKk_ZF>0][1:-1], label = '$G_{kin,k,\mathrm{ZF}}$')
 # plt.loglog(k[1:-1], GKk_turb[1:-1], label = '$G_{kin,k,\mathrm{turb}}$')

@@ -10,7 +10,7 @@ from modules.gamma import gam_max
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 #%% Load the HDF5 file
@@ -95,7 +95,7 @@ X = kx
 Y = ky
 Z = np.log(ek+np.finfo(float).eps)  
 
-fig = plt.figure()
+fig = plt.figure(figsize=FIGSIZE_DOUBLE)
 ax = fig.add_subplot(111, projection='3d')
 surf = ax.plot_surface(kx[roi], ky[roi], Z[roi], cmap='viridis', linewidth=0, antialiased=True, rcount=200, ccount=200)
 ax.set_xlabel('$k_x$')
@@ -112,8 +112,8 @@ else:
 plt.show()
 
 #%% Colormesh of log(E_kx_ky)      
-
-fig = plt.figure()
+ 
+fig = plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.pcolormesh(kx[roi], ky[roi], np.log(ek[roi]+np.finfo(float).eps), cmap='viridis', shading='auto')
 plt.xlabel('$k_x$')
 plt.ylabel('$k_y$')
@@ -127,9 +127,9 @@ else:
 plt.show()
 
 #%% Colormesh of E_kx_ky 
-
+ 
 roi2 = (slice(int(3*Nx/8), int(5*Nx/8)), slice(0, int(Ny/8)))
-fig = plt.figure()
+fig = plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.pcolormesh(kx[roi2], ky[roi2], ek[roi2], cmap='Blues')
 plt.xlabel('$k_x$')
 plt.ylabel('$k_y$')

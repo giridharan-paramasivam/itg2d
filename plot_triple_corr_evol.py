@@ -9,13 +9,16 @@ from modules.mlsarray import MLSarray,Slicelist
 from modules.mlsarray import irft2np as original_irft2np, rft2np as original_rft2np, irftnp as original_irftnp, rftnp as original_rftnp
 import os
 from mpi4py import MPI
+from modules.plot_basics import FIGSIZE_DOUBLE, FIGSIZE_SINGLE
+from functools import partial
+
 
 # Initialize MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 #%% Load the HDF5 file
@@ -199,7 +202,7 @@ if rank == 0:
 if rank == 0:
 
     # Plot T1 vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], T1_t, label = '$T_1$')
     plt.xlabel('$t$')
     plt.ylabel('$T_1$')
@@ -214,7 +217,7 @@ if rank == 0:
     plt.show()
 
     # Plot T2 vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], T2_t, label = '$T_2$')
     plt.xlabel('$t$')
     plt.ylabel('$T_2$')
@@ -229,7 +232,7 @@ if rank == 0:
     plt.show()
 
     # Plot T3 vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], T3_t, label = '$T_3$')
     plt.xlabel('$t$')
     plt.ylabel('$T_3$')
@@ -244,7 +247,7 @@ if rank == 0:
     plt.show()
 
     # Plot T1+T2 vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], T1_t + T2_t, label = '$T_1 + T_2$')
     plt.xlabel('$t$')
     plt.ylabel('$T_1 + T_2$')
@@ -259,7 +262,7 @@ if rank == 0:
     plt.show()
 
     # Plot T1+T2+T3 vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], T1_t + T2_t + T3_t, label = '$T_1 + T_2 + T_3$')
     plt.xlabel('$t$')
     plt.ylabel('$T_1 + T_2 + T_3$')
@@ -274,7 +277,7 @@ if rank == 0:
     plt.show()
 
     # Plot L vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], L_t, label = '$L$')
     plt.xlabel('$t$')
     plt.ylabel('$L$')
@@ -289,7 +292,7 @@ if rank == 0:
     plt.show()
 
     # Plot Dchi vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], Dchi_t, label = r'$D_\chi$')
     plt.xlabel('$t$')
     plt.ylabel(r'$D_\chi$')
@@ -304,7 +307,7 @@ if rank == 0:
     plt.show()
 
     # Plot DH vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], DH_t, label = '$D_H$')
     plt.xlabel('$t$')
     plt.ylabel('$D_H$')
@@ -319,7 +322,7 @@ if rank == 0:
     plt.show()
 
     # Plot Dchi + DH vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], Dchi_t + DH_t, label = r'$D_\chi + D_H$')
     plt.xlabel('$t$')
     plt.ylabel(r'$D_\chi + D_H$')
@@ -334,7 +337,7 @@ if rank == 0:
     plt.show()
 
     # Plot T1 + T2 + T3 + L + Dchi + DH vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], T1_t + T2_t + T3_t + L_t + Dchi_t + DH_t, label = '$T+L+D$')
     plt.xlabel('$t$')
     plt.ylabel('$T+L+D$')
@@ -349,8 +352,8 @@ if rank == 0:
     plt.show()
 
     # Plot dQdt vs time
-    dQdt = np.gradient(Q_t[:nt], t[:nt])
-    plt.figure(figsize=(16, 9))
+    dQdt = np.gradient(Q_t[:nt], t[:nt]) # This line is correct
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.plot(t[:nt], dQdt, '-', label = r'$\frac{d\Q}{dt}$')
     plt.xlabel('$t$')
     plt.ylabel(r'$\frac{d\Q}{dt}$')
@@ -362,10 +365,10 @@ if rank == 0:
         plt.savefig(datadir+'dQdt_vs_t.pdf',dpi=100)
     else:
         plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'dQdt_vs_t_').replace('.h5', '.pdf'), dpi=100)
-    plt.show()
+    plt.show() # This line is correct
 
     # Plot Q vs time
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.semilogy(t[:nt], Q_t, '-', label = r'$\Q$')
     plt.xlabel('$t$')
     plt.ylabel(r'$\Q$')

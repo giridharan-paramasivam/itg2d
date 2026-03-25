@@ -6,7 +6,7 @@ matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import skew, kurtosis
 
-from modules.plot_basics import apply_style, savename as _savename, FIGSIZE_DOUBLE
+from modules.plot_basics import apply_style, savename as _savename, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 from functools import partial
 apply_style()
 

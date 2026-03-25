@@ -9,13 +9,14 @@ from modules.mlsarray import MLSarray,Slicelist,irft2np,rft2np,irftnp,rftnp
 import os
 import glob
 from mpi4py import MPI
+from modules.plot_basics import FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 
 # Initialize MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
-from modules.plot_basics import apply_style
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
 #%% Functions for energy, enstrophy and entropy
@@ -159,7 +160,7 @@ if rank == 0:
 
 if rank == 0:
     # Plot P2 fraction vs kapt
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.errorbar(kapt_vals, P2_frac_scan, yerr=P2_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$P_{\mathrm{ZF}}^2/P^2$',
                 elinewidth=2, capthick=1, capsize=4)
     plt.fill_between(
@@ -180,7 +181,7 @@ if rank == 0:
     plt.show()
 
     # Plot total energy fraction vs kapt
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.errorbar(kapt_vals, E_frac_scan, yerr=E_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\E_{\mathrm{ZF}}/\E$',
                 elinewidth=2, capthick=1, capsize=4)
     plt.fill_between(
@@ -201,7 +202,7 @@ if rank == 0:
     plt.show()
 
     # Plot generalized energy fraction vs kapt
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.errorbar(kapt_vals, G_frac_scan, yerr=G_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\G_{\mathrm{ZF}}/\G$',
                 elinewidth=2, capthick=1, capsize=4)
     plt.fill_between(
@@ -222,7 +223,7 @@ if rank == 0:
     plt.show()
 
     # Plot Q vs kapt
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=FIGSIZE_DOUBLE)
     plt.errorbar(kapt_vals, Q_scan, yerr=Q_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\Q$',
                 elinewidth=2, capthick=1, capsize=4)
     plt.fill_between(

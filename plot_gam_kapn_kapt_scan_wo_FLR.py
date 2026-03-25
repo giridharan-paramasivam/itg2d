@@ -16,7 +16,7 @@ datadir='data_linear/'
 os.makedirs(datadir, exist_ok=True)
 
 kapb=0.02
-fname = datadir + f'lin_kapn_kapt_scan_kapb_{str(kapb).replace(".", "_")}_itg2d.h5'
+fname = datadir + f'lin_kapn_kapt_scan_kapb_{str(kapb).replace(".", "_")}_itg2d_wo_FLR.h5'
 base_name = fname.replace(datadir+'lin_', '').replace('_scan', '').replace('.h5', '.pdf')
 
 # Load datasets
@@ -42,14 +42,15 @@ im_gam = plt.pcolormesh(Kapn, Kapt, gammax_kapn_kapt.T, vmax=gammax_vmax, vmin=-
 plt.contour(Kapn, Kapt, gammax_kapn_kapt.T, levels=[0.0], colors='k', linewidths=2)
 plt.plot([], [], color='k', linewidth=2, label=r"$\gamma=0$")
 kapn_curve = kapn_vals**2 / (4 * kapb) - kapn_vals
-kapn_mask = (kapn_vals < 10 * kapb) & (kapn_curve <= np.max(kapt_vals))
+kapn_mask = (kapn_curve <= np.max(kapt_vals)) #w.o. FLR
 plt.plot(kapn_vals[kapn_mask], kapn_curve[kapn_mask], label=r"$\kappa_T=\kappa_n^2/4\kappa_B - \kappa_n$", color='k', linestyle='--', linewidth=2)
 plt.axhline(y=0, linewidth=1, color='black')
 plt.axvline(x=0, linewidth=1, color='black')
 plt.xlabel(r'$\kappa_n$')
 plt.ylabel(r'$\kappa_T$')
 plt.legend()
-plt.colorbar(im_gam)
+
+plt.colorbar(im_gam) # Add colorbar before tight_layout
 plt.tight_layout()
 plt.savefig(datadir + fname.replace(datadir+'lin_', 'gammax_').replace('.h5', '.pdf'), bbox_inches='tight')
 plt.show()
@@ -66,7 +67,7 @@ plt.axvline(x=0, linewidth=1, color='black')
 plt.xlabel(r'$\kappa_n$')
 plt.ylabel(r'$\kappa_T$')
 plt.legend()
-plt.colorbar(im_dturb)
+plt.colorbar(im_dturb) # Add colorbar before tight_layout
 plt.tight_layout()
 plt.savefig(datadir + fname.replace(datadir+'lin_', 'Dturbmax_').replace('.h5', '.pdf'), bbox_inches='tight')
 # plt.show()
