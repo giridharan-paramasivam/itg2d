@@ -2,15 +2,14 @@
 import gc
 import os
 import numpy as np
+
+import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
-import torch 
-import h5py
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
+import torch
 
-plt.rcParams['lines.linewidth'] = 4
-plt.rcParams['font.size'] = 16
-plt.rcParams['axes.linewidth'] = 3  
-plt.rcParams['xtick.major.width'] = 3
+apply_style()
 plt.rcParams['ytick.major.width'] = 3
 plt.rcParams['xtick.minor.visible'] = True
 plt.rcParams['ytick.minor.visible'] = True

@@ -219,7 +219,7 @@ comm.Gather(reynolds_power_local, reynolds_power_t, root=0)
 
 if rank == 0:
     print("Gathered")
-    out_fname = datadir + fname.split('/')[-1].replace('out_', 'evol_')
+    out_fname = datadir + fname.split('/')[-1].replace('out_', 'evol/evol_')
     with h5.File(out_fname, 'w') as fl:
         fl.create_dataset('t', data=t[:nt])
         fl.create_dataset('P2_t', data=P2_t)

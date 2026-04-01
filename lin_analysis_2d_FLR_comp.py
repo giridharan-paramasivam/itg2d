@@ -1,27 +1,12 @@
 #%% Import modules
+
 import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
-from modules.plot_basics import FIGSIZE_DOUBLE
-import torch 
+from modules.plot_basics import apply_style, figsize_single
+import torch
 
-plt.rcParams['lines.linewidth'] = 4
-plt.rcParams['axes.linewidth'] = 3  
-plt.rcParams['xtick.major.width'] = 3
-plt.rcParams['ytick.major.width'] = 3
-plt.rcParams['xtick.minor.visible'] = True
-plt.rcParams['ytick.minor.visible'] = True
-plt.rcParams['xtick.minor.width'] = 1.5 
-plt.rcParams['ytick.minor.width'] = 1.5 
-plt.rcParams['savefig.dpi'] = 100
-plt.rcParams.update({
-    "font.size": 22,          # default text
-    "axes.titlesize": 30,     # figure title
-    "axes.labelsize": 26,     # x/y labels
-    "xtick.labelsize": 20,
-    "ytick.labelsize": 20,
-    "legend.fontsize": 22
-})
+apply_style()
 
 #%% Define Functions
 
@@ -123,20 +108,27 @@ ky_shifted = np.fft.fftshift(ky, axes=0)
 gam_shifted = np.fft.fftshift(gam, axes=0)
 gam_wo_FLR_shifted = np.fft.fftshift(gam_wo_FLR, axes=0)
 
-#%% Plot
+#%% Plot: gam vs ky finite kx and FLR comparison
 
-slky = slice(0, int(Ny/10))
-plt.figure(figsize=FIGSIZE_DOUBLE)
-plt.plot(ky[0,slky].T,gam_kxmax[slky].T,'.-',label='$k_x= \\arg\\max_{k_x} \\left(\\gamma\\right)$')
-plt.plot(ky[0,slky].T,gam_kx0[slky].T,'.-',label='$k_x=0$')
-plt.plot(ky[0,slky].T,gam_wo_FLR_kxmax[slky].T,'.-',label='$k_x= \\arg\\max_{k_x} \\left(\\gamma\\right)$, no FLR')
-plt.plot(ky[0,slky].T,gam_wo_FLR_kx0[slky].T,'.-',label='$k_x=0$, no FLR')
-plt.axhline(0,color='k', linestyle='-', linewidth=1)
-plt.plot(ky[0,slky],-D*ky[0,slky]**2,'k--',label='$-Dk_y^2$')
-plt.legend()
-plt.grid(which='major', linestyle='--', linewidth=0.5)
-plt.xlabel('$k_y$')
-plt.ylabel('$\\gamma(k_y)$')
-plt.tight_layout()
-plt.savefig(f'data_linear/gam_vs_ky_FLR_comp_kapt_{str(kapt).replace(".", "_")}_itg2d.pdf',dpi=100)
-plt.show()
+def plot_gam_vs_ky_FLR_comp(all_legends=False):
+    slky = slice(0, int(Ny/10))
+    plt.figure(figsize=figsize_single)
+    l1 = plt.plot(ky[0,slky].T,gam_kxmax[slky].T,'.-',label=r'$\displaystyle k_x= \arg\max_{k_x} \left(\gamma\right)$')
+    l2 = plt.plot(ky[0,slky].T,gam_kx0[slky].T,'.-',label=r'$\displaystyle k_x=0$')
+    l3 = plt.plot(ky[0,slky].T,gam_wo_FLR_kxmax[slky].T,'.-',label=r'$\displaystyle k_x= \arg\max_{k_x} \left(\gamma\right)$, no FLR')
+    l4 = plt.plot(ky[0,slky].T,gam_wo_FLR_kx0[slky].T,'.-',label=r'$\displaystyle k_x=0$, no FLR')
+    plt.axhline(0,color='k', linestyle='-', linewidth=1)
+    l5 = plt.plot(ky[0,slky],-D*ky[0,slky]**2,'k--',label=r'$-Dk_y^2$')
+    if all_legends:
+        plt.legend(loc='best')
+    else:
+        plt.legend([l5[0]], [r'$-Dk_y^2$'], loc='best')
+    plt.grid(which='major', linestyle='--', linewidth=0.5)
+    plt.xlabel('$k_y$')
+    plt.ylabel('$\\gamma(k_y)$')
+    plt.tight_layout()
+    plt.savefig(f'data_linear/gam_vs_ky_FLR_comp_kapt_{str(kapt).replace(".", "_")}_itg2d.svg',dpi=100)
+    plt.show()
+
+plot_gam_vs_ky_FLR_comp(all_legends=False)  
+# %%

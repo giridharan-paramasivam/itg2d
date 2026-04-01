@@ -177,7 +177,7 @@ if rank == 0:
     plt.grid()
     plt.legend()
     plt.tight_layout()
-    plt.savefig(datadir+'zonal_P2_frac_vs_kapt.pdf',dpi=100)
+    plt.savefig(datadir+'zonal_P2_frac_vs_kapt.svg',dpi=100)
     plt.show()
 
     # Plot total energy fraction vs kapt
@@ -198,7 +198,7 @@ if rank == 0:
     plt.grid()
     plt.legend()
     plt.tight_layout()
-    plt.savefig(datadir+'zonal_energy_frac_vs_kapt.pdf',dpi=100)
+    plt.savefig(datadir+'zonal_energy_frac_vs_kapt.svg',dpi=100)
     plt.show()
 
     # Plot generalized energy fraction vs kapt
@@ -219,7 +219,7 @@ if rank == 0:
     plt.grid()
     plt.legend()
     plt.tight_layout()
-    plt.savefig(datadir+'zonal_generalized_energy_frac_vs_kapt.pdf',dpi=100)
+    plt.savefig(datadir+'zonal_generalized_energy_frac_vs_kapt.svg',dpi=100)
     plt.show()
 
     # Plot Q vs kapt
@@ -240,5 +240,5 @@ if rank == 0:
     plt.grid()
     plt.legend()
     plt.tight_layout()
-    plt.savefig(datadir+'Q_vs_kapt.pdf',dpi=100)
+    plt.savefig(datadir+'Q_vs_kapt.svg',dpi=100)
     plt.show()

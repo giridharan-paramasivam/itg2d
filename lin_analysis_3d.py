@@ -3,6 +3,7 @@ import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
 import torch 
+from modules.plot_basics import FIGSIZE_DOUBLE
 
 plt.rcParams['lines.linewidth'] = 4
 plt.rcParams['font.size'] = 16
@@ -120,7 +121,7 @@ omr_kx0 = omr[0,:,:]
 
 #%% Plots
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 slz=slice(None,Nz,int(Nz/8)) #9 kz points
 plt.plot(ky[0,:int(Ny/4),slz],gam_kx0[:int(Ny/4),slz],'.-')
 plt.axhline(0.0, color='k', linestyle='--')
@@ -134,7 +135,7 @@ plt.savefig('data/gam_vs_ky_kzvals_itg.png',dpi=600)
 plt.show()
 
 kymax_kz= np.take_along_axis(ky[0,:int(Ny/2),:],np.argmax(gam_kx0[:int(Ny/2),:],axis=-2,keepdims=True),axis=-2).squeeze(axis=-2)
-plt.figure()
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(kz[0,0,:],kymax_kz,'.-')
 plt.xlabel('$k_z$')
 plt.ylabel('$k_{y,max}$')
@@ -142,8 +143,8 @@ plt.title('$k_{y,max}$ vs $k_z$')
 plt.tight_layout()
 plt.savefig('data/ky_vs_kz_itg.png',dpi=600)
 plt.show()
-
-plt.figure(figsize=(16, 9))
+ 
+plt.figure(figsize=FIGSIZE_DOUBLE)
 sly=slice(None,int(Ny/8),int(Ny/64)) #9 ky points
 plt.plot(kz[0,sly,:int(Nz/2)].T,gam_kx0[sly,:int(Nz/2)].T,'.-')
 plt.axhline(0.0, color='k', linestyle='--')
@@ -155,7 +156,7 @@ plt.tight_layout()
 # plt.savefig('data/gam_vs_kz_kyvals_itg.png',dpi=600)
 plt.show()
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 slx=slice(None,int(Nx/2),int((Nx/2)/8)) #9 kx points
 plt.plot(ky[slx,:int(Ny/2),0].T,gam_kz0[slx,:int(Ny/2)].T,'.-')
 plt.axhline(0.0, color='k', linestyle='--')
@@ -169,7 +170,7 @@ plt.savefig('data/gam_vs_ky_kxvals_itg.png',dpi=600)
 plt.show()
 
 kymax_kx= np.take_along_axis(ky[:int(Nx/2),:int(Ny/2),0],np.argmax(gam_kz0[:int(Nx/2),:int(Ny/2)],axis=1,keepdims=True),axis=1).squeeze(axis=1)
-plt.figure()
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(kx[:int(Nx/2),0,0],kymax_kx,'.-')
 plt.xlabel('$k_x$')
 plt.ylabel('$k_{y,max}$')
@@ -207,7 +208,7 @@ plt.show()
 kx_shifted = np.fft.fftshift(kx[:,:,0],axes=0)
 ky_shifted = np.fft.fftshift(ky[:,:,0],axes=0)
 
-plt.figure()
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.pcolormesh(kx_shifted[:,:int(Ny/2)], ky_shifted[:,:int(Ny/2)], np.fft.fftshift(gam_kz0[:,:int(Ny/2)], axes=0),vmax=1.88,vmin=-1.88,cmap='seismic', rasterized=True)
 plt.xlabel('$k_x$')
 plt.ylabel('$k_y$')
@@ -236,4 +237,3 @@ plt.show()
 # plt.colorbar()
 # plt.savefig('data_linear/kzmax_itg.png',dpi=600)
 # plt.show()
-

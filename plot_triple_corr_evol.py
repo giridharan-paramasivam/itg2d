@@ -211,9 +211,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'T1_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'T1_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T1_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T1_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot T2 vs time
@@ -226,9 +226,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'T2_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'T2_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T2_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T2_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot T3 vs time
@@ -241,9 +241,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'T3_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'T3_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T3_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T3_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot T1+T2 vs time
@@ -256,9 +256,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'T1_plus_T2_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'T1_plus_T2_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T1_plus_T2_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T1_plus_T2_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot T1+T2+T3 vs time
@@ -271,9 +271,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'T1_plus_T2_plus_T3_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'T1_plus_T2_plus_T3_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T1_plus_T2_plus_T3_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T1_plus_T2_plus_T3_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot L vs time
@@ -286,9 +286,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'L_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'L_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'L_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'L_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot Dchi vs time
@@ -301,9 +301,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'Dchi_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'Dchi_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'Dchi_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'Dchi_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot DH vs time
@@ -316,9 +316,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'DH_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'DH_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'DH_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'DH_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot Dchi + DH vs time
@@ -331,9 +331,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'Dchi_plus_DH_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'Dchi_plus_DH_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'Dchi_plus_DH_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'Dchi_plus_DH_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot T1 + T2 + T3 + L + Dchi + DH vs time
@@ -346,9 +346,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'T_plus_L_plus_D_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'T_plus_L_plus_D_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T_plus_L_plus_D_vs_t_').replace('.h5', '.pdf'),dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'T_plus_L_plus_D_vs_t_').replace('.h5', '.svg'),dpi=100)
     plt.show()
 
     # Plot dQdt vs time
@@ -362,9 +362,9 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'dQdt_vs_t.pdf',dpi=100)
+        plt.savefig(datadir+'dQdt_vs_t.svg',dpi=100)
     else:
-        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'dQdt_vs_t_').replace('.h5', '.pdf'), dpi=100)
+        plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'dQdt_vs_t_').replace('.h5', '.svg'), dpi=100)
     plt.show() # This line is correct
 
     # Plot Q vs time
@@ -377,7 +377,7 @@ if rank == 0:
     plt.legend()
     plt.tight_layout()
     # if fname.endswith('out.h5'):
-        # plt.savefig(datadir+'Q_vs_t.pdf',dpi=100)
+        # plt.savefig(datadir+'Q_vs_t.svg',dpi=100)
     # else:
-        # plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'Q_vs_t_').replace('.h5', '.pdf'), dpi=100)
+        # plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'Q_vs_t_').replace('.h5', '.svg'), dpi=100)
     plt.show()

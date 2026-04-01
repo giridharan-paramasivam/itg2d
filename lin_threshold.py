@@ -3,6 +3,7 @@ import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
 
+from modules.plot_basics import FIGSIZE_DOUBLE
 plt.rcParams['lines.linewidth'] = 4
 plt.rcParams['font.size'] = 16
 plt.rcParams['axes.linewidth'] = 3  
@@ -40,7 +41,7 @@ k_min = np.argmin(thresh_min_candidate,axis=0)
 k_max = np.argmax(thresh_max_candidate,axis=0)
 
 # %% Plots
-plt.figure()
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(kapb, thresh_min, label='min')
 plt.plot(kapb, thresh_max, label='max')
 plt.xlabel('$\\bar{\\kappa}_B$')
@@ -52,7 +53,7 @@ plt.tight_layout()
 plt.savefig('data_linear/lin_thresh_itg2d.png', dpi=600)
 plt.show()
 
-plt.figure()
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(kapb, k[k_min], label='k at min thresh')
 plt.plot(kapb, k[k_max], label='k at max thresh')
 plt.axhline(1.0, color='k', linestyle=':')

@@ -1,29 +1,13 @@
 #%% Import libraries
 
+
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 from modules.triads import make_triad
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 
-plt.rcParams.update(
-    {
-        "lines.linewidth": 3,
-        "axes.linewidth": 2,
-        "xtick.major.width": 2,
-        "ytick.major.width": 2,
-        "xtick.minor.visible": True,
-        "ytick.minor.visible": True,
-        "xtick.minor.width": 1.0,
-        "ytick.minor.width": 1.0,
-        "savefig.dpi": 120,
-        "font.size": 22,          # default text
-        "axes.titlesize": 30,     # figure title
-        "axes.labelsize": 26,     # x/y labels
-        "xtick.labelsize": 20,
-        "ytick.labelsize": 20,
-        "legend.fontsize": 22
-    }
-)
+apply_style()
 
 #%% Parameters
 
@@ -122,7 +106,7 @@ for case_idx, (zero_m, zero_l, zero_n) in enumerate(cases):
 pump_labels = {0: "k", 1: "p", 2: "q"}
 roman_labels = ["i", "ii", "iii", "iv", "v"]
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 for i in range(len(cases)):
     plt.plot(delta_vals / np.pi,lam_vals[i],'o-',label=f"{roman_labels[i]}: {case_names[i]}")
 if pump_mode == 1:
@@ -136,8 +120,8 @@ plt.grid(True)
 plt.legend(loc="best")
 plt.tight_layout()
 if ZONAL:
-    plt.savefig(datadir+f"growth_rate_vs_delta_zonalk_pump_mode_{pump_mode}.pdf", bbox_inches="tight")
+    plt.savefig(datadir+f"growth_rate_vs_delta_zonalk_pump_mode_{pump_mode}.svg", bbox_inches="tight")
 else:
-    plt.savefig(datadir+f"growth_rate_vs_delta_pump_mode_{pump_mode}.pdf", bbox_inches="tight")
+    plt.savefig(datadir+f"growth_rate_vs_delta_pump_mode_{pump_mode}.svg", bbox_inches="tight")
 plt.show()
 # %%

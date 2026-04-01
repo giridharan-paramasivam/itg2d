@@ -15,7 +15,7 @@ import os
 Npx,Npy=512,512
 Lx,Ly=32*np.pi,32*np.pi
 kapt=0.36
-kapn=round(kapt/3,3)
+kapn=round(kapt/3,3)*0
 kapb=0.05
 a=9.0/40.0
 b=67.0/160.0

@@ -6,29 +6,10 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from modules.mlsarray import MLSarray,Slicelist,irft2np,rft2np,irftnp,rftnp
-from modules.gamma import gam_max, Dturb   
+from modules.gamma import gam_max
 import os
 import glob
 from mpi4py import MPI
-
-plt.rcParams.update({
-    'lines.linewidth': 4,
-    'axes.linewidth': 3,
-    'xtick.major.width': 3,
-    'ytick.major.width': 3,
-    'xtick.minor.visible': True,
-    'ytick.minor.visible': True,
-    'xtick.minor.width': 1.5,
-    'ytick.minor.width': 1.5,
-    'savefig.dpi': 100,
-    'font.size': 20,
-    'axes.titlesize': 22,
-    'axes.labelsize': 20,
-    'xtick.labelsize': 16,
-    'ytick.labelsize': 16,
-    'legend.fontsize': 16,
-    'legend.edgecolor': 'black'
-})
 
 # Initialize MPI
 comm = MPI.COMM_WORLD
@@ -82,6 +63,7 @@ sl=Slicelist(Nx,Ny)
 slbar=np.s_[int(Ny/2)-1:int(Ny/2)*int(Nx/2)-1:int(Nx/2)]
 gammax=gam_max(kx,ky,kapn,kapt,kapb,D,H)
 t=t*gammax
+q = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
 
 nt = len(t)
 if rank == 0:
@@ -228,12 +210,7 @@ def GKS_ZF(omk, pk, q, k, dk, slbar):
 #%% compute quantities
 
 dk = ky[1]-ky[0]
-q = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
-# k = np.linspace(np.min(q), np.max(q), num=int(np.max(q)/dk))
-k = np.linspace(np.min(ky), np.max(ky), num=int(np.max(ky)/dk))
-
-# Kx,Ky = np.meshgrid(k,k,indexing='ij')
-# Dturb=Dturb(Kx,Ky,kapn,kapt,kapb,D,H)
+k = np.arange(dk, np.max(ky), dk)
 
 # MPI parallelization for time series calculation
 nt2 = int(nt/2)
@@ -325,14 +302,10 @@ comm.Gather(Gk_local, Gk_t, root=0)
 comm.Gather(Gk_ZF_local, Gk_ZF_t, root=0)
 comm.Gather(GKk_local, GKk_t, root=0)
 comm.Gather(GKk_ZF_local, GKk_ZF_t, root=0)
+comm.Gather(reynolds_power_local, reynolds_power_gathered, root=0)
 
 if rank == 0:
     print("Gathered")
-
-    median = np.median(reynolds_power_gathered)
-    mad    = np.median(np.abs(reynolds_power_gathered - median))
-    mask   = np.abs(reynolds_power_gathered - median) <= 24 * mad
-    print(f"Outlier filter: {np.sum(~mask)}/{nt2} time steps excluded (|P_R - median| > 24·MAD)")
 
     Phi2k_turb_t = Phi2k_t - Phi2k_ZF_t
     P2k_turb_t = P2k_t - P2k_ZF_t
@@ -342,30 +315,30 @@ if rank == 0:
     Gk_turb_t = Gk_t - Gk_ZF_t
     GKk_turb_t = GKk_t - GKk_ZF_t
 
-    Phi2k = np.mean(Phi2k_t[mask, :], axis=0)
-    Phi2k_ZF = np.mean(Phi2k_ZF_t[mask, :], axis=0)
+    Phi2k = np.mean(Phi2k_t, axis=0)
+    Phi2k_ZF = np.mean(Phi2k_ZF_t, axis=0)
     Phi2k_turb = Phi2k - Phi2k_ZF
-    P2k = np.mean(P2k_t[mask, :], axis=0)
-    P2k_ZF = np.mean(P2k_ZF_t[mask, :], axis=0)
+    P2k = np.mean(P2k_t, axis=0)
+    P2k_ZF = np.mean(P2k_ZF_t, axis=0)
     P2k_turb = P2k - P2k_ZF
-    Ek = np.mean(Ek_t[mask, :], axis=0)
-    Ek_ZF = np.mean(Ek_ZF_t[mask, :], axis=0)
+    Ek = np.mean(Ek_t, axis=0)
+    Ek_ZF = np.mean(Ek_ZF_t, axis=0)
     Ek_turb = Ek - Ek_ZF
-    Kk = np.mean(Kk_t[mask, :], axis=0)
-    Kk_ZF = np.mean(Kk_ZF_t[mask, :], axis=0)
+    Kk = np.mean(Kk_t, axis=0)
+    Kk_ZF = np.mean(Kk_ZF_t, axis=0)
     Kk_turb = Kk - Kk_ZF
-    Wk = np.mean(Wk_t[mask, :], axis=0)
-    Wk_ZF = np.mean(Wk_ZF_t[mask, :], axis=0)
+    Wk = np.mean(Wk_t, axis=0)
+    Wk_ZF = np.mean(Wk_ZF_t, axis=0)
     Wk_turb = Wk - Wk_ZF
-    Gk = np.mean(Gk_t[mask, :], axis=0)
-    Gk_ZF = np.mean(Gk_ZF_t[mask, :], axis=0)
+    Gk = np.mean(Gk_t, axis=0)
+    Gk_ZF = np.mean(Gk_ZF_t, axis=0)
     Gk_turb = Gk - Gk_ZF
-    GKk = np.mean(GKk_t[mask, :], axis=0)
-    GKk_ZF = np.mean(GKk_ZF_t[mask, :], axis=0)
+    GKk = np.mean(GKk_t, axis=0)
+    GKk_ZF = np.mean(GKk_ZF_t, axis=0)
     GKk_turb = GKk - GKk_ZF
 
     #%% Save computed spectra
-    savefile = fname.replace('out_', 'spectrum_')
+    savefile = fname.replace('out_', 'spectrum/spectrum_')
     with h5.File(savefile, 'w') as fl:
         fl.create_dataset('k', data=k)
         fl.create_dataset('Phi2k', data=Phi2k)

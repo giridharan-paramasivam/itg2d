@@ -31,7 +31,7 @@ def init_linmats(pars,kx,ky):
     lm[:,:,0,0]=-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
     lm[:,:,0,1]=(kapn+kapt)*ky
     lm[:,:,1,0]=-kapb*ky/Wk
-    lm[:,:,1,1]=(kapn*ky-(kapn+kapt)*ky*kpsq)/Wk-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
+    lm[:,:,1,1]=kapn*ky/Wk-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
 
     return lm
 
@@ -83,7 +83,7 @@ n_kapt=len(kapt_vals)
 
 datadir='data_linear/'
 os.makedirs(datadir, exist_ok=True)
-fname = datadir + f'lin_kapn_kapt_scan_kapb_{str(kapb).replace(".", "_")}_itg2d.h5'
+fname = datadir + f'lin_kapn_kapt_scan_kapb_{str(kapb).replace(".", "_")}_itg2d_wo_FLR.h5'
 
 def one_over(x):
     out = np.zeros_like(x)

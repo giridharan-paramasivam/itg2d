@@ -42,6 +42,7 @@ sl=Slicelist(Nx,Ny)
 slbar=np.s_[int(Ny/2)-1:int(Ny/2)*int(Nx/2)-1:int(Nx/2)]
 gammax=gam_max(kx,ky,kapn,kapt,kapb,D,kz)
 t=t*gammax
+q = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
 
 nt = len(t)
 if rank == 0:
@@ -191,9 +192,7 @@ def HS_ZF(omk, vk, q, k, dk, slbar):
 #%% Compute quantities
 
 dk = ky[1]-ky[0]
-q = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
-# k = np.linspace(np.min(q), np.max(q), num=int(np.max(q)/dk))
-k = np.linspace(np.min(ky), np.max(ky), num=int(np.max(ky)/dk))
+k = np.arange(dk, np.max(ky), dk)
 
 # MPI parallelization for time series calculation
 nt2 = int(nt/2)
@@ -289,12 +288,7 @@ comm.Gather(reynolds_power_local, reynolds_power_gathered, root=0)
 
 if rank == 0:
     print("Gathered")
-
-    median = np.median(reynolds_power_gathered)
-    mad    = np.median(np.abs(reynolds_power_gathered - median))
-    mask   = np.abs(reynolds_power_gathered - median) <= 24 * mad
-    print(f"Outlier filter: {np.sum(~mask)}/{nt2} time steps excluded (|P_R - median| > 24·MAD)")
-
+    
     P2k_turb_t = P2k_t - P2k_ZF_t
     V2k_turb_t = V2k_t - V2k_ZF_t
     Ek_turb_t = Ek_t - Ek_ZF_t
@@ -303,30 +297,30 @@ if rank == 0:
     Gk_turb_t = Gk_t - Gk_ZF_t
     GKk_turb_t = GKk_t - GKk_ZF_t
 
-    P2k = np.mean(P2k_t[mask, :], axis=0)
-    P2k_ZF = np.mean(P2k_ZF_t[mask, :], axis=0)
+    P2k = np.mean(P2k_t, axis=0)
+    P2k_ZF = np.mean(P2k_ZF_t, axis=0)
     P2k_turb = P2k - P2k_ZF
-    V2k = np.mean(V2k_t[mask, :], axis=0)
-    V2k_ZF = np.mean(V2k_ZF_t[mask, :], axis=0)
+    V2k = np.mean(V2k_t, axis=0)
+    V2k_ZF = np.mean(V2k_ZF_t, axis=0)
     V2k_turb = V2k - V2k_ZF
-    Ek = np.mean(Ek_t[mask, :], axis=0)
-    Ek_ZF = np.mean(Ek_ZF_t[mask, :], axis=0)
+    Ek = np.mean(Ek_t, axis=0)
+    Ek_ZF = np.mean(Ek_ZF_t, axis=0)
     Ek_turb = Ek - Ek_ZF
-    Kk = np.mean(Kk_t[mask, :], axis=0)
-    Kk_ZF = np.mean(Kk_ZF_t[mask, :], axis=0)
+    Kk = np.mean(Kk_t, axis=0)
+    Kk_ZF = np.mean(Kk_ZF_t, axis=0)
     Kk_turb = Kk - Kk_ZF
-    Wk = np.mean(Wk_t[mask, :], axis=0)
-    Wk_ZF = np.mean(Wk_ZF_t[mask, :], axis=0)
+    Wk = np.mean(Wk_t, axis=0)
+    Wk_ZF = np.mean(Wk_ZF_t, axis=0)
     Wk_turb = Wk - Wk_ZF
-    Gk = np.mean(Gk_t[mask, :], axis=0)
-    Gk_ZF = np.mean(Gk_ZF_t[mask, :], axis=0)
+    Gk = np.mean(Gk_t, axis=0)
+    Gk_ZF = np.mean(Gk_ZF_t, axis=0)
     Gk_turb = Gk - Gk_ZF
-    GKk = np.mean(GKk_t[mask, :], axis=0)
-    GKk_ZF = np.mean(GKk_ZF_t[mask, :], axis=0)
+    GKk = np.mean(GKk_t, axis=0)
+    GKk_ZF = np.mean(GKk_ZF_t, axis=0)
     GKk_turb = GKk - GKk_ZF
 
     #%% Save computed spectra
-    savefile = fname.replace('out_', 'spectrum_')
+    savefile = fname.replace('out_', 'spectrum/spectrum_')
     with h5.File(savefile, 'w') as fl:
         fl.create_dataset('k', data=k)
         fl.create_dataset('P2k', data=P2k)

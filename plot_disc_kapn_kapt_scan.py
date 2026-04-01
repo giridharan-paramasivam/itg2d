@@ -4,16 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import h5py
-
-plt.rcParams['lines.linewidth'] = 4
-plt.rcParams['axes.linewidth'] = 3  
-plt.rcParams['xtick.major.width'] = 3
-plt.rcParams['ytick.major.width'] = 3
-plt.rcParams['xtick.minor.visible'] = True
-plt.rcParams['ytick.minor.visible'] = True
-plt.rcParams['xtick.minor.width'] = 1.5 
-plt.rcParams['ytick.minor.width'] = 1.5 
-plt.rcParams['savefig.dpi'] = 100
 from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 
@@ -63,5 +53,5 @@ try:
 except Exception:
     pass
 plt.tight_layout()
-plt.savefig(fname.replace('.h5', '.pdf'))
+plt.savefig(fname.replace('.h5', '.svg'))
 plt.show()

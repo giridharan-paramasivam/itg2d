@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from modules.mlsarray import MLSarray,Slicelist,irft2np,rft2np
 import glob
 
-from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
+from modules.plot_basics import apply_style, FIGSIZE_1C, FIGSIZE_2C
 apply_style()
 
 #%% Functions for energy, enstrophy and entropy
@@ -142,7 +142,7 @@ for i,kapt in enumerate(kapt_vals):
 #%% Calculate and plot quantities vs time
 
 # Plot kinetic energy vs kapt
-plt.figure(figsize=FIGSIZE_DOUBLE)
+plt.figure(figsize=FIGSIZE_1C)
 plt.errorbar(kapt_vals, E_frac_scan, yerr=E_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\E_{\mathrm{ZF}}/\E$',
              elinewidth=2, capthick=1, capsize=4)
 plt.xlabel(r'$\kappa_T$')
@@ -151,11 +151,11 @@ plt.title(r'$\E_{\mathrm{ZF}}/\E$ vs $\kappa_T$')
 plt.grid()
 plt.legend()
 plt.tight_layout()
-plt.savefig(datadir+'zonal_energy_frac_vs_kapt_sweep.pdf',dpi=100)
+plt.savefig(datadir+'zonal_energy_frac_vs_kapt_sweep.svg')
 plt.show()
 
 # # Plot enstrophy vs kapt
-# plt.figure(figsize=FIGSIZE_DOUBLE)
+# plt.figure(figsize=FIGSIZE_1C)
 # plt.errorbar(kapt_vals, W_frac_scan, yerr=W_frac_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\W_{\mathrm{ZF}}/\W$',
 #              elinewidth=2, capthick=1, capsize=4)
 # plt.xlabel(r'$\kappa_T$')
@@ -164,11 +164,11 @@ plt.show()
 # plt.grid()
 # plt.legend()
 # plt.tight_layout()
-# plt.savefig(datadir+'zonal_enstrophy_frac_vs_kapt_sweep.pdf',dpi=100)
+# plt.savefig(datadir+'zonal_enstrophy_frac_vs_kapt_sweep.svg')
 # plt.show()
 
 # Plot Q vs kapt
-plt.figure(figsize=FIGSIZE_DOUBLE)
+plt.figure(figsize=FIGSIZE_1C)
 plt.errorbar(kapt_vals, Q_scan, yerr=Q_scan_err, marker='o', linestyle='-', markersize=10, label = r'$\Q$',
              elinewidth=2, capthick=1, capsize=4)
 plt.xlabel(r'$\kappa_T$')
@@ -177,5 +177,5 @@ plt.title(r'$\Q$ vs $\kappa_T$')
 plt.grid()
 plt.legend()
 plt.tight_layout()
-plt.savefig(datadir+'Q_vs_kapt_sweep.pdf',dpi=100)
+plt.savefig(datadir+'Q_vs_kapt_sweep.svg')
 plt.show()

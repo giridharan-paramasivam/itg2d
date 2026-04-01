@@ -39,26 +39,18 @@ plt.rcParams.update({
 #%% Load the HDF5 file
 
 Npx=1024
-# datadir = "data{Npx}/"
-datadir=f'data_2d3c/{Npx}/'
+datadir = f"data/{Npx}/"
+# datadir=f'data_2d3c/{Npx}/'
 
-fname = datadir+'out_2d3c_kapt_2_0_D_0_1_kz_0_1.h5'
-# fname = datadir + 'out_2d3c_kapt_2_0_D_0_03_kz_0_1_classic.h5'
-# fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
-# fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
-# fname = datadir + 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
+subdir='video/'
 
-# kapt=2.0
-# D=1e-3
-# Np=1024
-# pattern = datadir + f'out_kapt_{str(kapt).replace(".", "_")}_D_{str(D).replace(".", "_")}*_{Np}x{Np}.h5'
-# files = glob.glob(pattern)
-# if not files:
-#     print(f"No file found for kappa_T = {kapt}")
-# else:
-#     fname = files[0]
+# fname = 'out_2d3c_kapt_2_0_D_0_1_kz_0_1.h5'
+# fname = 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
+fname = 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+# fname = 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
 
-outfl = fname.replace('.h5', '.mp4')
+outfl = (datadir+subdir+fname).replace('.h5', '.mp4')
+fname = datadir + fname
 
 with h5.File(fname, "r", libver='latest', swmr=True) as fl:
     t = fl['fields/t'][:]

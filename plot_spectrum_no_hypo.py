@@ -305,12 +305,11 @@ if rank == 0:
     plt.ylabel('$P_k^2$')
     plt.title('$P^2_k$')
     plt.legend()
-    plt.grid(which='both', linestyle='--', linewidth=0.5)
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'pressure_spectrum.pdf', dpi=100)
+        plt.savefig(datadir+'P2_spectrum.svg')
     else:
-        plt.savefig(datadir+"pressure_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+        plt.savefig(datadir+"P2_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'))
     plt.show()
 
     plt.figure(figsize=FIGSIZE_DOUBLE)
@@ -323,12 +322,11 @@ if rank == 0:
     plt.ylabel('$\E_k$')
     plt.title('$\E_k$')
     plt.legend()
-    plt.grid(which='both', linestyle='--', linewidth=0.5)
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'energy_spectrum.pdf', dpi=100)
+        plt.savefig(datadir+'E_spectrum.svg')
     else:
-        plt.savefig(datadir+"energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+        plt.savefig(datadir+"E_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'))
     plt.show()
 
     plt.figure(figsize=FIGSIZE_DOUBLE)
@@ -341,12 +339,11 @@ if rank == 0:
     plt.ylabel('$\E_{kin,k}$')
     plt.title('$\E_{kin,k}$')
     plt.legend()
-    plt.grid(which='both', linestyle='--', linewidth=0.5)
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'kinetic_energy_spectrum.pdf', dpi=100)
+        plt.savefig(datadir+'KE_spectrum.svg')
     else:
-        plt.savefig(datadir+"kinetic_energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+        plt.savefig(datadir+"KE_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'))
     plt.show()
 
     plt.figure(figsize=FIGSIZE_DOUBLE)
@@ -359,12 +356,11 @@ if rank == 0:
     plt.ylabel('$\W_k$')
     plt.title('$\W_k$')
     plt.legend()
-    plt.grid(which='both', linestyle='--', linewidth=0.5)
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'enstrophy_spectrum.pdf', dpi=100)
+        plt.savefig(datadir+'enstrophy_spectrum.svg')
     else:
-        plt.savefig(datadir+"enstrophy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+        plt.savefig(datadir+"enstrophy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'))
     plt.show()
 
     plt.figure(figsize=FIGSIZE_DOUBLE)
@@ -377,12 +373,11 @@ if rank == 0:
     plt.ylabel('$\G_{k}$')
     plt.title('$\G_{k}$')
     plt.legend()
-    plt.grid(which='both', linestyle='--', linewidth=0.5)
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'generalized_energy_spectrum.pdf', dpi=100)
+        plt.savefig(datadir+'G_spectrum.svg')
     else:
-        plt.savefig(datadir+"generalized_energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+        plt.savefig(datadir+"G_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'))
     plt.show()
 
     plt.figure(figsize=FIGSIZE_DOUBLE)
@@ -395,12 +390,11 @@ if rank == 0:
     plt.ylabel('$\G_{kin,k}$')
     plt.title('$\G_{kin,k}$')
     plt.legend()
-    plt.grid(which='both', linestyle='--', linewidth=0.5)
     plt.tight_layout()
     if fname.endswith('out.h5'):
-        plt.savefig(datadir+'generalized_kinetic_energy_spectrum.pdf', dpi=100)
+        plt.savefig(datadir+'KG_spectrum.svg')
     else:
-        plt.savefig(datadir+"generalized_kinetic_energy_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+        plt.savefig(datadir+"KG_spectrum_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'))
     plt.show()
 
 # %%

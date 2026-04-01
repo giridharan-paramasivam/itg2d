@@ -17,7 +17,7 @@ os.makedirs(datadir, exist_ok=True)
 
 kapb=0.02
 fname = datadir + f'lin_kapn_kapt_scan_kapb_{str(kapb).replace(".", "_")}_itg2d_wo_FLR.h5'
-base_name = fname.replace(datadir+'lin_', '').replace('_scan', '').replace('.h5', '.pdf')
+base_name = fname.replace(datadir+'lin_', '').replace('_scan', '').replace('.h5', '.svg')
 
 # Load datasets
 with h5py.File(fname, 'r') as fl:
@@ -49,10 +49,9 @@ plt.axvline(x=0, linewidth=1, color='black')
 plt.xlabel(r'$\kappa_n$')
 plt.ylabel(r'$\kappa_T$')
 plt.legend()
-
-plt.colorbar(im_gam) # Add colorbar before tight_layout
+plt.colorbar(im_gam) 
 plt.tight_layout()
-plt.savefig(datadir + fname.replace(datadir+'lin_', 'gammax_').replace('.h5', '.pdf'), bbox_inches='tight')
+plt.savefig(datadir + fname.replace(datadir+'lin_', 'gammax_').replace('.h5', '.svg'), bbox_inches='tight')
 plt.show()
 
 #%% Colormesh of Dturb(kapn,kapt)
@@ -67,7 +66,7 @@ plt.axvline(x=0, linewidth=1, color='black')
 plt.xlabel(r'$\kappa_n$')
 plt.ylabel(r'$\kappa_T$')
 plt.legend()
-plt.colorbar(im_dturb) # Add colorbar before tight_layout
+plt.colorbar(im_dturb) 
 plt.tight_layout()
-plt.savefig(datadir + fname.replace(datadir+'lin_', 'Dturbmax_').replace('.h5', '.pdf'), bbox_inches='tight')
+plt.savefig(datadir + fname.replace(datadir+'lin_', 'Dturbmax_').replace('.h5', '.svg'), bbox_inches='tight')
 # plt.show()

@@ -3,16 +3,7 @@ import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
 import torch 
-
-plt.rcParams['lines.linewidth'] = 4
-plt.rcParams['font.size'] = 16
-plt.rcParams['axes.linewidth'] = 3  
-plt.rcParams['xtick.major.width'] = 3
-plt.rcParams['ytick.major.width'] = 3
-plt.rcParams['xtick.minor.visible'] = True
-plt.rcParams['ytick.minor.visible'] = True
-plt.rcParams['xtick.minor.width'] = 1.5 
-plt.rcParams['ytick.minor.width'] = 1.5 
+from modules.plot_basics import apply_style, FIGSIZE_DOUBLE
 
 #%% Define Functions
 
@@ -114,7 +105,7 @@ omr_kx0 = omr[0,:]
 
 #%% Plots
    
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=FIGSIZE_DOUBLE)
 slx=slice(None,int(Nx/8),int((Nx/8)/5)) #7 kx points
 plt.plot(ky[slx,:int(Ny/4)].T,gam[slx,:int(Ny/4)].T,'.-')
 plt.axhline(0.0, color='k', linestyle='--')
@@ -128,7 +119,7 @@ plt.savefig(f'data_linear/gam_vs_ky_kxvals_itg2d3c_kz_{kz:.1f}.png',dpi=600)
 plt.show()
 
 kymax_kx= np.take_along_axis(ky[:int(Nx/4),:],np.argmax(gam[:int(Nx/4),:],axis=1,keepdims=True),axis=1).squeeze(axis=1)
-plt.figure()
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(kx[:int(Nx/4),0],kymax_kx,'.-')
 plt.xlabel('$k_x$')
 plt.ylabel('$k_{y,max}$')
@@ -142,7 +133,7 @@ plt.show()
 kx_shifted = np.fft.fftshift(kx[:,:],axes=0)
 ky_shifted = np.fft.fftshift(ky[:,:],axes=0)
 
-plt.figure()
+plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.pcolormesh(kx_shifted, ky_shifted, np.fft.fftshift(gam, axes=0),vmax=0.3,vmin=-0.3,cmap='seismic', rasterized=True)
 plt.xlabel('$k_x$')
 plt.ylabel('$k_y$')

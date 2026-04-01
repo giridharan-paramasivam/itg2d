@@ -4,33 +4,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from modules.triads import make_triad
-
-plt.rcParams.update(
-    {
-        "lines.linewidth": 3,
-        "axes.linewidth": 2,
-        "xtick.major.width": 2,
-        "ytick.major.width": 2,
-        "xtick.minor.visible": True,
-        "ytick.minor.visible": True,
-        "xtick.minor.width": 1.0,
-        "ytick.minor.width": 1.0,
-        "savefig.dpi": 120,
-        "font.size": 22,          # default text
-        "axes.titlesize": 30,     # figure title
-        "axes.labelsize": 26,     # x/y labels
-        "xtick.labelsize": 20,
-        "ytick.labelsize": 20,
-        "legend.fontsize": 22
-    }
-)
+from modules.plot_basics import apply_style, figsize_single
+apply_style()
 
 #%% Parameters
 
 ZONALk=False
 ZONALp=True
 Zonalq=False
-pump_mode = 2 # 0: k is smallest, 1: k is medium, 2: k is largest
+pump_mode = 1 # 0: k is smallest, 1: k is medium, 2: k is largest
 delta_vals = np.linspace(0, np.pi, 51)  # phase difference between pump modes
 
 cases = [(0, 0, 1), (1, 1, 0), (0, 1, 1), (1, 0, 1), (1, 1, 1)]
@@ -125,7 +107,7 @@ for case_idx, (zero_m, zero_l, zero_n) in enumerate(cases):
 pump_labels = {0: "k", 1: "p", 2: "q"}
 roman_labels = ["i", "ii", "iii", "iv", "v"]
 
-plt.figure(figsize=(16, 9))
+plt.figure(figsize=(11, 10))
 for i in range(len(cases)):
     plt.plot(delta_vals / np.pi,lam_vals[i],'o-',label=f"{roman_labels[i]}: {case_names[i]}")
 if pump_mode == 1:
@@ -135,14 +117,14 @@ else:
 plt.xlabel(r'$\left|\delta\right| / \pi$')
 plt.ylabel(r'Growth rate $\lambda$')
 plt.title(r'$\lambda$ vs $\left|\delta\right|$; pump = ' + pump_labels.get(pump_mode, str(pump_mode)))
-plt.grid(True)
-plt.legend(loc="best")
+# plt.grid(True)
+# plt.legend(loc="best")
 plt.tight_layout()
 if ZONALk:
-    plt.savefig(datadir+f"growth_rate_vs_delta_zonalk_pump_mode_{pump_mode}.pdf", bbox_inches="tight")
+    plt.savefig(datadir+f"growth_rate_vs_delta_zonalk_pump_mode_{pump_mode}.svg", bbox_inches="tight")
 elif ZONALp:
-    plt.savefig(datadir+f"growth_rate_vs_delta_zonalp_pump_mode_{pump_mode}.pdf", bbox_inches="tight")
+    plt.savefig(datadir+f"growth_rate_vs_delta_zonalp_pump_mode_{pump_mode}.svg", bbox_inches="tight")
 else:
-    plt.savefig(datadir+f"growth_rate_vs_delta_pump_mode_{pump_mode}.pdf", bbox_inches="tight")
+    plt.savefig(datadir+f"growth_rate_vs_delta_pump_mode_{pump_mode}.svg", bbox_inches="tight")
 plt.show()
 # %%

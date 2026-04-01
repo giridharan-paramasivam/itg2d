@@ -24,15 +24,6 @@ datadir=f'data/{Npx}/'
 fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 # fname = datadir + 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
 
-# kapt=2.0
-# D=0.1
-# pattern = datadir + f'out_kapt_{str(kapt).replace(".", "_")}_D_{str(D).replace(".", "_")}*.h5'
-# files = glob.glob(pattern)
-# if not files:
-#     print(f"No file found for kappa_T = {kapt}")
-# else:
-#     fname = files[0]
-
 with h5.File(fname, 'r', swmr=True) as fl:
     Omk = fl['fields/Omk'][0]
     Pk = fl['fields/Pk'][0]
@@ -236,7 +227,7 @@ comm.Gather(reynolds_power_local, reynolds_power_t, root=0)
 
 if rank == 0:
     print("Gathered")
-    out_fname = datadir + fname.split('/')[-1].replace('out_', 'evol_')
+    out_fname = datadir + fname.split('/')[-1].replace('out_', 'evol/evol_')
     with h5.File(out_fname, 'w') as fl:
         fl.create_dataset('t', data=t[:nt])
         fl.create_dataset('P2_t', data=P2_t)

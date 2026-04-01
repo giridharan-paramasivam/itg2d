@@ -9,7 +9,6 @@ from modules.plot_basics import symmetrize_y_axis, FIGSIZE_DOUBLE, FIGSIZE_SINGL
 from modules.gamma import gam_max
 import os
 import glob 
-
 from modules.plot_basics import apply_style, savename as _savename, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 from functools import partial
 apply_style()
@@ -19,6 +18,7 @@ apply_style()
 # Npx=512
 Npx=1024
 datadir=f'data/{Npx}/'
+subdir = 'xt-maps/'
 
 fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
 # fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
@@ -65,7 +65,7 @@ xl,yl=np.arange(0,Lx,Lx/Npx),np.arange(0,Ly,Ly/Npy)
 x,y=np.meshgrid(np.array(xl),np.array(yl),indexing='ij')
 xm, tm = np.meshgrid(x[:, 0], t[:nt_data])
 
-savename = partial(_savename, datadir, fname)
+savename = partial(_savename, datadir+subdir, fname)
 
 #%% vbar
 

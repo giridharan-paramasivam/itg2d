@@ -2,26 +2,9 @@
 import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
-from modules.plot_basics import FIGSIZE_DOUBLE
+from modules.plot_basics import apply_style, figsize_single
 import torch 
-
-plt.rcParams['lines.linewidth'] = 4
-plt.rcParams['axes.linewidth'] = 3  
-plt.rcParams['xtick.major.width'] = 3
-plt.rcParams['ytick.major.width'] = 3
-plt.rcParams['xtick.minor.visible'] = True
-plt.rcParams['ytick.minor.visible'] = True
-plt.rcParams['xtick.minor.width'] = 1.5 
-plt.rcParams['ytick.minor.width'] = 1.5 
-plt.rcParams['savefig.dpi'] = 100
-plt.rcParams.update({
-    "font.size": 22,          # default text
-    "axes.titlesize": 30,     # figure title
-    "axes.labelsize": 26,     # x/y labels
-    "xtick.labelsize": 20,
-    "ytick.labelsize": 20,
-    "legend.fontsize": 22
-})
+apply_style()
 
 #%% Define Functions
 
@@ -105,30 +88,34 @@ for c in cases:
 
 #%% gam vs ky
 
-plt.figure(figsize=FIGSIZE_DOUBLE)
-for c in cases:
+plt.figure(figsize=figsize_single)
+for c in [cases[1], cases[3]]:
     plt.plot(ky[0,slky], c['gam_kxmax'][slky], '.-', label=c['label'])
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
-plt.legend()
+plt.xlim(0,0.5)
+ylim = 1.8*max(c['gam_kxmax'][slky].max() for c in [cases[1], cases[3]])
+plt.ylim(-ylim, ylim)
 plt.grid(which='major', linestyle='--', linewidth=0.5)
 plt.xlabel('$k_y$')
 plt.ylabel(r'$\gamma(k_y)$')
+plt.legend(loc='best')
 plt.tight_layout()
-plt.savefig(f'data_linear/gam_vs_ky_kapt_{str(kapt).replace(".", "_")}_itg2d_comp.pdf', dpi=100)
+plt.savefig(f'data_linear/gam_vs_ky_kapt_{str(kapt).replace(".", "_")}_itg2d_comp.svg', dpi=100)
 plt.show()
 
 #%% Dturb vs ky
 
-plt.figure(figsize=FIGSIZE_DOUBLE)
+plt.figure(figsize=figsize_single)
 for c in cases:
     plt.plot(ky[0,slky], c['Dturb_kxmax'][slky], '.-', label=c['label'])
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
-plt.ylim(-0.15, 0.55)
-plt.legend()
+# plt.ylim(-0.15, 0.55) 
+plt.ylim(-0.15, 1.8*cases[2]['Dturb_kxmax'][slky].max())
+plt.legend(loc='best')
 plt.grid(which='major', linestyle='--', linewidth=0.5)
 plt.xlabel('$k_y$')
-plt.ylabel(r'$\max_{k_x}(\gamma / k^2)$')
+plt.ylabel(r'$\displaystyle\max_{k_x}(\gamma / k^2)$', labelpad=20)
 plt.tight_layout()
-plt.savefig(f'data_linear/Dturb_vs_ky_kapt_{str(kapt).replace(".", "_")}_itg2d_comp.pdf', dpi=100)
+plt.savefig(f'data_linear/Dturb_vs_ky_kapt_{str(kapt).replace(".", "_")}_itg2d_comp.svg', dpi=100)
 plt.show()
 # %%

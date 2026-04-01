@@ -6,7 +6,6 @@ import cupy as cp
 import matplotlib.pyplot as plt
 import torch 
 import h5py
-
 from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 apply_style()
 

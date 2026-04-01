@@ -116,9 +116,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'E_flux.pdf', dpi=100)
+    plt.savefig(datadir+'E_flux.svg', dpi=100)
 else:
-    plt.savefig(datadir+"E_flux_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_flux_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show()
 
 plt.figure(figsize=FIGSIZE_DOUBLE)
@@ -133,9 +133,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'E_injection.pdf', dpi=100)
+    plt.savefig(datadir+'E_injection.svg', dpi=100)
 else:
-    plt.savefig(datadir+"E_injection_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_injection_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show()
 
 plt.figure(figsize=FIGSIZE_DOUBLE)
@@ -150,9 +150,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'E_dissipation.pdf', dpi=100)
+    plt.savefig(datadir+'E_dissipation.svg', dpi=100)
 else:
-    plt.savefig(datadir+"E_dissipation_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_dissipation_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show()
 
 # PDF of fluxes at k_f # This line is correct
@@ -177,9 +177,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'E_flux_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'E_flux_pdf_.svg', dpi=100)
 else:
-    plt.savefig(datadir+"E_flux_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_flux_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show() # This line is correct
 
 # PDF of fluxes at k=kymax
@@ -204,9 +204,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'E_flux_kymax_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'E_flux_kymax_pdf_.svg', dpi=100)
 else:
-    plt.savefig(datadir+"E_flux_kymax_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_flux_kymax_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show() # This line is correct
 
 # PDF of fluxes at k=1
@@ -231,9 +231,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'E_flux_k1_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'E_flux_k1_pdf_.svg', dpi=100)
 else:
-    plt.savefig(datadir+"E_flux_k1_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+"E_flux_k1_pdf_" + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show() # This line is correct
 
 # G-flux: PiGk components
@@ -253,9 +253,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'G_flux.pdf', dpi=100)
+    plt.savefig(datadir+'G_flux.svg', dpi=100)
 else:
-    plt.savefig(datadir+'G_flux_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_flux_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show()
 # This line is correct
 # G-flux: fGk
@@ -271,9 +271,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'G_injection.pdf', dpi=100)
+    plt.savefig(datadir+'G_injection.svg', dpi=100)
 else:
-    plt.savefig(datadir+'G_injection_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_injection_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show()
 # This line is correct
 # G-flux: dGk
@@ -289,9 +289,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'G_dissipation.pdf', dpi=100)
+    plt.savefig(datadir+'G_dissipation.svg', dpi=100)
 else:
-    plt.savefig(datadir+'G_dissipation_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_dissipation_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show()
 # This line is correct
 # G-flux PDF at k_f
@@ -317,9 +317,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'G_flux_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'G_flux_pdf_.svg', dpi=100)
 else:
-    plt.savefig(datadir+'G_flux_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_flux_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show()
 # This line is correct
 # G-flux PDF at k_lin
@@ -345,9 +345,9 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'G_flux_kymax_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'G_flux_kymax_pdf_.svg', dpi=100)
 else:
-    plt.savefig(datadir+'G_flux_kymax_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_flux_kymax_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show()
 # This line is correct
 # G-flux PDF at k=1
@@ -373,7 +373,7 @@ plt.legend()
 plt.grid(which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 if fname.endswith('out.h5'):
-    plt.savefig(datadir+'G_flux_k1_pdf_.pdf', dpi=100)
+    plt.savefig(datadir+'G_flux_k1_pdf_.svg', dpi=100)
 else:
-    plt.savefig(datadir+'G_flux_k1_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.pdf'), dpi=100)
+    plt.savefig(datadir+'G_flux_k1_pdf_' + fname.split('/')[-1].split('out_')[-1].replace('.h5', '.svg'), dpi=100)
 plt.show()
