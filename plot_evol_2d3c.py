@@ -49,35 +49,33 @@ kin_energy_turb_t = kin_energy_t - kin_energy_ZF_t
 enstrophy_turb_t = enstrophy_t - enstrophy_ZF_t
 gen_energy_turb_t = gen_energy_t - gen_energy_ZF_t
 
-#%% Plots
-
-# Plot variance(P) vs time
+#%% Plot: variance(P) vs time
 plt.figure(figsize=figsize_single)
 plt.semilogy(t, P2_t, label = r'$\left<P_{\mathrm{total}}^2\right>$')
 plt.semilogy(t, P2_ZF_t, label = r'$\left<P_{\mathrm{ZF}}^2\right>$')
 plt.semilogy(t, P2_turb_t, label = r'$\left<P_{\mathrm{turb}}^2\right>$')
 plt.xlabel(r'$\gamma t$')
-plt.ylabel('$P^2$')
+plt.ylabel(r'$\langle P^2 \rangle$')
 plt.grid()
 plt.legend()
 plt.tight_layout()
 plt.savefig(savename('P2_vs_t'), bbox_inches='tight')
 plt.show()
 
-# Plot variance(V) vs time
+#%% Plot: variance(V) vs time
 plt.figure(figsize=figsize_single)
 plt.semilogy(t, V2_t, label = r'$\left<V_{\mathrm{total}}^2\right>$')
 plt.semilogy(t, V2_ZF_t, label = r'$\left<V_{\mathrm{ZF}}^2\right>$')
 plt.semilogy(t, V2_turb_t, label = r'$\left<V_{\mathrm{turb}}^2\right>$')
 plt.xlabel(r'$\gamma t$')
-plt.ylabel('$V^2$')
+plt.ylabel(r'$\langle V^2 \rangle$')
 plt.grid()
 plt.legend()
 plt.tight_layout()
 plt.savefig(savename('V2_vs_t'), bbox_inches='tight')
 plt.show()
 
-# Plot energy vs time
+#%% Plot: energy vs time
 plt.figure(figsize=figsize_single)
 plt.semilogy(t, energy_t, label = r'$E_{\mathrm{total}}$')
 plt.semilogy(t, energy_ZF_t, label = r'$E_{\mathrm{ZF}}$')
@@ -90,7 +88,7 @@ plt.tight_layout()
 plt.savefig(savename('energy_vs_t'), bbox_inches='tight')
 plt.show()
 
-# Plot zonal energy fraction vs time
+#%% Plot: zonal energy fraction vs time
 zonal_frac = energy_ZF_t / energy_t
 zonal_frac_mean = np.mean(zonal_frac[nt//2:])
 plt.figure(figsize=figsize_single)
@@ -104,7 +102,7 @@ plt.tight_layout()
 plt.savefig(savename('zonal_energy_fraction_vs_t'), bbox_inches='tight')
 plt.show()
 
-# # Plot kinetic energy vs time
+#%% Plot: kinetic energy vs time
 # plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.semilogy(t, kin_energy_t, label = '$E_{\\mathrm{kin,\mathrm{total}}}$')
 # plt.semilogy(t, kin_energy_ZF_t, label = '$E_{\\mathrm{kin,\mathrm{ZF}}}$')
@@ -120,7 +118,7 @@ plt.show()
 #     plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'kinetic_energy_vs_t_').replace('.h5', '.png'))
 # plt.show()
 
-# # Plot enstrophy vs time
+#%% Plot: enstrophy vs time
 # plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.semilogy(t, enstrophy_t, label = '$W_{\\mathrm{total}}$')
 # plt.semilogy(t, enstrophy_ZF_t, label = '$W_{\\mathrm{ZF}}$')
@@ -136,7 +134,7 @@ plt.show()
 #     plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'enstrophy_vs_t_').replace('.h5', '.png'))
 # plt.show()
 
-# Plot generalized energy vs time
+#%% Plot: generalized energy vs time
 plt.figure(figsize=figsize_single)
 plt.semilogy(t, gen_energy_t, label = r'$G_{\mathrm{total}}$')
 plt.semilogy(t, gen_energy_ZF_t, label = r'$G_{\mathrm{ZF}}$')
@@ -149,7 +147,7 @@ plt.tight_layout()
 plt.savefig(savename('generalized_energy_vs_t'), bbox_inches='tight')
 plt.show()
 
-# # Plot hyd. entropy vs time
+#%% Plot: hyd. entropy vs time
 # plt.figure(figsize=FIGSIZE_DOUBLE)
 # plt.semilogy(t, entropy_t, label = '$\S$')
 # plt.xlabel('$\\gamma t$')
@@ -163,7 +161,7 @@ plt.show()
 #     plt.savefig(datadir+fname.split('/')[-1].replace('out_', 'entropy_vs_t_').replace('.h5', '.png'))
 # plt.show()
 
-# Plot Q vs time
+#%% Plot: Q vs time
 plt.figure(figsize=figsize_single)
 plt.plot(t, Q_t, '-', label = r'$Q$')
 plt.xlabel(r'$\gamma t$')
@@ -174,7 +172,7 @@ plt.tight_layout()
 plt.savefig(savename('Q_vs_t'), bbox_inches='tight')
 plt.show()
 
-# Plot Reynolds power vs time
+#%% Plot: Reynolds power vs time
 # rp_half   = reynolds_power_t[nt//2:]
 # rp_median = np.median(rp_half)
 # rp_mad    = np.median(np.abs(rp_half - rp_median))

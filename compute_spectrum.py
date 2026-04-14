@@ -18,22 +18,13 @@ size = comm.Get_size()
 
 #%% Load the HDF5 file
 
-# Npx=512
-Npx=1024
+Npx=512
+# Npx=1024
 datadir=f'data/{Npx}/'
 
 # fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
-fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
-# fname = datadir + 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
-
-# kapt=2.0
-# D=0.1
-# pattern = datadir + f'out_kapt_{str(kapt).replace(".", "_")}_D_{str(D).replace(".", "_")}*.h5'
-# files = glob.glob(pattern)
-# if not files:
-#     print(f"No file found for kappa_T = {kapt}")
-# else:
-#     fname = files[0]
+fname = datadir + 'out_kapt_2_0_D_0_1_H_0_0_e0.h5'
+# fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 
 with h5.File(fname, 'r', swmr=True) as fl:
     t = fl['fields/t'][:]
@@ -110,8 +101,8 @@ def P2S_ZF(pk, q, k, dk, slbar):
 def ES(omk, q, k, dk):
     ''' Returns the total energy spectrum'''
     sigk=np.sign(ky)
-    Wk = sigk+q**2
-    ek = Wk*np.abs(omk)**2/q**4
+    Lk = sigk+q**2
+    ek = Lk*np.abs(omk)**2/q**4
 
     Ek = np.zeros(len(k))
     for i in range(len(k)):
@@ -121,8 +112,8 @@ def ES(omk, q, k, dk):
 def ES_ZF(omk, q, k, dk, slbar):
     ''' Returns the zonal total energy spectrum'''  
     sigk=np.sign(ky[slbar])
-    Wk = sigk+q[slbar]**2 
-    ek_ZF = Wk*np.abs(omk[slbar])**2/q[slbar]**4
+    Lk = sigk+q[slbar]**2 
+    ek_ZF = Lk*np.abs(omk[slbar])**2/q[slbar]**4
     
     Ek_ZF = np.zeros(len(k))
     for i in range(len(k)):
@@ -341,25 +332,40 @@ if rank == 0:
     savefile = fname.replace('out_', 'spectrum/spectrum_')
     with h5.File(savefile, 'w') as fl:
         fl.create_dataset('k', data=k)
+        fl.create_dataset('idx_saved', data=np.arange(nt//2, nt//2 + nt2))
         fl.create_dataset('Phi2k', data=Phi2k)
         fl.create_dataset('Phi2k_ZF', data=Phi2k_ZF)
         fl.create_dataset('Phi2k_turb', data=Phi2k_turb)
+        fl.create_dataset('Phi2k_t', data=Phi2k_t)
+        fl.create_dataset('Phi2k_ZF_t', data=Phi2k_ZF_t)
         fl.create_dataset('P2k', data=P2k)
         fl.create_dataset('P2k_ZF', data=P2k_ZF)
         fl.create_dataset('P2k_turb', data=P2k_turb)
+        fl.create_dataset('P2k_t', data=P2k_t)
+        fl.create_dataset('P2k_ZF_t', data=P2k_ZF_t)
         fl.create_dataset('Ek', data=Ek)
         fl.create_dataset('Ek_ZF', data=Ek_ZF)
         fl.create_dataset('Ek_turb', data=Ek_turb)
+        fl.create_dataset('Ek_t', data=Ek_t)
+        fl.create_dataset('Ek_ZF_t', data=Ek_ZF_t)
         fl.create_dataset('Kk', data=Kk)
         fl.create_dataset('Kk_ZF', data=Kk_ZF)
         fl.create_dataset('Kk_turb', data=Kk_turb)
+        fl.create_dataset('Kk_t', data=Kk_t)
+        fl.create_dataset('Kk_ZF_t', data=Kk_ZF_t)
         fl.create_dataset('Wk', data=Wk)
         fl.create_dataset('Wk_ZF', data=Wk_ZF)
         fl.create_dataset('Wk_turb', data=Wk_turb)
+        fl.create_dataset('Wk_t', data=Wk_t)
+        fl.create_dataset('Wk_ZF_t', data=Wk_ZF_t)
         fl.create_dataset('Gk', data=Gk)
         fl.create_dataset('Gk_ZF', data=Gk_ZF)
         fl.create_dataset('Gk_turb', data=Gk_turb)
+        fl.create_dataset('Gk_t', data=Gk_t)
+        fl.create_dataset('Gk_ZF_t', data=Gk_ZF_t)
         fl.create_dataset('GKk', data=GKk)
         fl.create_dataset('GKk_ZF', data=GKk_ZF)
         fl.create_dataset('GKk_turb', data=GKk_turb)
+        fl.create_dataset('GKk_t', data=GKk_t)
+        fl.create_dataset('GKk_ZF_t', data=GKk_ZF_t)
     print(f"Saved spectra to {savefile}")

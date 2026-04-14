@@ -16,14 +16,14 @@ Npx=1024
 datadir=f'data/{Npx}/'
 subdir='spectral_flux/'
 
-fname = 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
-# fname = 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+# fname = 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
+fname = 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 # fname = 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
 
 flux_file = datadir + subdir + fname.replace('out_', 'spectral_flux_')
 with h5.File(flux_file, 'r') as fl:
     k          = fl['k'][:]
-    k_Gf       = float(fl['k_Gf'][()])
+    k_f_G      = float(fl['k_f_G'][()])
     k_lin      = float(fl['k_lin'][()])
     PiGk       = fl['PiGk'][:]
     PiGk_P     = fl['PiGk_P'][:]
@@ -41,7 +41,7 @@ savename = partial(_savename, datadir+subdir, fname)
 
 def smooth_pdf(series, bins=50, window=7, xlim=None):
     N = len(series)
-    rng = (-xlim, xlim) if xlim is not None else None
+    rng = xlim if xlim is not None else None
     # bin the data into raw integer counts (not normalised)
     raw, edges = np.histogram(series, bins=bins, density=False, range=rng)
     bin_width = edges[1] - edges[0]
@@ -52,16 +52,16 @@ def smooth_pdf(series, bins=50, window=7, xlim=None):
     smooth = np.convolve(raw, kernel, mode='same')
     # normalise smoothed counts to a probability density (area under curve = 1)
     density = smooth / (N * bin_width)
-    # Poisson uncertainty: counts follow Poisson stats so std = sqrt(n)
+    # Poisson uncertainty: smoothed raw counts follow Poisson stats so std = sqrt(smooth); dividing by N * bin_width gives the error on the density
     err = np.sqrt(smooth) / (N * bin_width)
     return centres, density, err
 
 #%% Derived quantities for PDFs
 
-idx_k_Gf = np.argmin(np.abs(k - k_Gf))
-PiGk_P_series   = PiGk_P_t[:, idx_k_Gf]
-PiGk_phi_series = PiGk_phi_t[:, idx_k_Gf]
-PiGk_d_series   = PiGk_d_t[:, idx_k_Gf]
+idx_k_f_G = np.argmin(np.abs(k - k_f_G))
+PiGk_P_series   = PiGk_P_t[:, idx_k_f_G]
+PiGk_phi_series = PiGk_phi_t[:, idx_k_f_G]
+PiGk_d_series   = PiGk_d_t[:, idx_k_f_G]
 PiGk_series     = PiGk_P_series + PiGk_phi_series + PiGk_d_series
 
 PiGk_P_series_norm   = (PiGk_P_series - np.mean(PiGk_P_series)) / np.std(PiGk_P_series)
@@ -94,7 +94,8 @@ PiGk_series_1_norm     = (PiGk_series_1 - np.mean(PiGk_series_1)) / np.std(PiGk_
 #%% Gk-flux PDF smoothed at k_Gf
 
 plt.figure(figsize=figsize_single)
-xlim = max(np.percentile(np.abs(s), 95) for s in [PiGk_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm, PiGk_P_series_norm])
+xlim = (min(np.percentile(s, 5) for s in [PiGk_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm, PiGk_P_series_norm]),
+        max(np.percentile(s, 95) for s in [PiGk_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm, PiGk_P_series_norm]))
 for series, label, color in zip(
         [PiGk_series_norm, PiGk_phi_series_norm, PiGk_d_series_norm, PiGk_P_series_norm],
         [r'$\Pi_{G,k}$', r'$\Pi_{G,k}^{(\phi)}$', r'$\Pi_{G,k}^{(d)}$', r'$\Pi_{G,k}^{(P)}$'],
@@ -106,8 +107,8 @@ for series, label, color in zip(
     plt.plot(centres[mask], density[mask], '-', color=color, label=rf'{label}')
 plt.xlabel(r'$\frac{\Pi_{G,k}-<\Pi_{G,k}>}{\sigma}$')
 plt.ylabel('PDF')
-plt.xlim(-xlim, xlim)
-plt.gca().text(0.97, 0.97, rf'$k_{{Gf}}={k_Gf:.2f}$', transform=plt.gca().transAxes,
+plt.xlim(*xlim)
+plt.gca().text(0.97, 0.97, rf'$k_{{f,G}}={k_f_G:.2f}$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
 plt.legend()
@@ -118,7 +119,8 @@ plt.show()
 #%% Gk-flux PDF smoothed at k_lin
 
 plt.figure(figsize=figsize_single)
-xlim = max(np.percentile(np.abs(s), 95) for s in [PiGk_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm, PiGk_P_series_max_norm])
+xlim = (min(np.percentile(s, 5) for s in [PiGk_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm, PiGk_P_series_max_norm]),
+        max(np.percentile(s, 95) for s in [PiGk_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm, PiGk_P_series_max_norm]))
 for series, label, color in zip(
         [PiGk_series_max_norm, PiGk_phi_series_max_norm, PiGk_d_series_max_norm, PiGk_P_series_max_norm],
         [r'$\Pi_{G,k}$', r'$\Pi_{G,k}^{(\phi)}$', r'$\Pi_{G,k}^{(d)}$', r'$\Pi_{G,k}^{(P)}$'],
@@ -130,7 +132,7 @@ for series, label, color in zip(
     plt.plot(centres[mask], density[mask], '-', color=color, label=rf'{label}')
 plt.xlabel(r'$\frac{\Pi_{G,k}-<\Pi_{G,k}>}{\sigma}$')
 plt.ylabel('PDF')
-plt.xlim(-xlim, xlim)
+plt.xlim(*xlim)
 plt.gca().text(0.97, 0.97, rf'$k_{{lin}}={k_lin:.2f}$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
@@ -142,7 +144,8 @@ plt.show()
 #%% Gk-flux PDF smoothed at k=1
 
 plt.figure(figsize=figsize_single)
-xlim = max(np.percentile(np.abs(s), 95) for s in [PiGk_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm, PiGk_P_series_1_norm])
+xlim = (min(np.percentile(s, 5) for s in [PiGk_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm, PiGk_P_series_1_norm]),
+        max(np.percentile(s, 95) for s in [PiGk_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm, PiGk_P_series_1_norm]))
 for series, label, color in zip(
         [PiGk_series_1_norm, PiGk_phi_series_1_norm, PiGk_d_series_1_norm, PiGk_P_series_1_norm],
         [r'$\Pi_{G,k}$', r'$\Pi_{G,k}^{(\phi)}$', r'$\Pi_{G,k}^{(d)}$', r'$\Pi_{G,k}^{(P)}$'],
@@ -154,7 +157,7 @@ for series, label, color in zip(
     plt.plot(centres[mask], density[mask], '-', color=color, label=rf'{label}')
 plt.xlabel(r'$\frac{\Pi_{G,k}-<\Pi_{G,k}>}{\sigma}$')
 plt.ylabel('PDF')
-plt.xlim(-xlim, xlim)
+plt.xlim(*xlim)
 plt.gca().text(0.97, 0.97, r'$k=1$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))

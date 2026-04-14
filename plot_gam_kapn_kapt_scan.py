@@ -4,7 +4,7 @@ import os
 import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
-import torch 
+import torch
 import h5py
 
 from modules.plot_basics import apply_style, figsize_single
@@ -31,10 +31,21 @@ Kapn, Kapt = np.meshgrid(kapn_vals, kapt_vals)
 zero_or_negative = gammax_kapn_kapt <= 0
 kapn_zero = kapn_vals[zero_or_negative.any(axis=0)]
 kapt_zero = kapt_vals[zero_or_negative.any(axis=1)]
-print(f"kapn values where gamma <= 0: {kapn_zero}")
-print(f"kapt values where gamma <= 0: {kapt_zero}")
+# print(f"kapn values where gamma <= 0: {kapn_zero}")
+# print(f"kapt values where gamma <= 0: {kapt_zero}")
 
-#%% Colormesh of gam(kapn,kapt)
+# Compute kapt_thresh
+kapt_thresh = np.full(len(kapn_vals), np.nan)
+for i, _ in enumerate(kapn_vals):
+    gam_slice = gammax_kapn_kapt[i, :]
+    sign_changes = np.where(np.diff(np.sign(gam_slice)))[0]
+    if len(sign_changes) > 0:
+        idx = sign_changes[0]
+        g0, g1 = gam_slice[idx], gam_slice[idx + 1]
+        k0, k1 = kapt_vals[idx], kapt_vals[idx + 1]
+        kapt_thresh[i] = k0 - g0 * (k1 - k0) / (g1 - g0)
+
+#%% Plot: Colormesh of gam(kapn,kapt)
 
 plt.figure(figsize=figsize_single)
 gammax_vmax = np.max(np.abs(gammax_kapn_kapt))
@@ -50,13 +61,12 @@ plt.xlim((-0.4, np.max(kapn_vals)))
 plt.ylim((-0.4, np.max(kapt_vals)))    
 plt.xlabel(r'$\kappa_n$')
 plt.ylabel(r'$\kappa_T$')
-plt.legend()
+plt.legend(loc='lower left',fontsize=24)
 plt.colorbar(im_gam)
-plt.tight_layout()
 plt.savefig(datadir + fname.replace(datadir+'lin_', 'gammax_').replace('.h5', '.svg'), bbox_inches='tight')
 plt.show()
 
-#%% Colormesh of Dturb(kapn,kapt)
+#%% Plot: Colormesh of Dturb(kapn,kapt)
 
 plt.figure(figsize=figsize_single)
 Dturbmax_vmax = np.max(np.abs(Dturbmax_kapn_kapt))
@@ -69,8 +79,7 @@ plt.xlim((-0.4, np.max(kapn_vals)))
 plt.ylim((-0.4, np.max(kapt_vals))) 
 plt.xlabel(r'$\kappa_n$')
 plt.ylabel(r'$\kappa_T$')
-plt.legend()
+plt.legend(loc='lower left',fontsize=24)
 plt.colorbar(im_dturb)
-plt.tight_layout()
 plt.savefig(datadir + fname.replace(datadir+'lin_', 'Dturbmax_').replace('.h5', '.svg'), bbox_inches='tight')
 # plt.show()

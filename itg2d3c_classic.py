@@ -114,18 +114,18 @@ def rhs_itg(t,y):
     dxV=irft2(1j*kx*Vk)
     dyV=irft2(1j*ky*Vk)
     sigk=cp.sign(ky)
-    Wk=sigk+kpsq
-    nOmg=irft2(Wk*Phik)
+    Lk=sigk+kpsq
+    nOmg=irft2(Lk*Phik)
 
-    dPhikdt[:]=-1j*kz*sigk*Vk/Wk-1j*ky*kapn*Phik/Wk+1j*ky*(kapn+kapt)*kpsq*Phik/Wk+1j*ky*kapb*Pk/Wk-D*kpsq*Phik
+    dPhikdt[:]=-1j*kz*sigk*Vk/Lk-1j*ky*kapn*Phik/Lk+1j*ky*(kapn+kapt)*kpsq*Phik/Lk+1j*ky*kapb*Pk/Lk-D*kpsq*Phik
     dPkdt[:]=-(5/3)*1j*kz*sigk*Vk-1j*ky*(kapn+kapt)*Phik-D*kpsq*Pk
     dVkdt[:]=-1j*kz*sigk*(Pk+Phik)-D*kpsq*Vk
 
-    # dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Wk
-    # dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Wk
+    # dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Lk
+    # dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Lk
 
     nl_term1_num = 1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg)
-    dPhikdt[:] += nl_term1_num / Wk
+    dPhikdt[:] += nl_term1_num / Lk
 
     dPkdt[:]+=rft2(dyphi*dxP-dxphi*dyP)
     dVkdt[:]+=rft2(dyphi*dxV-dxphi*dyV)

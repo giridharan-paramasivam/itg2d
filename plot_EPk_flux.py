@@ -15,6 +15,7 @@ xtick_fontsize = matplotlib.rcParams.get('xtick.labelsize', 32)
 Npx=1024
 datadir=f'data/{Npx}/'
 subdir = 'spectral_flux/'
+
 # fname = 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
 fname = 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 # fname = 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
@@ -22,11 +23,13 @@ fname = 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 flux_file = datadir + subdir + fname.replace('out_', 'spectral_flux_')
 with h5.File(flux_file, 'r') as fl:
     k         = fl['k'][:]
-    k_Pf      = float(fl['k_Pf'][()])
+    k_f_P     = float(fl['k_f_P'][()])
     k_lin     = float(fl['k_lin'][()])
+    k_D_P     = float(fl['k_D_P'][()])
     PiPk      = fl['PiPk'][:]
     fPk       = fl['fPk'][:]
-    dPk       = fl['dPk'][:]
+    dPk_D     = fl['dPk_D'][:]
+    dPk_H     = fl['dPk_H'][:]
 
 #%% Functions
 
@@ -38,11 +41,11 @@ plt.figure(figsize=figsize_single)
 plt.plot(k[1:-1], PiPk[1:-1], label = r'$\Pi_{P,k}$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
 plt.axvline(x=1, color='k', linestyle='--', linewidth=2)
-plt.axvline(x=k_Pf, color='k', linestyle=':', linewidth=2)
+plt.axvline(x=k_f_P, color='k', linestyle=':', linewidth=2)
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2)
 ymin, ymax = plt.ylim()
 offset = 0.025 * (ymax - ymin)
-plt.text(k_Pf, ymin - offset, r'$k_{P,f}$', ha='center', va='top', fontsize=xtick_fontsize)
+plt.text(k_f_P, ymin - offset, r'$k_{P,f}$', ha='center', va='top', fontsize=xtick_fontsize)
 plt.text(k_lin, ymin - offset, r'$k_{\mathrm{lin}}$', ha='center', va='top', fontsize=xtick_fontsize)
 plt.xscale('log')
 plt.xlabel('$k$')
@@ -58,11 +61,11 @@ plt.figure(figsize=figsize_single)
 plt.plot(k[1:-1], fPk[1:-1], label=r'$f_{P,k}$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
 plt.axvline(x=1, color='k', linestyle='--', linewidth=2)
-plt.axvline(x=k_Pf, color='k', linestyle=':', linewidth=2)
+plt.axvline(x=k_f_P, color='k', linestyle=':', linewidth=2)
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2)
 ymin, ymax = plt.ylim()
 offset = 0.025 * (ymax - ymin)
-plt.text(k_Pf, ymin - offset, r'$k_{P,f}$', ha='center', va='top', fontsize=xtick_fontsize)
+plt.text(k_f_P, ymin - offset, r'$k_{P,f}$', ha='center', va='top', fontsize=xtick_fontsize)
 plt.text(k_lin, ymin - offset, r'$k_{\mathrm{lin}}$', ha='center', va='top', fontsize=xtick_fontsize)
 plt.xscale('log')
 plt.xlabel('$k$')
@@ -75,15 +78,18 @@ plt.show()
 #%% Pk-flux: dissipation
 
 plt.figure(figsize=figsize_single)
-plt.plot(k[1:-1], dPk[1:-1], label=r'$d_{P,k}$')
+plt.plot(k[1:-1], dPk_D[1:-1], label=r'$d_{P,k}^{(D)}$')
+plt.plot(k[1:-1], dPk_H[1:-1], label=r'$d_{P,k}^{(H)}$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
 plt.axvline(x=1, color='k', linestyle='--', linewidth=2)
-plt.axvline(x=k_Pf, color='k', linestyle=':', linewidth=2)
+plt.axvline(x=k_f_P, color='k', linestyle=':', linewidth=2)
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2)
+plt.axvline(x=k_D_P, color='k', linestyle=(0, (3, 1, 1, 1, 1, 1)), linewidth=2)
 ymin, ymax = plt.ylim()
 offset = 0.025 * (ymax - ymin)
-plt.text(k_Pf, ymin - offset, r'$k_{P,f}$', ha='center', va='top', fontsize=xtick_fontsize)
+plt.text(k_f_P, ymin - offset, r'$k_{P,f}$', ha='center', va='top', fontsize=xtick_fontsize)
 plt.text(k_lin, ymin - offset, r'$k_{\mathrm{lin}}$', ha='center', va='top', fontsize=xtick_fontsize)
+plt.text(k_D_P, ymin - offset, r'$k_D$', ha='center', va='top', fontsize=xtick_fontsize)
 plt.xscale('log')
 plt.xlabel('$k$')
 plt.ylabel(r'$d_{P,k}$')

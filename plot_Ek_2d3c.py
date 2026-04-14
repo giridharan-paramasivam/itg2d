@@ -15,10 +15,10 @@ Npx=1024
 datadir=f'data_2d3c/{Npx}/'
 fname = datadir + 'out_2d3c_kapt_2_0_D_0_1_kz_0_1.h5'
 
-flux_file = fname.replace('out_', 'energy_flux_')
+flux_file = fname.replace('out_', 'flux/spectral_flux_')
 with h5.File(flux_file, 'r') as fl:
     k         = fl['k'][:]
-    k_f       = float(fl['k_f'][()])
+    k_f_E     = float(fl['k_f_E'][()])
     k_lin     = float(fl['k_lin'][()])
     Pik       = fl['Pik'][:]
     Pik_phi   = fl['Pik_phi'][:]
@@ -39,15 +39,15 @@ with h5.File(flux_file, 'r') as fl:
 
 #%% Derived quantities for PDFs
 
-# PDF of fluxes at k_f
-idx_k_f = np.argmax(fk)
-Pik_phi_series = Pik_phi_t[:, idx_k_f]
-Pik_d_series   = Pik_d_t[:, idx_k_f]
+# PDF of fluxes at k_f_E
+idx_k_f_E = np.argmax(fk)
+Pik_phi_series = Pik_phi_t[:, idx_k_f_E]
+Pik_d_series   = Pik_d_t[:, idx_k_f_E]
 Pik_series     = Pik_phi_series + Pik_d_series
 
-PiGk_P_series   = PiGk_P_t[:, idx_k_f]
-PiGk_phi_series = PiGk_phi_t[:, idx_k_f]
-PiGk_d_series   = PiGk_d_t[:, idx_k_f]
+PiGk_P_series   = PiGk_P_t[:, idx_k_f_E]
+PiGk_phi_series = PiGk_phi_t[:, idx_k_f_E]
+PiGk_d_series   = PiGk_d_t[:, idx_k_f_E]
 PiGk_series     = PiGk_P_series + PiGk_phi_series + PiGk_d_series
 
 PiGk_P_series_norm   = (PiGk_P_series - np.mean(PiGk_P_series)) / np.std(PiGk_P_series)
@@ -106,7 +106,7 @@ plt.plot(k[1:-1], Pik[1:-1], label = r'$\Pi_{k}$')
 plt.plot(k[1:-1], Pik_phi[1:-1], label = r'$\Pi_{k,\mathrm{\phi}}$')
 plt.plot(k[1:-1], Pik_d[1:-1], label = r'$\Pi_{k,\mathrm{d}}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
-plt.axvline(x=k_f, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f:.2f}$')
+plt.axvline(x=k_f_E, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f_E:.2f}$')
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2, label=f'$k_{{lin}}={k_lin:.2f}$')
 plt.xscale('log')
 plt.xlabel('$k$')
@@ -124,7 +124,7 @@ plt.show()
 plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], fk[1:-1], label = r'$f_{k,\mathrm{total}}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
-plt.axvline(x=k_f, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f:.2f}$')
+plt.axvline(x=k_f_E, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f_E:.2f}$')
 plt.xscale('log')
 plt.xlabel('$k$')
 plt.ylabel(r'$f_k$')
@@ -141,7 +141,7 @@ plt.show()
 plt.figure(figsize=FIGSIZE_DOUBLE)
 plt.plot(k[1:-1], dk[1:-1], label = r'$d_{k,\mathrm{total}}$')
 plt.axhline(0, color='k', linestyle='-', linewidth=1)
-plt.axvline(x=k_f, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f:.2f}$')
+plt.axvline(x=k_f_E, color='k', linestyle=':', linewidth=2, label=f'$k_f={k_f_E:.2f}$')
 plt.xscale('log')
 plt.xlabel('$k$')
 plt.ylabel(r'$d_k$')
@@ -170,7 +170,7 @@ for series, label, color in zip([Pik_series_norm, Pik_phi_series_norm, Pik_d_ser
 plt.xlabel(r'$\frac{\Pi_k-<\Pi_k>}{\sigma}$')
 plt.ylabel('PDF')
 plt.xlim(-xlim, xlim)
-plt.gca().text(0.97, 0.97, rf'$k_f={k_f:.2f}$', transform=plt.gca().transAxes,
+plt.gca().text(0.97, 0.97, rf'$k_f={k_f_E:.2f}$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
 plt.legend()

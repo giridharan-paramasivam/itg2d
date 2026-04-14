@@ -27,12 +27,12 @@ def init_linmats(pars,kx,ky,FLR=1.0):
     kpsq = torch.where(kpsq==0, 1e-10, kpsq)
         
     sigk = ky>0
-    Wk=tau*sigk+kpsq
+    Lk=tau*sigk+kpsq
     lm=torch.zeros(kx.shape+(2,2),dtype=torch.complex64)
     lm[:,:,0,0]=-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
     lm[:,:,0,1]=(kapn+kapt)*ky
-    lm[:,:,1,0]=-kapb*ky/Wk
-    lm[:,:,1,1]=(kapn*ky-FLR*(kapn+kapt)*ky*kpsq)/Wk-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
+    lm[:,:,1,0]=-kapb*ky/Lk
+    lm[:,:,1,1]=(kapn*ky-FLR*(kapn+kapt)*ky*kpsq)/Lk-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
 
     return lm
 
@@ -120,15 +120,14 @@ def plot_gam_vs_ky_FLR_comp(all_legends=False):
     plt.axhline(0,color='k', linestyle='-', linewidth=1)
     l5 = plt.plot(ky[0,slky],-D*ky[0,slky]**2,'k--',label=r'$-Dk_y^2$')
     if all_legends:
-        plt.legend(loc='best')
-    else:
-        plt.legend([l5[0]], [r'$-Dk_y^2$'], loc='best')
-    plt.grid(which='major', linestyle='--', linewidth=0.5)
+        leg1 = plt.legend(handles=[l1[0], l2[0], l3[0], l4[0]], loc='best', fontsize=18)
+        plt.gca().add_artist(leg1)
+    plt.legend([l5[0]], [r'$-Dk_y^2$'], loc='best', fontsize=24)
     plt.xlabel('$k_y$')
     plt.ylabel('$\\gamma(k_y)$')
     plt.tight_layout()
-    plt.savefig(f'data_linear/gam_vs_ky_FLR_comp_kapt_{str(kapt).replace(".", "_")}_itg2d.svg',dpi=100)
+    plt.savefig(f'data_linear/gam_vs_ky_FLR_comp_kapt_{str(kapt).replace(".", "_")}_itg2d.svg', bbox_inches='tight')
     plt.show()
 
-plot_gam_vs_ky_FLR_comp(all_legends=False)  
+plot_gam_vs_ky_FLR_comp(all_legends=True)  
 # %%

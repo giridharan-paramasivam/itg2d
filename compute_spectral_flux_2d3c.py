@@ -65,9 +65,9 @@ def Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik'):
     dyP = irft2np(1j*ky*Pk)
     dxP = irft2np(1j*kx*Pk)
     sigk = np.sign(ky)
-    Wk = sigk + kpsq
-    dxnOmg = irft2np(1j*kx*Wk*Phik)
-    dynOmg = irft2np(1j*ky*Wk*Phik)
+    Lk = sigk + kpsq
+    dxnOmg = irft2np(1j*kx*Lk*Phik)
+    dynOmg = irft2np(1j*ky*Lk*Phik)
 
     nltermOmg = rft2np(dxphi*dynOmg - dyphi*dxnOmg)
     nltermP = -kx**2*(rft2np(dxphi*dyP)) + kx*ky*(rft2np(dxphi*dxP)) - kx*ky*(rft2np(dyphi*dyP)) + ky**2*(rft2np(dyphi*dxP))
@@ -101,9 +101,9 @@ def Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P'):
     dyP = irft2np(1j*ky*Pk)
     dxP = irft2np(1j*kx*Pk)
     sigk = np.sign(ky)
-    Wk = sigk + kpsq
-    dxnOmg = irft2np(1j*kx*Wk*Phik)
-    dynOmg = irft2np(1j*ky*Wk*Phik)
+    Lk = sigk + kpsq
+    dxnOmg = irft2np(1j*kx*Lk*Phik)
+    dynOmg = irft2np(1j*ky*Lk*Phik)
 
     nltermOmg = rft2np(dxphi*dynOmg - dyphi*dxnOmg)
     nltermP = -kx**2*(rft2np(dxphi*dyP)) + kx*ky*(rft2np(dxphi*dxP)) - kx*ky*(rft2np(dyphi*dyP)) + ky**2*(rft2np(dyphi*dxP))
@@ -112,7 +112,7 @@ def Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P'):
     ak = np.zeros_like(Omk)
     Ak = np.zeros(len(k))
     if flag == 'PiGk_P':
-        ak = np.real((1 + kpsq)*np.conj(Pk)*nltermP_pb + Wk*np.conj(Phik)*nltermP_pb)
+        ak = np.real((1 + kpsq)*np.conj(Pk)*nltermP_pb + Lk*np.conj(Phik)*nltermP_pb)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(q <= k[i])])
     elif flag == 'PiGk_phi':
@@ -189,14 +189,15 @@ dGk = comm.allreduce(dGk, op=MPI.SUM)/nt2
 if rank == 0:
     Pik = Pik_phi + Pik_d
     idx_k = np.argmax(fk)
-    k_f = k[idx_k]
+    k_f_E = k[idx_k]
     k_Gf = k[np.argmax(fGk)]
     PiGk = PiGk_P + PiGk_phi + PiGk_d
 
     out_file = fname.replace('out_', 'flux/spectral_flux_')
     with h5.File(out_file, 'w') as fl:
         fl.create_dataset('k', data=k)
-        fl.create_dataset('k_f', data=k_f)
+        fl.create_dataset('idx_saved', data=np.arange(nt//2, nt//2 + nt2))
+        fl.create_dataset('k_f_E', data=k_f_E)
         fl.create_dataset('k_Gf', data=k_Gf)
         fl.create_dataset('k_lin', data=k_lin)
         fl.create_dataset('Pik', data=Pik)

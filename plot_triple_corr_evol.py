@@ -80,9 +80,9 @@ def T2(Omk, Pk, kpsq):
     dyphi=irft2np(1j*ky*Phik)
     dxphi=irft2np(1j*kx*Phik)
     sigk=np.sign(ky)
-    Wk=sigk+kpsq
-    dxnOmg=irft2np(1j*kx*Wk*Phik)
-    dynOmg=irft2np(1j*ky*Wk*Phik)
+    Lk=sigk+kpsq
+    dxnOmg=irft2np(1j*kx*Lk*Phik)
+    dynOmg=irft2np(1j*ky*Lk*Phik)
 
     term = np.sum(1j*ky*rft2np(dxphi*dynOmg-dyphi*dxnOmg)*np.conj(Pk)/(1+kpsq)).item()
     return np.real(term)

@@ -13,8 +13,8 @@ import os
 
 #%% Parameters
 
-# Npx,Npy=512,512
-Npx,Npy=1024,1024
+Npx,Npy=512,512
+# Npx,Npy=1024,1024
 # Npx,Npy=4096,4096
 Lx,Ly=32*np.pi,32*np.pi
 kapt=2.0 # threshold = 0.7
@@ -29,19 +29,19 @@ kpsq=kx**2+ky**2
 Nk=kx.size
 dk=float(ky[0])
 sigk=cp.sign(ky)
-Wk=sigk+kpsq
+Lk=sigk+kpsq
 
 # D=round(0.1*(512/Npx)**2,3) #0.1 for 512x512
 D=0.1
 H=round(10*gam_max(kx,ky,kapn,kapt,kapb,D,0.0)*dk**4,10) #10*gam*dk**4
+# H=0.0
 
 dtshow=0.1
 gammax=gam_max(kx,ky,kapn,kapt,kapb,D,H)
-# dtstep,dtsavecb=round_to_nsig((512/Npx)*0.00275/gammax,1),round_to_nsig(0.0275/gammax,1)
 dtstep,dtsavecb=round_to_nsig((512/Npx)*0.002/gammax,1),round_to_nsig(0.02/gammax,1)
 t0,t1=0.0,round(600/gammax,0) #100/gammax #600/gammax
 rtol,atol=1e-8,1e-10
-wecontinue=False
+wecontinue=True
 
 output_dir = f"data/{Npx}/"
 os.makedirs(output_dir, exist_ok=True)
@@ -111,18 +111,18 @@ def rhs_itg(t,y):
     dyphi=irft2(1j*ky*Phik)
     dxP=irft2(1j*kx*Pk)
     dyP=irft2(1j*ky*Pk)
-    nOmg=irft2(Wk*Phik)
+    nOmg=irft2(Lk*Phik)
 
-    dPhikdt[:]=-1j*ky*kapn*Phik/Wk+1j*ky*(kapn+kapt)*kpsq*Phik/Wk+1j*ky*kapb*Pk/Wk-D*kpsq*Phik-sigk*H/(kpsq**2)*Phik
+    dPhikdt[:]=-1j*ky*kapn*Phik/Lk+1j*ky*(kapn+kapt)*kpsq*Phik/Lk+1j*ky*kapb*Pk/Lk-D*kpsq*Phik-sigk*H/(kpsq**2)*Phik
     dPkdt[:]=-1j*ky*(kapn+kapt)*Phik-D*kpsq*Pk-sigk*H/(kpsq**2)*Pk
 
-    # dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Wk
-    # dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Wk
+    # dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Lk
+    # dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Lk
 
     nl_term1_num = 1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg)
-    dPhikdt[:] += nl_term1_num / Wk
+    dPhikdt[:] += nl_term1_num / Lk
     nl_term2_num = kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP)
-    dPhikdt[:] += nl_term2_num / Wk
+    dPhikdt[:] += nl_term2_num / Lk
 
     dPkdt[:]+=rft2(dyphi*dxP-dxphi*dyP)
     return dzkdt.view(dtype=float)

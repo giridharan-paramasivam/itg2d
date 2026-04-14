@@ -15,13 +15,13 @@ size = comm.Get_size()
 
 #%% Load the HDF5 file
 
-# Npx=512
-Npx=1024
+Npx=512
+# Npx=1024
 datadir=f'data/{Npx}/'
 
-fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
-# fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
-# fname = datadir + 'out_kapt_2_0_D_0_1_H_1_7_em5.h5'
+# fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
+# fname = datadir + 'out_kapt_2_0_D_0_1_H_0_0_e0.h5'
+fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 
 with h5.File(fname, 'r', swmr=True) as fl:
     t = fl['fields/t'][:]
@@ -65,9 +65,9 @@ def Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik'):
     dyP = irft2np(1j*ky*Pk)
     dxP = irft2np(1j*kx*Pk)
     sigk = np.sign(ky)
-    Wk = sigk + kpsq
-    dxnOmg = irft2np(1j*kx*Wk*Phik)
-    dynOmg = irft2np(1j*ky*Wk*Phik)
+    Lk = sigk + kpsq
+    dxnOmg = irft2np(1j*kx*Lk*Phik)
+    dynOmg = irft2np(1j*ky*Lk*Phik)
 
     nltermOmg = rft2np(dxphi*dynOmg - dyphi*dxnOmg)
     nltermP = -kx**2*(rft2np(dxphi*dyP)) + kx*ky*(rft2np(dxphi*dxP)) - kx*ky*(rft2np(dyphi*dyP)) + ky**2*(rft2np(dyphi*dxP))
@@ -87,11 +87,31 @@ def Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik'):
         ak = np.real(np.conj(Phik)*kapb*1j*ky*Pk)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
-    elif flag == 'dk':
-        ak = np.real(np.conj(Phik)*(D*kpsq*Phik + H*kpsq**(-2)*(1+kpsq)*sigk*Phik))
+    elif flag == 'dk_D':
+        ak = np.real(Lk*D*kpsq*np.abs(Phik)**2)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
-    elif flag == 'PiPk':
+    elif flag == 'dk_H':
+        ak = np.real(Lk*H*kpsq**(-2)*np.abs(Phik)**2)
+        for i in range(len(k)):
+            Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
+    return Ak
+
+def EPflux(Omk, Pk, kx, ky, k, delk, flag='PiPk'):
+    ''' Returns spectral fluxes for the pressure-like energy EP '''
+    kpsq = kx**2 + ky**2
+    Phik = -Omk/kpsq
+    dyphi = irft2np(1j*ky*Phik)
+    dxphi = irft2np(1j*kx*Phik)
+    dyP = irft2np(1j*ky*Pk)
+    dxP = irft2np(1j*kx*Pk)
+    sigk = np.sign(ky)
+
+    nltermP_pb = rft2np(dxphi*dyP - dyphi*dxP)
+
+    ak = np.zeros_like(Omk)
+    Ak = np.zeros(len(k))
+    if flag == 'PiPk':
         ak = np.real(np.conj(Pk)*nltermP_pb)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(q <= k[i])])
@@ -99,11 +119,15 @@ def Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik'):
         ak = np.real((kapn + kapt)*1j*ky*np.conj(Phik)*Pk)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
-    elif flag == 'dPk':
+    elif flag == 'dPk_D':
+        ak = np.real(D*kpsq*np.abs(Pk)**2)
+        for i in range(len(k)):
+            Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
+    elif flag == 'dPk_H':
         invk4 = np.zeros_like(kpsq)
         nz = kpsq > 0
         invk4[nz] = kpsq[nz]**(-2)
-        ak = np.real(D*kpsq*np.abs(Pk)**2 - H*invk4*sigk*np.abs(Pk)**2)
+        ak = np.real(H*invk4*sigk*np.abs(Pk)**2)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     return Ak
@@ -117,9 +141,9 @@ def Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P'):
     dyP = irft2np(1j*ky*Pk)
     dxP = irft2np(1j*kx*Pk)
     sigk = np.sign(ky)
-    Wk = sigk + kpsq
-    dxnOmg = irft2np(1j*kx*Wk*Phik)
-    dynOmg = irft2np(1j*ky*Wk*Phik)
+    Lk = sigk + kpsq
+    dxnOmg = irft2np(1j*kx*Lk*Phik)
+    dynOmg = irft2np(1j*ky*Lk*Phik)
 
     nltermOmg = rft2np(dxphi*dynOmg - dyphi*dxnOmg)
     nltermP = -kx**2*(rft2np(dxphi*dyP)) + kx*ky*(rft2np(dxphi*dxP)) - kx*ky*(rft2np(dyphi*dyP)) + ky**2*(rft2np(dyphi*dxP))
@@ -128,7 +152,7 @@ def Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P'):
     ak = np.zeros_like(Omk)
     Ak = np.zeros(len(k))
     if flag == 'PiGk_P':
-        ak = np.real((1 + kpsq)*np.conj(Pk)*nltermP_pb + Wk*np.conj(Phik)*nltermP_pb)
+        ak = np.real((1 + kpsq)*np.conj(Pk)*nltermP_pb + Lk*np.conj(Phik)*nltermP_pb)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(q <= k[i])])
     elif flag == 'PiGk_phi':
@@ -143,9 +167,12 @@ def Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P'):
         ak = np.real(np.conj(Phik)*(kapb + 2*kapn + kapt)*1j*ky*Pk)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
-    elif flag == 'dGk':
-        ak = (D*kpsq * ((sigk + kpsq)*np.abs(Phik + Pk)**2 + (1 - sigk)*np.abs(Pk)**2)
-              + H*kpsq**(-2)*(1 + kpsq)*sigk*np.abs(Phik + Pk)**2)
+    elif flag == 'dGk_D':
+        ak = D*kpsq * ((sigk + kpsq)*np.abs(Phik + Pk)**2 + (1 - sigk)*np.abs(Pk)**2)
+        for i in range(len(k)):
+            Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
+    elif flag == 'dGk_H':
+        ak = H*kpsq**(-2)*(1 + kpsq)*sigk*np.abs(Phik + Pk)**2
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     return Ak
@@ -171,15 +198,18 @@ count_local = len(local_indices)
 Pik_phi = np.zeros(len(k))
 Pik_d = np.zeros(len(k))
 fk = np.zeros(len(k))
-dk = np.zeros(len(k))
+dk_D = np.zeros(len(k))
+dk_H = np.zeros(len(k))
 PiGk_P = np.zeros(len(k))
 PiGk_phi = np.zeros(len(k))
 PiGk_d = np.zeros(len(k))
 fGk = np.zeros(len(k))
-dGk = np.zeros(len(k))
+dGk_D = np.zeros(len(k))
+dGk_H = np.zeros(len(k))
 PiPk = np.zeros(len(k))
 fPk = np.zeros(len(k))
-dPk = np.zeros(len(k))
+dPk_D = np.zeros(len(k))
+dPk_H = np.zeros(len(k))
 Pik_phi_t_local = np.zeros((count_local, len(k)))
 Pik_d_t_local = np.zeros((count_local, len(k)))
 PiGk_P_t_local = np.zeros((count_local, len(k)))
@@ -195,29 +225,34 @@ with h5.File(fname, 'r', swmr=True) as fl:
         Pik_phi_i = Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik_phi')
         Pik_d_i = Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik_d')
         fk_i = Eflux(Omk, Pk, kx, ky, k, delk, flag='fk')
-        dk_i = Eflux(Omk, Pk, kx, ky, k, delk, flag='dk')
+        dk_D_i = Eflux(Omk, Pk, kx, ky, k, delk, flag='dk_D')
+        dk_H_i = Eflux(Omk, Pk, kx, ky, k, delk, flag='dk_H')
         PiGk_P_i = Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P')
         PiGk_phi_i = Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_phi')
         PiGk_d_i = Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_d')
         fGk_i = Gflux(Omk, Pk, kx, ky, k, delk, flag='fGk')
-        dGk_i = Gflux(Omk, Pk, kx, ky, k, delk, flag='dGk')
-        PiPk_i = Eflux(Omk, Pk, kx, ky, k, delk, flag='PiPk')
-        fPk_i = Eflux(Omk, Pk, kx, ky, k, delk, flag='fPk')
-        dPk_i = Eflux(Omk, Pk, kx, ky, k, delk, flag='dPk')
+        dGk_D_i = Gflux(Omk, Pk, kx, ky, k, delk, flag='dGk_D')
+        dGk_H_i = Gflux(Omk, Pk, kx, ky, k, delk, flag='dGk_H')
+        PiPk_i = EPflux(Omk, Pk, kx, ky, k, delk, flag='PiPk')
+        fPk_i = EPflux(Omk, Pk, kx, ky, k, delk, flag='fPk')
+        dPk_D_i = EPflux(Omk, Pk, kx, ky, k, delk, flag='dPk_D')
+        dPk_H_i = EPflux(Omk, Pk, kx, ky, k, delk, flag='dPk_H')
 
         Pik_phi += Pik_phi_i
         Pik_d += Pik_d_i
         fk += fk_i
-        dk += dk_i
+        dk_D += dk_D_i
+        dk_H += dk_H_i
         PiGk_P += PiGk_P_i
         PiGk_phi += PiGk_phi_i
         PiGk_d += PiGk_d_i
         fGk += fGk_i
-        dGk += dGk_i
+        dGk_D += dGk_D_i
+        dGk_H += dGk_H_i
         PiPk += PiPk_i
         fPk += fPk_i
-        dPk += dPk_i
-
+        dPk_D += dPk_D_i
+        dPk_H += dPk_H_i
         Pik_phi_t_local[idx, :] = Pik_phi_i
         Pik_d_t_local[idx, :] = Pik_d_i
         PiGk_P_t_local[idx, :] = PiGk_P_i
@@ -228,15 +263,18 @@ with h5.File(fname, 'r', swmr=True) as fl:
 Pik_phi = comm.allreduce(Pik_phi, op=MPI.SUM)/nt2
 Pik_d = comm.allreduce(Pik_d, op=MPI.SUM)/nt2
 fk = comm.allreduce(fk, op=MPI.SUM)/nt2
-dk = comm.allreduce(dk, op=MPI.SUM)/nt2
+dk_D = comm.allreduce(dk_D, op=MPI.SUM)/nt2
+dk_H = comm.allreduce(dk_H, op=MPI.SUM)/nt2
 PiGk_P = comm.allreduce(PiGk_P, op=MPI.SUM)/nt2
 PiGk_phi = comm.allreduce(PiGk_phi, op=MPI.SUM)/nt2
 PiGk_d = comm.allreduce(PiGk_d, op=MPI.SUM)/nt2
 fGk = comm.allreduce(fGk, op=MPI.SUM)/nt2
-dGk = comm.allreduce(dGk, op=MPI.SUM)/nt2
+dGk_D = comm.allreduce(dGk_D, op=MPI.SUM)/nt2
+dGk_H = comm.allreduce(dGk_H, op=MPI.SUM)/nt2
 PiPk = comm.allreduce(PiPk, op=MPI.SUM)/nt2
 fPk = comm.allreduce(fPk, op=MPI.SUM)/nt2
-dPk = comm.allreduce(dPk, op=MPI.SUM)/nt2
+dPk_D = comm.allreduce(dPk_D, op=MPI.SUM)/nt2
+dPk_H = comm.allreduce(dPk_H, op=MPI.SUM)/nt2
 Pik_phi_t_all = comm.gather(Pik_phi_t_local, root=0)
 Pik_d_t_all = comm.gather(Pik_d_t_local, root=0)
 PiGk_P_t_all = comm.gather(PiGk_P_t_local, root=0)
@@ -247,10 +285,13 @@ PiPk_t_all = comm.gather(PiPk_t_local, root=0)
 if rank == 0:
     Pik = Pik_phi + Pik_d
     idx_k = np.argmax(fk)
-    k_f = k[idx_k]
+    k_f_E = k[idx_k]
     PiGk = PiGk_P + PiGk_phi + PiGk_d
-    k_Gf = k[np.argmax(fGk)]
-    k_Pf = k[np.argmax(fPk)]
+    k_f_G = k[np.argmax(fGk)]
+    k_f_P = k[np.argmax(fPk)]
+    k_D_E   = k[np.argmax(dk_D)]
+    k_D_G = k[np.argmax(dGk_D)]
+    k_D_P = k[np.argmax(dPk_D)]
     Pik_phi_t = np.vstack(Pik_phi_t_all)
     Pik_d_t = np.vstack(Pik_d_t_all)
     PiGk_P_t = np.vstack(PiGk_P_t_all)
@@ -261,9 +302,13 @@ if rank == 0:
     out_file = fname.replace('out_', 'spectral_flux/spectral_flux_')
     with h5.File(out_file, 'w') as fl:
         fl.create_dataset('k', data=k)
-        fl.create_dataset('k_f', data=k_f)
-        fl.create_dataset('k_Gf', data=k_Gf)
-        fl.create_dataset('k_Pf', data=k_Pf)
+        fl.create_dataset('idx_saved', data=np.arange(nt//2, nt//2 + nt2))
+        fl.create_dataset('k_f_E', data=k_f_E)
+        fl.create_dataset('k_f_G', data=k_f_G)
+        fl.create_dataset('k_f_P', data=k_f_P)
+        fl.create_dataset('k_D_E',   data=k_D_E)
+        fl.create_dataset('k_D_G', data=k_D_G)
+        fl.create_dataset('k_D_P', data=k_D_P)
         fl.create_dataset('k_lin', data=k_lin)
         fl.create_dataset('Pik', data=Pik)
         fl.create_dataset('Pik_phi', data=Pik_phi)
@@ -271,7 +316,8 @@ if rank == 0:
         fl.create_dataset('Pik_phi_t', data=Pik_phi_t)
         fl.create_dataset('Pik_d_t', data=Pik_d_t)
         fl.create_dataset('fk', data=fk)
-        fl.create_dataset('dk', data=dk)
+        fl.create_dataset('dk_D', data=dk_D)
+        fl.create_dataset('dk_H', data=dk_H)
         fl.create_dataset('PiGk', data=PiGk)
         fl.create_dataset('PiGk_P', data=PiGk_P)
         fl.create_dataset('PiGk_phi', data=PiGk_phi)
@@ -280,9 +326,11 @@ if rank == 0:
         fl.create_dataset('PiGk_phi_t', data=PiGk_phi_t)
         fl.create_dataset('PiGk_d_t', data=PiGk_d_t)
         fl.create_dataset('fGk', data=fGk)
-        fl.create_dataset('dGk', data=dGk)
+        fl.create_dataset('dGk_D', data=dGk_D)
+        fl.create_dataset('dGk_H', data=dGk_H)
         fl.create_dataset('PiPk', data=PiPk)
         fl.create_dataset('fPk', data=fPk)
-        fl.create_dataset('dPk', data=dPk)
+        fl.create_dataset('dPk_D', data=dPk_D)
+        fl.create_dataset('dPk_H', data=dPk_H)
         fl.create_dataset('PiPk_t', data=PiPk_t)
     print(f"Saved to {out_file}")

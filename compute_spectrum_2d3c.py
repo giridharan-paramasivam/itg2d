@@ -84,8 +84,8 @@ def VS_ZF(vk, q, k, dk, slbar):
 def ES(omk, q, k, dk):
     ''' Returns the total energy spectrum'''
     sigk=np.sign(ky)
-    Wk = sigk+q**2
-    ek = 0.5*Wk*np.abs(omk)**2/q**4
+    Lk = sigk+q**2
+    ek = 0.5*Lk*np.abs(omk)**2/q**4
     Ek = np.zeros(len(k))
     for i in range(len(k)):
         Ek[i] = np.sum(ek[np.where(np.logical_and(q>k[i]-dk/2,q<k[i]+dk/2))])*dk
@@ -94,8 +94,8 @@ def ES(omk, q, k, dk):
 def ES_ZF(omk, q, k, dk, slbar):
     ''' Returns the zonal total energy spectrum'''
     sigk=np.sign(ky[slbar])
-    Wk = sigk+q[slbar]**2
-    ek_ZF = 0.5*Wk*np.abs(omk[slbar])**2/q[slbar]**4
+    Lk = sigk+q[slbar]**2
+    ek_ZF = 0.5*Lk*np.abs(omk[slbar])**2/q[slbar]**4
     Ek_ZF = np.zeros(len(k))
     for i in range(len(k)):
         Ek_ZF[i] = np.sum(ek_ZF[np.where(np.logical_and(q[slbar]>=k[i]-dk/2, q[slbar]<k[i]+dk/2))])*dk

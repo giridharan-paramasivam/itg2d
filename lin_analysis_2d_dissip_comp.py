@@ -25,12 +25,12 @@ def init_linmats(pars,kx,ky):
     kpsq = torch.where(kpsq==0, 1e-10, kpsq)
         
     sigk = ky>0
-    Wk=tau*sigk+kpsq
+    Lk=tau*sigk+kpsq
     lm=torch.zeros(kx.shape+(2,2),dtype=torch.complex64)
     lm[:,:,0,0]=-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
     lm[:,:,0,1]=(kapn+kapt)*ky
-    lm[:,:,1,0]=-kapb*ky/Wk
-    lm[:,:,1,1]=(kapn*ky-(kapn+kapt)*ky*kpsq)/Wk-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
+    lm[:,:,1,0]=-kapb*ky/Lk
+    lm[:,:,1,1]=(kapn*ky-(kapn+kapt)*ky*kpsq)/Lk-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
 
     return lm
 
@@ -95,12 +95,11 @@ plt.axhline(0, color='k', linestyle='-', linewidth=1)
 plt.xlim(0,0.5)
 ylim = 1.8*max(c['gam_kxmax'][slky].max() for c in [cases[1], cases[3]])
 plt.ylim(-ylim, ylim)
-plt.grid(which='major', linestyle='--', linewidth=0.5)
 plt.xlabel('$k_y$')
 plt.ylabel(r'$\gamma(k_y)$')
 plt.legend(loc='best')
 plt.tight_layout()
-plt.savefig(f'data_linear/gam_vs_ky_kapt_{str(kapt).replace(".", "_")}_itg2d_comp.svg', dpi=100)
+plt.savefig(f'data_linear/gam_vs_ky_H_comp_kapt_{str(kapt).replace(".", "_")}_itg2d.svg', bbox_inches='tight')
 plt.show()
 
 #%% Dturb vs ky
@@ -112,10 +111,9 @@ plt.axhline(0, color='k', linestyle='-', linewidth=1)
 # plt.ylim(-0.15, 0.55) 
 plt.ylim(-0.15, 1.8*cases[2]['Dturb_kxmax'][slky].max())
 plt.legend(loc='best')
-plt.grid(which='major', linestyle='--', linewidth=0.5)
 plt.xlabel('$k_y$')
 plt.ylabel(r'$\displaystyle\max_{k_x}(\gamma / k^2)$', labelpad=20)
 plt.tight_layout()
-plt.savefig(f'data_linear/Dturb_vs_ky_kapt_{str(kapt).replace(".", "_")}_itg2d_comp.svg', dpi=100)
+plt.savefig(f'data_linear/Dturb_vs_ky_D_H_comp_kapt_{str(kapt).replace(".", "_")}_itg2d.svg', bbox_inches='tight')
 plt.show()
 # %%

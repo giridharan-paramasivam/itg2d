@@ -13,11 +13,11 @@ import os
 
 #%% Parameters
 
-# Npx,Npy=512,512
-Npx,Npy=1024,1024
+Npx,Npy=512,512
+# Npx,Npy=1024,1024
 # Npx,Npy=4096,4096
 Lx,Ly=32*np.pi,32*np.pi
-kapt=0.4 # threshold = 0.7
+kapt=2.0 # threshold = 0.7
 kapn=0.2
 kapb=0.02
 
@@ -27,17 +27,17 @@ slbar=np.s_[int(Ny/2)-1:int(Ny/2)*int(Nx/2)-1:int(Ny/2)]
 kx,ky=init_kgrid(sl,Lx,Ly)
 kpsq=kx**2+ky**2
 Nk=kx.size
-kmin = float(ky[0])
+dk=float(ky[0])
 sigk=cp.sign(ky)
-Wk=sigk+kpsq
+Lk=sigk+kpsq
 
 # D=round(0.1*(512/Npx)**2,3) #0.1 for 512x512
-D=0.1
-H=round(10*gam_max(kx,ky,kapn,kapt,kapb,D,0.0)*kmin**4,10) #10*gam*kmin**4
+D=1e-5
+H=round(10*gam_max(kx,ky,kapn,kapt,kapb,D,0.0)*dk**4,10) #10*gam*dk**4
+# H=0.0
 
 dtshow=0.1
 gammax=gam_max(kx,ky,kapn,kapt,kapb,D,H)
-# dtstep,dtsavecb=round_to_nsig((512/Npx)*0.00275/gammax,1),round_to_nsig(0.0275/gammax,1)
 dtstep,dtsavecb=round_to_nsig((512/Npx)*0.002/gammax,1),round_to_nsig(0.02/gammax,1)
 t0,t1=0.0,round(600/gammax,0) #100/gammax #600/gammax
 rtol,atol=1e-8,1e-10
@@ -45,7 +45,7 @@ wecontinue=False
 
 output_dir = f"data/{Npx}/"
 os.makedirs(output_dir, exist_ok=True)
-fname = output_dir + f'out_kapt_{str(kapt).replace(".", "_")}_D_{str(D).replace(".", "_")}_H_{format_exp(H)}_noZFdamp.h5'
+fname = output_dir + f'out_kapt_{str(kapt).replace(".", "_")}_hyper_D_{format_exp(D)}_H_{format_exp(H)}.h5'
 if not os.path.exists(fname):
     wecontinue=False
 
@@ -85,9 +85,10 @@ def fsavecb(t,y,flag):
         vx=irft2(-1j*ky*Phik) #ExB flow: x comp
         wx=irft2(-1j*ky*Pk) #diamagnetic flow: x comp
         Q=cp.mean(P*vx,1)
-        RPhi=cp.mean(vy*vx,1)
-        RP=cp.mean(vy*wx,1)
-        save_data(fl,'fluxes',ext_flag=True,Q=Q.get(),RPhi=RPhi.get(),RP=RP.get(),t=t)
+        Qbox=cp.mean(Q)
+        Rphi=cp.mean(vy*vx,1)
+        Rd=cp.mean(vy*wx,1)
+        save_data(fl,'fluxes',ext_flag=True,Q=Q.get(),Qbox=Qbox.get(),Rphi=Rphi.get(),Rd=Rd.get(),t=t)
     save_data(fl,'last',ext_flag=False,zk=zk.get(),t=t)
 
 def fshowcb(t,y):
@@ -95,10 +96,10 @@ def fshowcb(t,y):
     Phik,Pk=zk[:Nk],zk[Nk:]
     vx=irft2(-1j*ky*Phik)
     P=irft2(Pk)
-    Q=np.mean(vx*P)
+    Qbox=cp.mean(P*vx)
     Ktot = np.sum(kpsq*np.abs(Phik)**2)
     Kbar = np.sum((kx[slbar]*np.abs(Phik[slbar]))**2)
-    print(f'Ktot={Ktot:.3g}, Kbar/Ktot={Kbar/Ktot*100:.3g}%, Q={Q.get():.3g}')
+    print(f'Ktot={Ktot:.3g}, Kbar/Ktot={Kbar/Ktot*100:.3g}%, Qbox={Qbox.get():.3g}')
 
 def rhs_itg(t,y):
     zk=y.view(dtype=complex)
@@ -110,18 +111,18 @@ def rhs_itg(t,y):
     dyphi=irft2(1j*ky*Phik)
     dxP=irft2(1j*kx*Pk)
     dyP=irft2(1j*ky*Pk)
-    nOmg=irft2(Wk*Phik)
+    nOmg=irft2(Lk*Phik)
 
-    dPhikdt[:]=-1j*ky*kapn*Phik/Wk+1j*ky*(kapn+kapt)*kpsq*Phik/Wk+1j*ky*kapb*Pk/Wk-sigk*D*kpsq*Phik-sigk*H/(kpsq**2)*Phik
-    dPkdt[:]=-1j*ky*(kapn+kapt)*Phik-sigk*D*kpsq*Pk-sigk*H/(kpsq**2)*Pk
+    dPhikdt[:]=-1j*ky*kapn*Phik/Lk+1j*ky*(kapn+kapt)*kpsq*Phik/Lk+1j*ky*kapb*Pk/Lk-D*kpsq**3*Phik-sigk*H/(kpsq**2)*Phik
+    dPkdt[:]=-1j*ky*(kapn+kapt)*Phik-D*kpsq**3*Pk-sigk*H/(kpsq**2)*Pk
 
-    # dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Wk
-    # dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Wk
+    # dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Lk
+    # dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Lk
 
     nl_term1_num = 1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg)
-    dPhikdt[:] += nl_term1_num / Wk
+    dPhikdt[:] += nl_term1_num / Lk
     nl_term2_num = kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP)
-    dPhikdt[:] += nl_term2_num / Wk
+    dPhikdt[:] += nl_term2_num / Lk
 
     dPkdt[:]+=rft2(dyphi*dxP-dxphi*dyP)
     return dzkdt.view(dtype=float)
@@ -147,5 +148,3 @@ dtsave=[10*dtsavecb,dtsavecb,dtsavecb]
 r=Gensolver('cupy_ivp.DOP853',rhs_itg,t0,zk.view(dtype=float),t1,fsave=fsave,fshow=fshowcb,dtstep=dtstep,dtshow=dtshow,dtsave=dtsave,dense=False,rtol=rtol,atol=atol)
 r.run()
 fl.close()
-
-# %%

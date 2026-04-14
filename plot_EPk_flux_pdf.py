@@ -24,7 +24,7 @@ fname = 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 flux_file = datadir + subdir + fname.replace('out_', 'spectral_flux_')
 with h5.File(flux_file, 'r') as fl:
     k = fl['k'][:]
-    k_Pf = float(fl['k_Pf'][()])
+    k_f_P = float(fl['k_f_P'][()])
     k_lin = float(fl['k_lin'][()])
     PiPk = fl['PiPk'][:]
     fPk = fl['fPk'][:]
@@ -37,7 +37,7 @@ savename = partial(_savename, datadir+subdir, fname)
 
 def smooth_pdf(series, bins=100, window=7, xlim=None):
     N = len(series)
-    rng = (-xlim, xlim) if xlim is not None else None
+    rng = xlim if xlim is not None else None
     # bin the data into raw integer counts (not normalised)
     raw, edges = np.histogram(series, bins=bins, density=False, range=rng)
     bin_width = edges[1] - edges[0]
@@ -48,14 +48,14 @@ def smooth_pdf(series, bins=100, window=7, xlim=None):
     smooth = np.convolve(raw, kernel, mode='same')
     # normalise smoothed counts to a probability density (area under curve = 1)
     density = smooth / (N * bin_width)
-    # Poisson uncertainty: counts follow Poisson stats so std = sqrt(n)
+    # Poisson uncertainty: smoothed raw counts follow Poisson stats so std = sqrt(smooth); dividing by N * bin_width gives the error on the density
     err = np.sqrt(smooth) / (N * bin_width)
     return centres, density, err
 
 #%% Derived quantities for PDFs
 
-idx_k_Pf = np.argmin(np.abs(k - k_Pf))
-PiPk_series = PiPk_t[:, idx_k_Pf]
+idx_k_f_P = np.argmin(np.abs(k - k_f_P))
+PiPk_series = PiPk_t[:, idx_k_f_P]
 PiPk_series_norm = (PiPk_series - np.mean(PiPk_series)) / np.std(PiPk_series)
 
 idx_k_lin = np.argmin(np.abs(k - k_lin))
@@ -69,7 +69,8 @@ PiPk_series_1_norm = (PiPk_series_1 - np.mean(PiPk_series_1)) / np.std(PiPk_seri
 #%% EPk-flux PDF smoothed at k_Pf
 
 plt.figure(figsize=figsize_single)
-xlim = max(np.percentile(np.abs(s), 95) for s in [PiPk_series_norm])
+xlim = (min(np.percentile(s, 5) for s in [PiPk_series_norm]),
+        max(np.percentile(s, 95) for s in [PiPk_series_norm]))
 for series, label, color in zip([PiPk_series_norm],
                         [r'$\Pi_{P,k}$'],
                         ['C0']):
@@ -80,8 +81,8 @@ for series, label, color in zip([PiPk_series_norm],
     plt.plot(centres[mask], density[mask], '-', color=color, label=rf'{label}')
 plt.xlabel(r'$\frac{\Pi_{P,k}-<\Pi_{P,k}>}{\sigma}$')
 plt.ylabel('PDF')
-plt.xlim(-xlim, xlim)
-plt.gca().text(0.97, 0.97, rf'$k_{{P,f}}={k_Pf:.2f}$', transform=plt.gca().transAxes,
+plt.xlim(*xlim)
+plt.gca().text(0.97, 0.97, rf'$k_{{P,f}}={k_f_P:.2f}$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
 plt.tight_layout()
@@ -91,7 +92,8 @@ plt.show()
 #%% EPk-flux PDF smoothed at k_lin
 
 plt.figure(figsize=figsize_single)
-xlim = max(np.percentile(np.abs(s), 95) for s in [PiPk_series_max_norm])
+xlim = (min(np.percentile(s, 5) for s in [PiPk_series_max_norm]),
+        max(np.percentile(s, 95) for s in [PiPk_series_max_norm]))
 for series, label, color in zip([PiPk_series_max_norm],
                         [r'$\Pi_{P,k}$'],
                         ['C0']):
@@ -102,7 +104,7 @@ for series, label, color in zip([PiPk_series_max_norm],
     plt.plot(centres[mask], density[mask], '-', color=color, label=rf'{label}')
 plt.xlabel(r'$\frac{\Pi_{P,k}-<\Pi_{P,k}>}{\sigma}$')
 plt.ylabel('PDF')
-plt.xlim(-xlim, xlim)
+plt.xlim(*xlim)
 plt.gca().text(0.97, 0.97, rf'$k_{{lin}}={k_lin:.2f}$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))
@@ -113,7 +115,8 @@ plt.show()
 #%% EPk-flux PDF smoothed at k=1
 
 plt.figure(figsize=figsize_single)
-xlim = max(np.percentile(np.abs(s), 95) for s in [PiPk_series_1_norm])
+xlim = (min(np.percentile(s, 5) for s in [PiPk_series_1_norm]),
+        max(np.percentile(s, 95) for s in [PiPk_series_1_norm]))
 for series, label, color in zip([PiPk_series_1_norm],
                         [r'$\Pi_{P,k}$'],
                         ['C0']):
@@ -124,7 +127,7 @@ for series, label, color in zip([PiPk_series_1_norm],
     plt.plot(centres[mask], density[mask], '-', color=color, label=rf'{label}')
 plt.xlabel(r'$\frac{\Pi_{P,k}-<\Pi_{P,k}>}{\sigma}$')
 plt.ylabel('PDF')
-plt.xlim(-xlim, xlim)
+plt.xlim(*xlim)
 plt.gca().text(0.97, 0.97, r'$k=1$', transform=plt.gca().transAxes,
     fontsize=20, verticalalignment='top', horizontalalignment='right',
     bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.8))

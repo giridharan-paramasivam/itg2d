@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
-datadir="data/1024/"
-file_name="${1:-${datadir}out_kapt_2_0_D_0_1_H_8_6_em6.h5}"
+datadir="data/512/"
+file_name="${1:-${datadir}out_kapt_2_0_hyper_D_1_0_em6_H_1_1_em5.h5}"
+# datadir="data/1024/"
+# file_name="${1:-${datadir}out_kapt_2_0_D_0_1_H_8_6_em6.h5}"
 # datadir="data_scan/"
 # file_name="${1:-${datadir}out_kapt_1_0_D_0_1_H_6_5_em6.h5}"
-# datadir="data_2d3c/"
-# file_name="${1:-${datadir}out_2d3c_kapt_2_0_D_0_025_kz_0_1_1024x1024.h5}"
+# datadir="data_2d3c/1024/"
+# file_name="${1:-${datadir}out_2d3c_kapt_2_0_D_0_1_kz_0_1.h5}"
+
 # check h5clear exists
 if ! command -v h5clear >/dev/null 2>&1; then
   echo "h5clear not found in PATH" >&2

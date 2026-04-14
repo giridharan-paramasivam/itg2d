@@ -93,19 +93,19 @@ def rhs_itg(t,y):
     dxP=irft2(1j*kx*Pk)
     dyP=irft2(1j*ky*Pk)
     sigk=cp.sign(ky)
-    Wk=sigk+kpsq
-    nOmg=irft2(Wk*Phik)
+    Lk=sigk+kpsq
+    nOmg=irft2(Lk*Phik)
 
-    dPhikdt[:]=1j*ky*(kapb-kapn)*Phik/Wk+1j*ky*(kapn+kapt)*kpsq*Phik/Wk+1j*ky*kapb*Pk/Wk-chi*kpsq**2*(a*Phik-b*Pk)/Wk-sigk*HPhi/(kpsq**3)*Phik 
+    dPhikdt[:]=1j*ky*(kapb-kapn)*Phik/Lk+1j*ky*(kapn+kapt)*kpsq*Phik/Lk+1j*ky*kapb*Pk/Lk-chi*kpsq**2*(a*Phik-b*Pk)/Lk-sigk*HPhi/(kpsq**3)*Phik 
     dPkdt[:]=-1j*ky*(kapn+kapt)*Phik-chi*kpsq*Pk-sigk*HP/(kpsq**3)*Pk
 
-    dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Wk
-    dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Wk
+    dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Lk
+    dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Lk
 
     # nl_term1_num = 1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg)
-    # dPhikdt[:] += nl_term1_num / Wk
+    # dPhikdt[:] += nl_term1_num / Lk
     nl_term2_num = kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP)
-    dPhikdt[:] += nl_term2_num / Wk
+    dPhikdt[:] += nl_term2_num / Lk
 
     # dPkdt[:]+=rft2(dyphi*dxP-dxphi*dyP)
     return dzkdt.view(dtype=float)

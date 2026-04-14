@@ -2,14 +2,15 @@
 import gc
 import os
 import numpy as np
-
-import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
-from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
-import torch
+import torch 
+import h5py
 
-apply_style()
+plt.rcParams['lines.linewidth'] = 4
+plt.rcParams['font.size'] = 16
+plt.rcParams['axes.linewidth'] = 3  
+plt.rcParams['xtick.major.width'] = 3
 plt.rcParams['ytick.major.width'] = 3
 plt.rcParams['xtick.minor.visible'] = True
 plt.rcParams['ytick.minor.visible'] = True
@@ -38,7 +39,7 @@ def init_linmats(pars,kx,ky):
     kzsq[kzsq==0] = 1e-10
         
     sigk = ky>0
-    Wk=tau+kpsq
+    Lk=tau+kpsq
     lm=torch.zeros(kx.shape+(3,3),dtype=torch.complex64)
     lm[:,:,0,0]=-1j*chi*kpsq-1j*nuP*kzsq**2-1j*sigk*HPhi/kpsq**3
     lm[:,:,0,1]=(5/3)*kz
@@ -46,9 +47,9 @@ def init_linmats(pars,kx,ky):
     lm[:,:,1,0]=kz
     lm[:,:,1,1]=-1j*s*chi*kpsq-1j*nuV*kzsq**2-1j*sigk*HV/kpsq**3
     lm[:,:,1,2]=kz
-    lm[:,:,2,0]=(-kapb*ky+1j*chi*kpsq**2*b)/Wk
-    lm[:,:,2,1]=kz/Wk
-    lm[:,:,2,2]=(kapn*ky-(kapn+kapt)*ky*kpsq-kapb*ky-1j*chi*kpsq**2*a)/Wk-1j*nuPhi*kzsq**2-1j*sigk*HPhi/kpsq**3
+    lm[:,:,2,0]=(-kapb*ky+1j*chi*kpsq**2*b)/Lk
+    lm[:,:,2,1]=kz/Lk
+    lm[:,:,2,2]=(kapn*ky-(kapn+kapt)*ky*kpsq-kapb*ky-1j*chi*kpsq**2*a)/Lk-1j*nuPhi*kzsq**2-1j*sigk*HPhi/kpsq**3
 
     return lm
 
@@ -69,16 +70,14 @@ Npx,Npy=512,512
 Nx,Ny=2*int(Npx/3),2*int(Npy/3)
 Lx,Ly=32*np.pi,32*np.pi
 kx,ky=init_kspace_grid(Nx,Ny,Lx,Ly)
-kapt=1.2 #rho_i/L_T
-kapn=kapt/3 #rho_i/L_n
+kapb=0.05 #2*rho_i/L_B
 chi=0.1
 a=9.0/40.0
 b=67.0/160.0
 s=0.9
 H0=0*1e-5
 nu0=0*1e-6
-base_pars={'kapt':kapt,
-    'kapn':kapn,
+base_pars={'kapb':kapb,
     'tau':1.,#Ti/Te
     'chi':chi,
     'a':a,
@@ -91,10 +90,10 @@ base_pars={'kapt':kapt,
     'nuP':nu0,
     'nuV':nu0}
 
-kapb_vals=np.round(np.arange(0.005,0.1,0.005), 3)
-kz_vals=np.round(np.arange(0.,5.,0.25), 2)
+kapt_vals=np.round(np.arange(0.3,1.8,0.05), 2)
+kz_vals=np.round(np.arange(0.,5.,0.1), 2)
 
-n_kapb=len(kapb_vals)
+n_kapt=len(kapt_vals)
 n_kz=len(kz_vals)
 
 datadir='data_linear/'
@@ -103,18 +102,19 @@ os.makedirs(datadir, exist_ok=True)
 #%% Compute
 
 # Create datasets
-with h5py.File(datadir + 'gammax_vals_kapb_kz_scan_itg2d3c.h5', 'w') as fl:
-    shape = (n_kapb, n_kz)
+with h5py.File(datadir + 'gammax_vals_kapt_kz_scan_itg2d3c.h5', 'w') as fl:
+    shape = (n_kapt, n_kz)
     fl.create_dataset('gammax_vals', shape, dtype=np.float64)
-    fl.create_dataset('kapb_vals', data=kapb_vals, dtype=np.float64)
+    fl.create_dataset('kapt_vals', data=kapt_vals, dtype=np.float64)
     fl.create_dataset('kz_vals', data=kz_vals, dtype=np.float64)
-    fl.create_dataset('kapt', data=kapt, dtype=np.float64)
-
-for i in range(len(kapb_vals)):
-    base_pars['kapb']=kapb_vals[i] #rho_i/L_B
+    fl.create_dataset('kapb', data=kapb, dtype=np.float64)
+    
+for i in range(len(kapt_vals)):
+    base_pars['kapt']=kapt_vals[i] #rho_i/L_T
+    base_pars['kapn']=kapt_vals[i]/3 #rho_i/L_n
     for j in range(len(kz_vals)):
         base_pars['kz']=kz_vals[j]
-        print(f'Computing for kapb={kapb_vals[i]}, kz={kz_vals[j]}')
+        print(f'Computing for kapt={kapt_vals[i]}, kz={kz_vals[j]}')
 
         # Compute om
         om=linfreq(base_pars,kx,ky)
@@ -122,7 +122,7 @@ for i in range(len(kapb_vals)):
         gam=om.imag[:,:,0]
 
         # Store gammax
-        with h5py.File(datadir + 'gammax_vals_kapb_kz_scan_itg2d3c.h5', 'a', libver='latest') as fl:
+        with h5py.File(datadir + 'gammax_vals_kapt_kz_scan_itg2d3c.h5', 'a', libver='latest') as fl:
             # fl.swmr_mode = True
             fl['gammax_vals'][i, j] = np.max(gam)
             fl.flush()
