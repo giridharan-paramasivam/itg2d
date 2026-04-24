@@ -15,7 +15,7 @@ import os
 
 Npx,Npy=512,512
 Lx,Ly=32*np.pi,32*np.pi
-kapt_vals=np.arange(0.2,1.35,0.05)  # Scan over kapt values
+kapt_vals=np.arange(0.0,1.65,0.05)  # Scan over kapt values
 kapn=0.2
 kapb=0.02
 D=0.1
@@ -26,8 +26,9 @@ slbar=np.s_[int(Ny/2)-1:int(Ny/2)*int(Nx/2)-1:int(Ny/2)]
 kx,ky=init_kgrid(sl,Lx,Ly)
 kpsq=kx**2+ky**2
 Nk=kx.size
-slky=np.s_[:int(Ny/2)-1] # ky values for excluding ky=0
-kmin = float(ky[0])
+dk=float(ky[0])
+sigk=cp.sign(ky)
+Lk=sigk+kpsq
 
 #%% Functions
 
@@ -65,9 +66,10 @@ def fsavecb(t,y,flag):
         vx=irft2(-1j*ky*Phik) #ExB flow: x comp
         wx=irft2(-1j*ky*Pk) #diamagnetic flow: x comp
         Q=cp.mean(P*vx,1)
-        RPhi=cp.mean(vy*vx,1)
-        RP=cp.mean(vy*wx,1)
-        save_data(fl,'fluxes',ext_flag=True,Q=Q.get(),RPhi=RPhi.get(),RP=RP.get(),t=t)
+        Qbox=cp.mean(Q)
+        Rphi=cp.mean(vy*vx,1)
+        Rd=cp.mean(vy*wx,1)
+        save_data(fl,'fluxes',ext_flag=True,Q=Q.get(),Qbox=Qbox.get(),Rphi=Rphi.get(),Rd=Rd.get(),t=t)
     save_data(fl,'last',ext_flag=False,zk=zk.get(),t=t)
 
 def fshowcb(t,y):
@@ -75,10 +77,10 @@ def fshowcb(t,y):
     Phik,Pk=zk[:Nk],zk[Nk:]
     vx=irft2(-1j*ky*Phik)
     P=irft2(Pk)
-    Q=np.mean(vx*P)
+    Qbox=cp.mean(P*vx)
     Ktot = np.sum(kpsq*np.abs(Phik)**2)
     Kbar = np.sum((kx[slbar]*np.abs(Phik[slbar]))**2)
-    print(f'Ktot={Ktot:.3g}, Kbar/Ktot={Kbar/Ktot*100:.3g}%, Q={Q.get():.3g}')
+    print(f'Ktot={Ktot:.3g}, Kbar/Ktot={Kbar/Ktot*100:.3g}%, Qbox={Qbox.get():.3g}')
 
 def rhs_itg(t,y):
     zk=y.view(dtype=complex)
@@ -90,12 +92,10 @@ def rhs_itg(t,y):
     dyphi=irft2(1j*ky*Phik)
     dxP=irft2(1j*kx*Pk)
     dyP=irft2(1j*ky*Pk)
-    sigk=cp.sign(ky)
-    Lk=sigk+kpsq
     nOmg=irft2(Lk*Phik)
 
-    dPhikdt[:]=-1j*ky*kapn*Phik/Lk+1j*ky*(kapn+kapt)*kpsq*Phik/Lk+1j*ky*kapb*Pk/Lk-D*kpsq*Phik-sigk*HPhi/(kpsq**2)*Phik
-    dPkdt[:]=-1j*ky*(kapn+kapt)*Phik-D*kpsq*Pk-sigk*HP/(kpsq**2)*Pk
+    dPhikdt[:]=-1j*ky*kapn*Phik/Lk+1j*ky*(kapn+kapt)*kpsq*Phik/Lk+1j*ky*kapb*Pk/Lk-D*kpsq*Phik-sigk*H/(kpsq**2)*Phik
+    dPkdt[:]=-1j*ky*(kapn+kapt)*Phik-D*kpsq*Pk-sigk*H/(kpsq**2)*Pk
 
     # dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Lk
     # dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Lk
@@ -110,22 +110,25 @@ def rhs_itg(t,y):
 
 #%% Run the simulation    
 
+dtshow=0.1
+rtol,atol=1e-8,1e-10
+output_dir = "data_scan/"
+os.makedirs(output_dir, exist_ok=True)
+
 for kapt in kapt_vals:
     kapt=round(kapt,3)
-    H0 = round(10*gam_max(kx,ky,kapn,kapt,kapb,D,0.0,0.0,slky)*kmin**4,10)
-    HPhi=H0
-    HP=H0
 
-    dtshow=0.1
-    gammax=gam_max(kx,ky,kapn,kapt,kapb,D,HPhi,HP,slky)
-    dtstep,dtsavecb=round_to_nsig(0.00275/gammax,1),round_to_nsig(0.0275/gammax,1)
+    H=max(round(10*gam_max(kx,ky,kapn,kapt,kapb,D,0.0)*dk**4,10), 0.0)
+
+    gammax=gam_max(kx,ky,kapn,kapt,kapb,D,H)
+    if gammax <= 0:
+        print(f'kapt={kapt} is sub-threshold (gammax={gammax:.3g}), skipping.')
+        continue
+    dtstep,dtsavecb=round_to_nsig((512/Npx)*0.002/gammax,1),round_to_nsig(0.02/gammax,1)
     t0,t1=0.0,round(600/gammax,0) #100/gammax #600/gammax
-    rtol,atol=1e-8,1e-10
     wecontinue=True
 
-    output_dir = "data_scan/"
-    os.makedirs(output_dir, exist_ok=True)
-    fname = output_dir + f'out_kapt_{str(kapt).replace(".", "_")}_D_{str(D).replace(".", "_")}_H_{format_exp(HPhi)}.h5'
+    fname = output_dir + f'out_kapt_{str(kapt).replace(".", "_")}_D_{str(D).replace(".", "_")}_H_{format_exp(H)}.h5'
     if not os.path.exists(fname):
         wecontinue=False
 
@@ -141,7 +144,7 @@ for kapt in kapt_vals:
         fl.swmr_mode = True
         zk=init_fields(kx,ky)
         save_data(fl,'data',ext_flag=False,kx=kx.get(),ky=ky.get(),t0=t0,t1=t1)
-        save_data(fl,'params',ext_flag=False,Npx=Npx,Npy=Npy,Lx=Lx,Ly=Ly,kapn=kapn,kapt=kapt,kapb=kapb,D=D,HP=HP,HPhi=HPhi,gammax=gammax)
+        save_data(fl,'params',ext_flag=False,Npx=Npx,Npy=Npy,Lx=Lx,Ly=Ly,kapn=kapn,kapt=kapt,kapb=kapb,D=D,H=H,gammax=gammax)
 
     fsave = [partial(fsavecb,flag='fields'), partial(fsavecb,flag='zonal'), partial(fsavecb,flag='fluxes')]
     dtsave=[10*dtsavecb,dtsavecb,dtsavecb]

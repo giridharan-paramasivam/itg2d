@@ -31,7 +31,7 @@ def init_linmats(pars,kx,ky):
     lm[:,:,0,0]=-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
     lm[:,:,0,1]=(kapn+kapt)*ky
     lm[:,:,1,0]=-kapb*ky/Lk
-    lm[:,:,1,1]=(kapn*ky-(kapn+kapt)*ky*kpsq)/Lk-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
+    lm[:,:,1,1]=(kapn*ky-0*(kapn+kapt)*ky*kpsq)/Lk-1j*sigk*D*kpsq-1j*sigk*H/kpsq**2
 
     return lm
 
@@ -57,7 +57,7 @@ Nx,Ny=2*int(Npx/3),2*int(Npy/3)
 # Lx,Ly=32*np.pi,32*np.pi #sim for 512x512
 Lx,Ly=256*np.pi,256*np.pi 
 kx,ky=init_kspace_grid(Nx,Ny,Lx,Ly)
-kapt=0.4 #rho_i/L_T >0.2
+kapt=2.0 #rho_i/L_T >0.2
 kapn=0.2 #rho_i/L_n
 kapb=0.02 #2*rho_i/L_B
 D=1e-3 #0.1
@@ -109,40 +109,40 @@ gam_shifted = np.fft.fftshift(gam, axes=0)
 #%% Plot: gam vs ky at max gam kx and at kx=0
 
 plt.figure(figsize=figsize_single)
-plt.plot(ky[0,:int(Ny/8)].T,gam_kxmax[:int(Ny/8)].T,'.-',label='$k_x= \\arg\\max_{k_x} \\left(\\gamma\\right)$')
-plt.plot(ky[0,:int(Ny/8)].T,gam_kx0[:int(Ny/8)].T,'.-',label='$k_x=0$')
+plt.plot(ky[0,:int(Ny)].T,gam_kxmax[:int(Ny)].T,'.-',label='$k_x= \\arg\\max_{k_x} \\left(\\gamma\\right)$')
+plt.plot(ky[0,:int(Ny)].T,gam_kx0[:int(Ny)].T,'.-',label='$k_x=0$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
-plt.plot(ky[0,:int(Ny/8)],-D*ky[0,:int(Ny/8)]**2,'k--',label='$-Dk_y^2$')
+plt.plot(ky[0,:int(Ny)],-D*ky[0,:int(Ny)]**2,'k--',label='$-Dk_y^2$')
 plt.legend()
 plt.xlabel('$k_y$')
 plt.ylabel('$\\gamma(k_y)$')
 plt.tight_layout()
-plt.savefig(f'data_linear/gam_vs_ky_kapt_{str(kapt).replace(".", "_")}_itg2d.svg', bbox_inches='tight')
+# plt.savefig(f'data_linear/gam_vs_ky_kapt_{str(kapt).replace(".", "_")}_itg2d.svg', bbox_inches='tight')
 plt.show()
 
 #%% Plot: gam vs ky for different kx values
 
-plt.figure(figsize=figsize_single)
-# slx=slice(None,int(Nx/32),1) 
-slx=slice(None,int(Nx/8),int((Nx/8)/5)) #7 kx points
-plt.plot(ky[slx,:int(Ny/4)].T,gam[slx,:int(Ny/4)].T,'.-')
-plt.axhline(0,color='k', linestyle='-', linewidth=1)
-plt.plot(ky[0,:int(Ny/4)],-D*ky[0,:int(Ny/4)]**2,'k--')
-plt.legend(['$k_x='+str(l)+'$' for l in kx[slx,0]]+['$-Dk_y^2$'])
-plt.xlabel('$k_y$')
-plt.ylabel('$\\gamma(k_y)$')
-plt.tight_layout()
-plt.savefig(f'data_linear/gam_vs_ky_kxvals_kapt_{str(kapt).replace(".", "_")}_itg2d.svg', bbox_inches='tight')
-plt.show()
+# plt.figure(figsize=figsize_single)
+# # slx=slice(None,int(Nx/32),1) 
+# slx=slice(None,int(Nx/8),int((Nx/8)/5)) #7 kx points
+# plt.plot(ky[slx,:int(Ny/4)].T,gam[slx,:int(Ny/4)].T,'.-')
+# plt.axhline(0,color='k', linestyle='-', linewidth=1)
+# plt.plot(ky[0,:int(Ny/4)],-D*ky[0,:int(Ny/4)]**2,'k--')
+# plt.legend(['$k_x='+str(l)+'$' for l in kx[slx,0]]+['$-Dk_y^2$'])
+# plt.xlabel('$k_y$')
+# plt.ylabel('$\\gamma(k_y)$')
+# plt.tight_layout()
+# plt.savefig(f'data_linear/gam_vs_ky_kxvals_kapt_{str(kapt).replace(".", "_")}_itg2d.svg', bbox_inches='tight')
+# plt.show()
 
 #%%  Plot: kxmax vs ky at max gam
-# plt.figure(figsize=figsize_single)
-# plt.plot(ky[0,:int(Ny/4)],kxmax_ky[:int(Ny/4)],'.-')
-# plt.xlabel('$k_y$')
-# plt.ylabel('$k_{x,max}$')
-# plt.tight_layout()
+plt.figure(figsize=figsize_single)
+plt.plot(ky[0,:int(Ny/4)],kxmax_ky[:int(Ny/4)],'.-')
+plt.xlabel('$k_y$')
+plt.ylabel('$k_{x,max}$')
+plt.tight_layout()
 # plt.savefig(f'data_linear/ky_vs_kx_kapt_{str(kapt).replace(".", "_")}_itg2d.svg')
-# plt.show()
+plt.show()
 
 #%% Plot: kymax vs kx at max gam
 # kymax_kx= np.take_along_axis(ky[:int(Nx/4),:],np.argmax(gam[:int(Nx/4),:],axis=1,keepdims=True),axis=1).squeeze(axis=1)

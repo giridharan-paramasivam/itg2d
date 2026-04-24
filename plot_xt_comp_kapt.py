@@ -80,6 +80,7 @@ ax2.set_title(rf'$\kappa_T={kapt2}$')
 
 fig.colorbar(im1, ax=ax1)
 fig.colorbar(im2, ax=ax2)
+plt.tight_layout()
 plt.savefig(datadir+subdir+'vbar_xt_kapt_comp.svg', bbox_inches='tight')
 plt.show()
 plt.close()

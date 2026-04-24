@@ -121,7 +121,8 @@ zk = None
 for i, kapt_val in enumerate(kapt_vals):
     kapt = round(kapt_val,3)
     kapn = round(kapt/eta,3)
-    H0 = round(1e-3*gam_max(kx,ky,kapn,kapt,kapb,D,0.0,0.0,slky)/gam_max(kx,ky,0.4,1.2,kapb,D,0.0,0.0,slky),4)
+    H0 = max(round(1e-3*gam_max(kx,ky,kapn,kapt,kapb,D,0.0,0.0,slky)/gam_max(kx,ky,0.4,1.2,kapb,D,0.0,0.0,slky),4), 0.0)
+    if H0 == 0.0: print(f'Warning: kapt={kapt} is sub-threshold; H0 set to 0.')
     HPhi = H0
     HP = H0
 

@@ -46,10 +46,12 @@ datadir = f"data/{Npx}/"
 subdir='video/'
 
 # fname = 'out_2d3c_kapt_2_0_D_0_1_kz_0_1.h5'
+# fname = 'out_kapt_0_2_D_0_1_H_1_5_em6.h5'
 # fname = 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
 # fname = 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
 # fname = 'out_kapt_2_0_D_0_1_H_0_0_e0.h5'
-fname = 'out_kapt_2_0_hyper_D_1_0_em6_H_1_1_em5.h5'
+fname = 'out_kapt_2_0_hyper_D_5_0_em6_H_1_1_em5.h5'
+# fname = 'out_kapt_2_0_hyper_D_1_0_em5_H_1_1_em5.h5'
 
 outfl = (datadir+subdir+fname).replace('.h5', '.mp4')
 fname = datadir + fname

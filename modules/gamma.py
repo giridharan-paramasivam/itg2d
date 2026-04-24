@@ -15,7 +15,7 @@ def init_linmats(kx,ky,pars):
     lm[:,0,0]=-1j*D*kpsq-1j*sigk*H/kpsq**2
     lm[:,0,1]=(kapn+kapt)*ky
     lm[:,1,0]=-kapb*ky/Lk
-    lm[:,1,1]=(-(kapb-kapn)*ky-(kapn+kapt)*ky*kpsq)/Lk-1j*D*kpsq-1j*sigk*H/kpsq**2
+    lm[:,1,1]=(kapn*ky-(kapn+kapt)*ky*kpsq)/Lk-1j*D*kpsq-1j*sigk*H/kpsq**2
 
     return lm
 

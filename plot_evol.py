@@ -16,10 +16,13 @@ Npx=512
 datadir=f'data/{Npx}/'
 subdir='evol/'
 
+# fname = 'out_kapt_0_2_D_0_1_H_1_5_em6.h5'
 # fname = 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
 # fname = 'out_kapt_2_0_D_0_1_H_0_0_e0.h5'
 # fname = 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
-fname = 'out_kapt_2_0_hyper_D_1_0_em6_H_1_1_em5.h5'
+
+# fname = 'out_kapt_0_2_hyper_D_1_0_em5_H_8_0_em6.h5'
+fname = 'out_kapt_2_0_hyper_D_5_0_em6_H_1_1_em5.h5'
 
 evol_fname = datadir + subdir + fname.split('/')[-1].replace('out_', 'evol_')
 with h5.File(evol_fname, 'r') as fl:

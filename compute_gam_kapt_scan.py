@@ -5,11 +5,8 @@ import os
 import numpy as np
 import cupy as cp
 import matplotlib.pyplot as plt
-from modules.plot_basics import apply_style, FIGSIZE_DOUBLE, FIGSIZE_SINGLE
 import torch
 import h5py
-
-apply_style()
 
 #%% Define Functions
 
@@ -56,16 +53,16 @@ Npx,Npy=512,512
 Nx,Ny=2*int(Npx/3),2*int(Npy/3)
 Lx,Ly=32*np.pi,32*np.pi
 kx,ky=init_kspace_grid(Nx,Ny,Lx,Ly)
+dk=2*np.pi/Ly
 kapn=0.2 #rho_i/L_n
 kapb=0.02 #2*rho_i/L_B
 D=0.1
-H0=1e-8
 base_pars={'kapn':kapn,
       'kapb':kapb,
       'tau':1.,#Ti/Te
       'D':D,
-      'HPhi':H0,
-      'HP':H0}
+      'HPhi':0.0,
+      'HP':0.0}
 
 kapt_vals=np.round(np.arange(0.0,2.01,0.01,), 2)
 n_kapt=len(kapt_vals)
@@ -86,7 +83,15 @@ with h5py.File(fname, 'w') as fl:
 for i in range(len(kapt_vals)):
     base_pars['kapt']=kapt_vals[i] #rho_i/L_T
 
-    print(f'Computing for kapt={kapt_vals[i]}')
+    # Compute H0 = 10 * gam_max(H=0) * dk^4
+    base_pars['HPhi']=0.0
+    base_pars['HP']=0.0
+    om_h0=linfreq(base_pars,kx,ky)
+    H0=round(10*np.max(om_h0.imag[:,:,0])*dk**4,10)
+    base_pars['HPhi']=H0
+    base_pars['HP']=H0
+
+    print(f'Computing for kapt={kapt_vals[i]}, H0={H0}')
 
     # Compute om
     om=linfreq(base_pars,kx,ky)

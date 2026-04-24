@@ -31,6 +31,7 @@ plt.xlabel(r'$\kappa_B$')
 plt.ylabel('$k_z$')
 plt.title(rf"$\gamma_{{max}}$ for $\kappa_T$={kapt:.2f}")
 plt.colorbar()
+plt.tight_layout()
 plt.savefig(datadir + 'gammax_kapb_kz_itg2d3c.png', dpi=100)
 plt.show()
 del gammax_kapb_kz

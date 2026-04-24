@@ -126,7 +126,7 @@ def plot_gam_vs_ky_FLR_comp(all_legends=False):
     plt.xlabel('$k_y$')
     plt.ylabel('$\\gamma(k_y)$')
     plt.tight_layout()
-    plt.savefig(f'data_linear/gam_vs_ky_FLR_comp_kapt_{str(kapt).replace(".", "_")}_itg2d.svg', bbox_inches='tight')
+    # plt.savefig(f'data_linear/gam_vs_ky_FLR_comp_kapt_{str(kapt).replace(".", "_")}_itg2d.svg', bbox_inches='tight')
     plt.show()
 
 plot_gam_vs_ky_FLR_comp(all_legends=True)  

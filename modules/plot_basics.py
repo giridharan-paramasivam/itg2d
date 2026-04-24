@@ -46,7 +46,6 @@ def apply_style():
         'legend.edgecolor': 'black',
         'legend.framealpha': 1.0,
         'legend.fancybox': False,   # Sharp corners look more professional
-        'figure.autolayout': True,
         'savefig.dpi': 300,
     })
 

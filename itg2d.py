@@ -17,7 +17,7 @@ Npx,Npy=512,512
 # Npx,Npy=1024,1024
 # Npx,Npy=4096,4096
 Lx,Ly=32*np.pi,32*np.pi
-kapt=2.0 # threshold = 0.7
+kapt=0.2 # threshold = 0.7
 kapn=0.2
 kapb=0.02
 
@@ -31,9 +31,8 @@ dk=float(ky[0])
 sigk=cp.sign(ky)
 Lk=sigk+kpsq
 
-# D=round(0.1*(512/Npx)**2,3) #0.1 for 512x512
 D=0.1
-H=round(10*gam_max(kx,ky,kapn,kapt,kapb,D,0.0)*dk**4,10) #10*gam*dk**4
+H=max(round(10*gam_max(kx,ky,kapn,kapt,kapb,D,0.0)*dk**4,10), 0.0) #10*gam*dk**4
 # H=0.0
 
 dtshow=0.1
@@ -115,9 +114,6 @@ def rhs_itg(t,y):
 
     dPhikdt[:]=-1j*ky*kapn*Phik/Lk+1j*ky*(kapn+kapt)*kpsq*Phik/Lk+1j*ky*kapb*Pk/Lk-D*kpsq*Phik-sigk*H/(kpsq**2)*Phik
     dPkdt[:]=-1j*ky*(kapn+kapt)*Phik-D*kpsq*Pk-sigk*H/(kpsq**2)*Pk
-
-    # dPhikdt[:]+=(1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg))/Lk
-    # dPhikdt[:]+= (kx**2*rft2(dxphi*dyP) - ky**2*rft2(dyphi*dxP) + kx*ky*rft2(dyphi*dyP - dxphi*dxP))/Lk
 
     nl_term1_num = 1j*kx*rft2(dyphi*nOmg)-1j*ky*rft2(dxphi*nOmg)
     dPhikdt[:] += nl_term1_num / Lk

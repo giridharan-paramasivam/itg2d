@@ -21,7 +21,11 @@ datadir=f'data/{Npx}/'
 
 # fname = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
 # fname = datadir + 'out_kapt_2_0_D_0_1_H_0_0_e0.h5'
-fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+# fname = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+# fname = datadir + 'out_kapt_0_2_hyper_D_1_0_em5_H_8_0_em6.h5'
+fname = datadir + 'out_kapt_2_0_hyper_D_5_0_em6_H_1_1_em5.h5'
+
+hyper=3 #D*nabla^(2*hyper)
 
 with h5.File(fname, 'r', swmr=True) as fl:
     t = fl['fields/t'][:]
@@ -47,6 +51,7 @@ sl = Slicelist(Nx, Ny)
 slbar = np.s_[int(Ny/2)-1:int(Ny/2)*int(Nx/2)-1:int(Nx/2)]
 gammax = gam_max(kx, ky, kapn, kapt, kapb, D, H)
 t = t * gammax
+q = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
 k_lin = ky_max(kx, ky, kapn, kapt, kapb, D, H)
 
 #%% Functions
@@ -88,11 +93,11 @@ def Eflux(Omk, Pk, kx, ky, k, delk, flag='Pik'):
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     elif flag == 'dk_D':
-        ak = np.real(Lk*D*kpsq*np.abs(Phik)**2)
+        ak = np.real(Lk*D*kpsq**hyper*np.abs(Phik)**2)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     elif flag == 'dk_H':
-        ak = np.real(Lk*H*kpsq**(-2)*np.abs(Phik)**2)
+        ak = np.real(sigk*Lk*H*kpsq**(-2)*np.abs(Phik)**2)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     return Ak
@@ -120,7 +125,7 @@ def EPflux(Omk, Pk, kx, ky, k, delk, flag='PiPk'):
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     elif flag == 'dPk_D':
-        ak = np.real(D*kpsq*np.abs(Pk)**2)
+        ak = np.real(D*kpsq**hyper*np.abs(Pk)**2)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     elif flag == 'dPk_H':
@@ -168,11 +173,11 @@ def Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P'):
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     elif flag == 'dGk_D':
-        ak = D*kpsq * ((sigk + kpsq)*np.abs(Phik + Pk)**2 + (1 - sigk)*np.abs(Pk)**2)
+        ak = D*kpsq**hyper * ((sigk + kpsq)*np.abs(Phik + Pk)**2 + (1 - sigk)*np.abs(Pk)**2)
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     elif flag == 'dGk_H':
-        ak = H*kpsq**(-2)*(1 + kpsq)*sigk*np.abs(Phik + Pk)**2
+        ak = H*kpsq**(-2)*Lk*sigk*np.abs(Phik + Pk)**2
         for i in range(len(k)):
             Ak[i] = np.sum(ak[np.where(np.logical_and(q > k[i], q <= k[i]+delk))])/delk
     return Ak
@@ -180,8 +185,8 @@ def Gflux(Omk, Pk, kx, ky, k, delk, flag='PiGk_P'):
 #%% Calculate quantities
 
 delk = ky[1] - ky[0]
-q = np.sqrt(np.abs(kx)**2 + np.abs(ky)**2)
-k = np.linspace(np.min(q), np.max(q), num=int(np.max(q)/delk))
+# k = np.linspace(np.min(q), np.max(q), num=int(np.max(q)/delk))
+k = np.linspace(0, np.max(q), num=int(np.max(q)/delk)+1)
 
 # MPI parallelization
 
@@ -292,6 +297,9 @@ if rank == 0:
     k_D_E   = k[np.argmax(dk_D)]
     k_D_G = k[np.argmax(dGk_D)]
     k_D_P = k[np.argmax(dPk_D)]
+    k_H_E   = k[np.argmax(dk_H)]
+    k_H_G = k[np.argmax(dGk_H)]
+    k_H_P = k[np.argmax(dPk_H)]
     Pik_phi_t = np.vstack(Pik_phi_t_all)
     Pik_d_t = np.vstack(Pik_d_t_all)
     PiGk_P_t = np.vstack(PiGk_P_t_all)
@@ -309,6 +317,9 @@ if rank == 0:
         fl.create_dataset('k_D_E',   data=k_D_E)
         fl.create_dataset('k_D_G', data=k_D_G)
         fl.create_dataset('k_D_P', data=k_D_P)
+        fl.create_dataset('k_H_E', data=k_H_E)
+        fl.create_dataset('k_H_G', data=k_H_G)
+        fl.create_dataset('k_H_P', data=k_H_P)
         fl.create_dataset('k_lin', data=k_lin)
         fl.create_dataset('Pik', data=Pik)
         fl.create_dataset('Pik_phi', data=Pik_phi)
@@ -334,3 +345,5 @@ if rank == 0:
         fl.create_dataset('dPk_H', data=dPk_H)
         fl.create_dataset('PiPk_t', data=PiPk_t)
     print(f"Saved to {out_file}")
+
+# %%

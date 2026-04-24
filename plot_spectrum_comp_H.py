@@ -131,14 +131,13 @@ ax.loglog(k2, Ek2, label=rf'$H = {to_latex_sci(H2)}$')
 ax.loglog(k1[Ek_ZF1 > 0], Ek_ZF1[Ek_ZF1 > 0], 'C0--', alpha=0.7, label=rf'$H = {to_latex_sci(H1)}$ (zonal)')
 ax.loglog(k2[Ek_ZF2 > 0], Ek_ZF2[Ek_ZF2 > 0], 'C1--', alpha=0.7, label=rf'$H = {to_latex_sci(H2)}$ (zonal)')
 
-ax.axvline(x=1, color='k', linestyle='--', linewidth=2)
 ax.axvline(x=k_lin2, color='k', linestyle='-.', linewidth=2)
 ax.text(k_lin2, -0.025, r'$k_{\mathrm{lin}}$',
         transform=ax.get_xaxis_transform(), ha='center', va='top', fontsize=xtick_fontsize)
 
 ax.set_xlabel(r'$k$')
 ax.set_ylabel(r'$E_k$')
-ax.legend(fontsize=22)
+ax.legend(bbox_to_anchor=(0.52, 0.2), fontsize=18)
 
 plt.tight_layout()
 plt.savefig(datadir + 'spectrum/E_spectrum_comp_H.svg', bbox_inches='tight')

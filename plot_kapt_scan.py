@@ -67,7 +67,7 @@ rank = comm.Get_rank()
 size = comm.Get_size()
 
 datadir = 'data_scan/'
-kapt_vals=np.arange(0.2,1.0,0.05) 
+kapt_vals=np.arange(0.0,1.65,0.05)
 
 P2_frac_scan = np.zeros(kapt_vals.shape)
 P2_frac_scan_err = np.zeros(kapt_vals.shape)
@@ -116,7 +116,7 @@ for i in local_indices:
         Npy= fl['params/Npy'][()]
         Nx,Ny=2*Npx//3,2*Npy//3  
         sl=Slicelist(Nx,Ny)
-        slbar=np.s_[int(Ny/2)-1:int(Ny/2)*int(Nx/2)-1:int(Nx/2)]
+        slbar=np.s_[int(Ny/2)-1:int(Ny/2)*int(Nx/2)-1:int(Ny/2)]
         kpsq = kx**2 + ky**2
         P2_frac_t = np.zeros(int(nt/2))
         E_frac_t = np.zeros(int(nt/2))

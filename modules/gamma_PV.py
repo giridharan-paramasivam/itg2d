@@ -2,27 +2,27 @@ import numpy as np
 import cupy as cp
 import torch
 
+Gamma = 5/3
+
 def init_linmats(kx,ky,pars):    
     # Initializing the linear matrices
-    kapn,kapt,kapb,tau,chi,a,b,H = [
-        torch.tensor(pars[l]).cpu() for l in ['kapn','kapt','kapb','tau','chi','a','b','H']
+    kapn,kapt,kapb,D,H = [
+        torch.tensor(pars[l]).cpu() for l in ['kapn','kapt','kapb','D','H']
     ]
     kpsq = kx**2 + ky**2
-    # kpsq = torch.where(kpsq==0, 1e-10, kpsq)
-        
+
     sigk = ky>0
     Lk=sigk+kpsq
     lm=torch.zeros(kx.shape+(2,2),dtype=torch.complex64)
-    lm[:,0,0]=-1j*chi*kpsq-1j*sigk*H/kpsq**3
-    lm[:,0,1]=(kapn+kapt)*ky
-    lm[:,1,0]=(-kapb*ky+1j*chi*kpsq**2*b)/Lk
-    lm[:,1,1]=(-(kapb-kapn)*ky-(kapn+kapt)*ky*kpsq-1j*chi*kpsq**2*a)/Lk-1j*sigk*H/kpsq**3
+    lm[:,0,0]=-Gamma*kapb*ky-1j*D*kpsq-1j*sigk*H/kpsq**2
+    lm[:,0,1]=(kapn+kapt)*ky-Gamma*(kapn+kapt)*ky*kpsq
+    lm[:,1,0]=-kapb*ky/Lk
+    lm[:,1,1]=(kapn*ky-(kapn+kapt)*ky*kpsq)/Lk-1j*D*kpsq-1j*sigk*H/kpsq**2
 
     return lm
 
 def linfreq(kx, ky, pars):
     lm = init_linmats(torch.from_numpy(kx), torch.from_numpy(ky), pars).cuda()
-    # print(lm.device)
     w = torch.linalg.eigvals(lm)
     iw = torch.argsort(-w.imag, -1)
     lam = torch.gather(w, -1, iw).cpu().numpy()
@@ -30,25 +30,22 @@ def linfreq(kx, ky, pars):
     torch.cuda.empty_cache()
     return lam
 
-def gam_max(kx, ky, kapn, kapt, kapb, chi, a, b, H, slky):
+def gam_max(kx, ky, kapn, kapt, kapb, D, H):
     if isinstance(ky, cp.ndarray):
         kx = kx.get()
         ky = ky.get()
-        
+
     base_pars={'kapn':kapn,
         'kapt':kapt,
         'kapb':kapb,
-        'tau':1.,#Ti/Te
-        'chi':chi,
-        'a':a,
-        'b':b,
+        'D':D,
         'H':H}
 
     om=linfreq(kx,ky,base_pars)
-    gamky=om.imag[slky,0]
-    return np.max(gamky)
+    gam=om.imag[:,0]
+    return np.max(gam)
 
-def ky_max(kx, ky, kapn, kapt, kapb, chi, a, b, H, slky):
+def ky_max(kx, ky, kapn, kapt, kapb, D, H):
     if isinstance(ky, cp.ndarray):
         kx = kx.get()
         ky = ky.get()
@@ -56,11 +53,24 @@ def ky_max(kx, ky, kapn, kapt, kapb, chi, a, b, H, slky):
     base_pars={'kapn':kapn,
         'kapt':kapt,
         'kapb':kapb,
-        'chi':chi,
-        'a':a,
-        'b':b,
+        'D':D,
         'H':H}
 
-    om=linfreq(base_pars,kx,ky)
-    gamky=om.imag[slky,0]
-    return ky[slky,np.argmax(gamky)]
+    om=linfreq(kx, ky, base_pars)
+    gam=om.imag[:,0]
+    return ky[np.argmax(gam)]
+
+def Dturb(kx, ky, kapn, kapt, kapb, D, H):
+    if isinstance(ky, cp.ndarray):
+        kx = kx.get()
+        ky = ky.get()
+
+    base_pars={'kapn':kapn,
+        'kapt':kapt,
+        'kapb':kapb,
+        'D':D,
+        'H':H}
+
+    om=linfreq(kx, ky, base_pars)
+    gam=om.imag[:,0]
+    return gam/(kx**2+ky**2)

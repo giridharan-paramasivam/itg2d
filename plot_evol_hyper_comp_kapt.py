@@ -11,12 +11,13 @@ apply_style()
 
 #%% Load the computed HDF5 files (produced by compute_evol.py)
 
-Npx = 1024
+Npx = 512
 datadir = f'data/{Npx}/'
 subdir = 'evol/'
 
-fname1 = datadir + 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
-fname2 = datadir + 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+fname1 = datadir + 'out_kapt_0_2_hyper_D_1_0_em5_H_8_0_em6.h5'
+fname2 = datadir + 'out_kapt_2_0_hyper_D_1_0_em5_H_1_1_em5.h5'
+
 
 evol_fname1 = datadir + subdir + fname1.split('/')[-1].replace('out_', 'evol_')
 evol_fname2 = datadir + subdir + fname2.split('/')[-1].replace('out_', 'evol_')
@@ -69,7 +70,7 @@ plt.xlabel(r'$\gamma t$')
 plt.ylabel(r'$E_{\mathrm{ZF}}/E$')
 plt.legend(loc=(0.25, 0.1),fontsize=24)
 plt.tight_layout()
-plt.savefig(datadir+subdir+'zonal_energy_fraction_kapt_comp.svg', bbox_inches='tight')
+plt.savefig(datadir+subdir+'zonal_energy_fraction_hyper_kapt_comp.svg', bbox_inches='tight')
 plt.show()
 
 # %% Plot: log(Qbox) vs time
@@ -91,6 +92,6 @@ ax.set_xlabel(r'$\gamma t$')
 ax.set_ylabel(r'$|Q_{\mathrm{box}}|$')
 ax.legend(loc=(0.11, 0.1), fontsize=24)
 plt.tight_layout()
-plt.savefig(datadir+subdir+'Qbox_kapt_comp.svg', bbox_inches='tight')
+plt.savefig(datadir+subdir+'Qbox_hyper_kapt_comp.svg', bbox_inches='tight')
 plt.show()
 # %%

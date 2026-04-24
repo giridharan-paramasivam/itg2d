@@ -12,14 +12,16 @@ xtick_fontsize = matplotlib.rcParams.get('xtick.labelsize', 32)
 
 #%% Load computed flux data
 
-# Npx=512
-Npx=1024
+Npx=512
+# Npx=1024
 datadir=f'data/{Npx}/'
 subdir = 'spectral_flux/'
 
 # fname = 'out_kapt_0_4_D_0_1_H_3_6_em6.h5'
 # fname =  'out_kapt_2_0_D_0_1_H_0_0_e0.h5'
 fname = 'out_kapt_2_0_D_0_1_H_8_6_em6.h5'
+# fname = 'out_kapt_0_2_hyper_D_1_0_em5_H_8_0_em6.h5'
+# fname = 'out_kapt_2_0_hyper_D_5_0_em6_H_1_1_em5.h5'
 
 flux_file = datadir + subdir + fname.replace('out_', 'spectral_flux_')
 with h5.File(flux_file, 'r') as fl:
@@ -69,11 +71,13 @@ Pik_phi_series_1_norm = (Pik_phi_series_1 - np.mean(Pik_phi_series_1)) / np.std(
 Pik_d_series_1_norm   = (Pik_d_series_1 - np.mean(Pik_d_series_1)) / np.std(Pik_d_series_1)
 Pik_series_1_norm     = (Pik_series_1 - np.mean(Pik_series_1)) / np.std(Pik_series_1)
 
-# Compute cumulative sum arrays
+# Cumulative integral: Pi(k) = int_0^k f(k') dk' = cumsum(f*dk)
+# cumsum[j] = Pi(k[j+1]), so [:-2] aligns with the plot x-axis k[1:-1]
+# k[0]=0 shell is included; last shell [:-1] is excluded (may have partial points)
 dk = np.gradient(k)
-cumsum_fk = np.cumsum(fk * dk)
-cumsum_dk_D = np.cumsum(dk_D * dk)
-cumsum_dk_H = np.cumsum(dk_H * dk)
+cumsum_fk = np.cumsum(fk * dk)[:-2]
+cumsum_dk_D = np.cumsum(dk_D * dk)[:-2]
+cumsum_dk_H = np.cumsum(dk_H * dk)[:-2]
 
 #%% Ek-flux
 
@@ -82,13 +86,13 @@ plt.plot(k[1:-1], Pik[1:-1], label = r'$\Pi_{k}$')
 plt.plot(k[1:-1], Pik_phi[1:-1], label = r'$\Pi_{k}^{\left(\phi\right)}$')
 plt.plot(k[1:-1], Pik_d[1:-1], label = r'$\Pi_{k}^{\left(d\right)}$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
-plt.axvline(x=1, color='k', linestyle='--', linewidth=2)
 plt.axvline(x=k_f_E, color='k', linestyle=':', linewidth=2)
+plt.axvline(x=k_D_E, color='k', linestyle=(0, (3, 1, 1, 1, 1, 1)), linewidth=2)
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2)
-ymin, ymax = plt.ylim()
-offset = 0.025 * (ymax - ymin)
-plt.text(k_f_E, ymin - offset, r'$k_f$', ha='center', va='top', fontsize=xtick_fontsize)
-plt.text(k_lin, ymin - offset, r'$k_{\mathrm{lin}}$', ha='center', va='top', fontsize=xtick_fontsize)
+ax = plt.gca()
+ax.text(k_f_E, 1.01, r'$k_f$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
+ax.text(k_D_E, 1.01, r'$k_D$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
+ax.text(k_lin, 1.01, r'$k_{\mathrm{lin}}$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
 plt.xscale('log')
 plt.xlabel('$k$')
 plt.ylabel(r'$\Pi_k$')
@@ -102,18 +106,18 @@ plt.show()
 
 plt.figure(figsize=figsize_single)
 plt.plot(k[1:-1], Pik[1:-1], label = r'$\Pi_{k}$')
-plt.plot(k[1:-1], cumsum_fk[1:-1], label = r'$\mathcal{F}_k$')
-plt.plot(k[1:-1], -cumsum_dk_D[1:-1], label = r'$-\mathcal{D}_k^{(D)}$')
-plt.plot(k[1:-1], -cumsum_dk_H[1:-1], label = r'$-\mathcal{D}_k^{(H)}$')
-plt.plot(k[1:-1], cumsum_fk[1:-1]-cumsum_dk_D[1:-1]-cumsum_dk_H[1:-1], label = r'$\mathcal{F}_k - \mathcal{D}_k$')
+plt.plot(k[1:-1], cumsum_fk, label = r'$\mathcal{F}_k$')
+plt.plot(k[1:-1], -cumsum_dk_D, label = r'$-\mathcal{D}_k^{(D)}$')
+plt.plot(k[1:-1], -cumsum_dk_H, label = r'$-\mathcal{D}_k^{(H)}$')
+plt.plot(k[1:-1], cumsum_fk-cumsum_dk_D-cumsum_dk_H, label = r'$\mathcal{F}_k - \mathcal{D}_k$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
-plt.axvline(x=1, color='k', linestyle='--', linewidth=2)
 plt.axvline(x=k_f_E, color='k', linestyle=':', linewidth=2)
+plt.axvline(x=k_D_E, color='k', linestyle=(0, (3, 1, 1, 1, 1, 1)), linewidth=2)
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2)
-ymin, ymax = plt.ylim()
-offset = 0.025 * (ymax - ymin)
-plt.text(k_f_E, ymin - offset, r'$k_f$', ha='center', va='top', fontsize=xtick_fontsize)
-plt.text(k_lin, ymin - offset, r'$k_{\mathrm{lin}}$', ha='center', va='top', fontsize=xtick_fontsize)
+ax = plt.gca()
+ax.text(k_f_E, 1.01, r'$k_f$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
+ax.text(k_D_E, 1.01, r'$k_D$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
+ax.text(k_lin, 1.01, r'$k_{\mathrm{lin}}$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
 plt.xscale('log')
 plt.xlabel('$k$')
 plt.ylabel(r'$\Pi_k$')
@@ -128,13 +132,13 @@ plt.show()
 plt.figure(figsize=figsize_single)
 plt.plot(k[1:-1], fk[1:-1])
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
-plt.axvline(x=1, color='k', linestyle='--', linewidth=2)
 plt.axvline(x=k_f_E, color='k', linestyle=':', linewidth=2)
+plt.axvline(x=k_D_E, color='k', linestyle=(0, (3, 1, 1, 1, 1, 1)), linewidth=2)
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2)
-ymin, ymax = plt.ylim()
-offset = 0.025 * (ymax - ymin)
-plt.text(k_f_E, ymin - offset, r'$k_f$', ha='center', va='top', fontsize=xtick_fontsize)
-plt.text(k_lin, ymin - offset, r'$k_{\mathrm{lin}}$', ha='center', va='top', fontsize=xtick_fontsize)
+ax = plt.gca()
+ax.text(k_f_E, 1.01, r'$k_f$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
+ax.text(k_D_E, 1.01, r'$k_D$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
+ax.text(k_lin, 1.01, r'$k_{\mathrm{lin}}$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
 plt.xscale('log')
 plt.xlabel('$k$')
 plt.ylabel(r'$f_k$')
@@ -149,15 +153,13 @@ plt.figure(figsize=figsize_single)
 plt.plot(k[1:-1], dk_D[1:-1], label=r'$d_k^{(D)}$')
 plt.plot(k[1:-1], dk_H[1:-1], label=r'$d_k^{(H)}$')
 plt.axhline(0,color='k', linestyle='-', linewidth=1)
-plt.axvline(x=1, color='k', linestyle='--', linewidth=2)
 plt.axvline(x=k_f_E, color='k', linestyle=':', linewidth=2)
 plt.axvline(x=k_lin, color='k', linestyle='-.', linewidth=2)
 plt.axvline(x=k_D_E, color='k', linestyle=(0, (3, 1, 1, 1, 1, 1)), linewidth=2)
-ymin, ymax = plt.ylim()
-offset = 0.025 * (ymax - ymin)
-plt.text(k_f_E, ymin - offset, r'$k_f$', ha='center', va='top', fontsize=xtick_fontsize)
-plt.text(k_lin, ymin - offset, r'$k_{\mathrm{lin}}$', ha='center', va='top', fontsize=xtick_fontsize)
-plt.text(k_D_E, ymin - offset, r'$k_D$', ha='center', va='top', fontsize=xtick_fontsize)
+ax = plt.gca()
+ax.text(k_f_E, 1.01, r'$k_f$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
+ax.text(k_lin, 1.01, r'$k_{\mathrm{lin}}$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
+ax.text(k_D_E, 1.01, r'$k_D$', transform=ax.get_xaxis_transform(), ha='center', va='bottom', fontsize=xtick_fontsize)
 plt.xscale('log')
 plt.xlabel('$k$')
 plt.ylabel(r'$d_k$')
