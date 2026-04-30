@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 datadir="data/512/"
-file_name="${1:-${datadir}out_kapt_2_0_hyper_D_1_0_em6_H_1_1_em5.h5}"
+file_name="${1:-${datadir}out_PV_kapt_2_0_D_0_1_H_7_5_em6.h5}"
 # datadir="data/1024/"
 # file_name="${1:-${datadir}out_kapt_2_0_D_0_1_H_8_6_em6.h5}"
 # datadir="data_scan/"

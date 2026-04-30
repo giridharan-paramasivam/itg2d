@@ -41,11 +41,11 @@ gammax=gam_max(kx,ky,kapn,kapt,kapb,D,H)
 dtstep,dtsavecb=round_to_nsig((512/Npx)*0.002/gammax,1),round_to_nsig(0.02/gammax,1)
 t0,t1=0.0,round(600/gammax,0) #100/gammax #600/gammax
 rtol,atol=1e-8,1e-10
-wecontinue=False
+wecontinue=True
 
 output_dir = f"data/{Npx}/"
 os.makedirs(output_dir, exist_ok=True)
-fname = output_dir + f'out_kapt_{str(kapt).replace(".", "_")}_D_{str(D).replace(".", "_")}_H_{format_exp(H)}.h5'
+fname = output_dir + f'out_PV_kapt_{str(kapt).replace(".", "_")}_D_{str(D).replace(".", "_")}_H_{format_exp(H)}.h5'
 if not os.path.exists(fname):
     wecontinue=False
 

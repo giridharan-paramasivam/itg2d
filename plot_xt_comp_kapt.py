@@ -56,8 +56,6 @@ xm2, tm2 = np.meshgrid(xl2, t2)
 
 savename = partial(_savename, datadir+subdir, fname1)
 
-#%% Plot: vbar comparison
-
 with h5.File(fname1, 'r', swmr=True) as fl:
     vbar1 = fl['zonal/vbar'][::stride].astype(np.float32)
 
@@ -67,15 +65,17 @@ with h5.File(fname2, 'r', swmr=True) as fl:
 vbar1_lim = float(np.percentile(np.abs(vbar1), 75))
 vbar2_lim = float(np.percentile(np.abs(vbar2), 75))
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize_double, sharey=True)
+#%% Plot: vbar comparison
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16,8), sharey=True, rasterized=True)
 
 im1 = ax1.pcolormesh(xm1, tm1, vbar1, vmin=-vbar1_lim, vmax=vbar1_lim, cmap='seismic', rasterized=True)
-ax1.set_xlabel('x')
+ax1.set_xlabel('$x$')
 ax1.set_ylabel(r'$\gamma t$')
 ax1.set_title(rf'$\kappa_T={kapt1}$')
 
 im2 = ax2.pcolormesh(xm2, tm2, vbar2, vmin=-vbar2_lim, vmax=vbar2_lim, cmap='seismic', rasterized=True)
-ax2.set_xlabel('x')
+ax2.set_xlabel('$x$')
 ax2.set_title(rf'$\kappa_T={kapt2}$')
 
 fig.colorbar(im1, ax=ax1)

@@ -13,11 +13,11 @@ import os
 
 #%% Parameters
 
-Npx,Npy=512,512
-# Npx,Npy=1024,1024
+# Npx,Npy=512,512
+Npx,Npy=1024,1024
 # Npx,Npy=4096,4096
 Lx,Ly=32*np.pi,32*np.pi
-kapt=0.2 # threshold = 0.7
+kapt=0.4 # threshold = 0.7
 kapn=0.2
 kapb=0.02
 
@@ -33,7 +33,6 @@ Lk=sigk+kpsq
 
 D=0.1
 H=max(round(10*gam_max(kx,ky,kapn,kapt,kapb,D,0.0)*dk**4,10), 0.0) #10*gam*dk**4
-# H=0.0
 
 dtshow=0.1
 gammax=gam_max(kx,ky,kapn,kapt,kapb,D,H)
